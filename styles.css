@@ -15,6 +15,68 @@
   box-sizing: border-box;
 }
 
+.hidden {
+  display: none;
+}
+
+.splash {
+  position: fixed;
+  inset: 0;
+  background: #c8102e url("main page.png") center/cover no-repeat;
+  display: grid;
+  place-items: center;
+  z-index: 50;
+  overflow: hidden;
+}
+
+.splash::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.splash-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 18px;
+  place-items: center;
+  text-align: center;
+  color: #fff;
+  padding: 24px;
+}
+
+.splash-logo {
+  width: min(240px, 60vw);
+  height: auto;
+}
+
+.splash-name {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.splash-button {
+  border: none;
+  background: #ffffff;
+  color: #c8102e;
+  padding: 12px 28px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.splash-tag {
+  margin: 12px 0 0;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  opacity: 0.8;
+}
+
 body {
   margin: 0;
   font-family: 'Manrope', sans-serif;
@@ -138,7 +200,7 @@ h1 {
 .scale {
   height: 12px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #2eab63 0%, #f3d54e 50%, #db3a3a 100%);
+  background: linear-gradient(90deg, #db3a3a 0%, #f3d54e 50%, #2eab63 100%);
   position: relative;
   overflow: hidden;
 }
@@ -160,6 +222,40 @@ h1 {
   margin: 12px 0 0;
   font-size: 0.85rem;
   color: var(--muted);
+}
+
+.advice {
+  margin-top: 16px;
+  display: grid;
+  gap: 10px;
+}
+
+.advice-title {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.advice-summary {
+  margin: 0;
+  color: var(--muted);
+}
+
+.advice-list {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  display: grid;
+  gap: 6px;
+}
+
+.advice-clinician {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #fff3f3;
+  color: #7a3c3c;
+  font-size: 0.9rem;
 }
 
 .grid {
@@ -342,6 +438,10 @@ h1 {
   text-align: center;
   display: grid;
   gap: 16px;
+}
+
+.modal-card .advice {
+  text-align: left;
 }
 
 .modal-score {

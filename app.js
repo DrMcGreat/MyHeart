@@ -7,9 +7,19 @@ const modalScore = document.getElementById('modalScore');
 const modalLabel = document.getElementById('modalLabel');
 const resultModal = document.getElementById('resultModal');
 const closeModal = document.getElementById('closeModal');
+const splash = document.getElementById('splash');
+const mainApp = document.getElementById('mainApp');
+const startAssessBtn = document.getElementById('startAssessBtn');
 const resetBtn = document.getElementById('resetBtn');
 const getResultsBtn = document.getElementById('getResultsBtn');
 const resultsHint = document.getElementById('resultsHint');
+const advicePanel = document.getElementById('advicePanel');
+const adviceSummary = document.getElementById('adviceSummary');
+const adviceList = document.getElementById('adviceList');
+const adviceClinician = document.getElementById('adviceClinician');
+const modalAdviceSummary = document.getElementById('modalAdviceSummary');
+const modalAdviceList = document.getElementById('modalAdviceList');
+const modalAdviceClinician = document.getElementById('modalAdviceClinician');
 
 const ageInput = document.getElementById('age');
 const sexSelect = document.getElementById('sex');
@@ -19,7 +29,14 @@ const activityVigorous = document.getElementById('activityVigorous');
 const nicotineStatus = document.getElementById('nicotineStatus');
 const nicotineSecondhand = document.getElementById('nicotineSecondhand');
 const sleepHours = document.getElementById('sleepHours');
-const bmiValue = document.getElementById('bmiValue');
+const bmiUnitInputs = document.querySelectorAll('input[name="bmiUnit"]');
+const bmiImperialFields = document.getElementById('bmiImperialFields');
+const bmiMetricFields = document.getElementById('bmiMetricFields');
+const weightLb = document.getElementById('weightLb');
+const heightIn = document.getElementById('heightIn');
+const weightKg = document.getElementById('weightKg');
+const heightCm = document.getElementById('heightCm');
+const bmiResult = document.getElementById('bmiResult');
 const lipidsNonHDL = document.getElementById('lipidsNonHDL');
 const lipidsMeds = document.getElementById('lipidsMeds');
 const glucoseA1c = document.getElementById('glucoseA1c');
@@ -34,6 +51,17 @@ const labelMap = [
   { min: 50, text: 'Moderate cardiovascular health' },
   { min: 0, text: 'Low cardiovascular health' },
 ];
+
+const metricAdvice = {
+  diet: 'Increase fruits, vegetables, whole grains, and choose water over sugary drinks.',
+  activity: 'Aim for at least 150 minutes of moderate activity per week.',
+  nicotine: 'Quitting nicotine is one of the biggest improvements for heart health.',
+  sleep: 'Target 7 to 9 hours of sleep most nights.',
+  bmi: 'Even modest weight loss can improve cardiovascular health.',
+  lipids: 'Favor unsaturated fats and review cholesterol numbers with a clinician.',
+  glucose: 'Limit refined carbs and follow your diabetes or prediabetes plan.',
+  pressure: 'Reduce sodium, stay active, and manage stress to support healthy BP.',
+};
 
 const colorStops = [
   { value: 0, color: [219, 58, 58] },
@@ -71,6 +99,45 @@ function interpolateColor(value) {
 function parseNumber(value) {
   const parsed = Number.parseFloat(value);
   return Number.isFinite(parsed) ? parsed : null;
+}
+
+function getBmiUnit() {
+  const selected = document.querySelector('input[name="bmiUnit"]:checked');
+  return selected ? selected.value : 'imperial';
+}
+
+function calculateBmiValue() {
+  const unit = getBmiUnit();
+  if (unit === 'metric') {
+    const weight = parseNumber(weightKg.value);
+    const height = parseNumber(heightCm.value);
+    if (weight === null || height === null || weight <= 0 || height <= 0) return null;
+    const meters = height / 100;
+    if (meters <= 0) return null;
+    return weight / (meters * meters);
+  }
+
+  const weight = parseNumber(weightLb.value);
+  const height = parseNumber(heightIn.value);
+  if (weight === null || height === null || weight <= 0 || height <= 0) return null;
+  return (703 * weight) / (height * height);
+}
+
+function updateBmiDisplay() {
+  const bmi = calculateBmiValue();
+  if (bmi === null) {
+    bmiResult.value = '';
+    return;
+  }
+  bmiResult.value = bmi.toFixed(1);
+}
+
+function updateBmiUnitFields() {
+  const unit = getBmiUnit();
+  const showImperial = unit === 'imperial';
+  bmiImperialFields.classList.toggle('hidden', !showImperial);
+  bmiMetricFields.classList.toggle('hidden', showImperial);
+  updateBmiDisplay();
 }
 
 function getRadioScore(name) {
@@ -132,9 +199,8 @@ function scoreSleep() {
 }
 
 function scoreBmi() {
-  if (bmiValue.value === '') return null;
-  const bmi = parseNumber(bmiValue.value);
-  if (bmi === null || bmi <= 0) return null;
+  const bmi = calculateBmiValue();
+  if (bmi === null) return null;
 
   if (bmi < 25) return 100;
   if (bmi < 30) return 70;
@@ -218,24 +284,24 @@ function isDemographicsComplete() {
 
 function calculateScore() {
   const metrics = [
-    scoreDiet(),
-    scoreActivity(),
-    scoreNicotine(),
-    scoreSleep(),
-    scoreBmi(),
-    scoreLipids(),
-    scoreGlucose(),
-    scoreBloodPressure(),
+    { id: 'diet', label: 'Diet', score: scoreDiet(), advice: metricAdvice.diet },
+    { id: 'activity', label: 'Physical activity', score: scoreActivity(), advice: metricAdvice.activity },
+    { id: 'nicotine', label: 'Nicotine', score: scoreNicotine(), advice: metricAdvice.nicotine },
+    { id: 'sleep', label: 'Sleep', score: scoreSleep(), advice: metricAdvice.sleep },
+    { id: 'bmi', label: 'Weight', score: scoreBmi(), advice: metricAdvice.bmi },
+    { id: 'lipids', label: 'Cholesterol', score: scoreLipids(), advice: metricAdvice.lipids },
+    { id: 'glucose', label: 'Blood sugar', score: scoreGlucose(), advice: metricAdvice.glucose },
+    { id: 'pressure', label: 'Blood pressure', score: scoreBloodPressure(), advice: metricAdvice.pressure },
   ];
 
-  const filledCount = metrics.filter((value) => value !== null).length;
+  const filledCount = metrics.filter((metric) => metric.score !== null).length;
   if (filledCount !== metrics.length) {
-    return { complete: false, score: null };
+    return { complete: false, score: null, metrics };
   }
 
-  const total = metrics.reduce((sum, value) => sum + value, 0);
+  const total = metrics.reduce((sum, metric) => sum + metric.score, 0);
   const average = Math.round(total / metrics.length);
-  return { complete: true, score: average };
+  return { complete: true, score: average, metrics };
 }
 
 function updateScoreDisplay(score) {
@@ -270,24 +336,126 @@ function updateResultsButton(complete, demographicsComplete) {
   }
 }
 
+function getClinicianFlags(score) {
+  const flags = [];
+  if (score !== null && score < 50) {
+    flags.push('overall score in the low range');
+  }
+
+  const systolic = parseNumber(bpSystolic.value);
+  const diastolic = parseNumber(bpDiastolic.value);
+  if (systolic !== null && diastolic !== null && (systolic >= 140 || diastolic >= 90)) {
+    flags.push('blood pressure in a high range');
+  }
+
+  const a1c = parseNumber(glucoseA1c.value);
+  const glucoseMode = getGlucoseMode();
+  if (a1c !== null && glucoseMode === 'no-diabetes' && a1c >= 5.7) {
+    flags.push('blood sugar above normal');
+  }
+  if (a1c !== null && glucoseMode === 'diabetes' && a1c >= 7) {
+    flags.push('blood sugar above target');
+  }
+
+  const nonHdl = parseNumber(lipidsNonHDL.value);
+  if (nonHdl !== null && nonHdl >= 190) {
+    flags.push('non-HDL cholesterol high');
+  }
+
+  const bmi = calculateBmiValue();
+  if (bmi !== null && bmi >= 30) {
+    flags.push('BMI in the obesity range');
+  }
+
+  if (nicotineStatus.value === '0' || nicotineStatus.value === '25') {
+    flags.push('nicotine use or recent use');
+  }
+  if (nicotineSecondhand.checked) {
+    flags.push('frequent secondhand smoke exposure');
+  }
+
+  return flags;
+}
+
+function buildAdvice(score, metrics) {
+  const focusAreas = metrics
+    .filter((metric) => metric.score !== null && metric.score < 80)
+    .sort((a, b) => a.score - b.score);
+
+  const listItems = focusAreas.length
+    ? focusAreas.slice(0, 3).map((metric) => `${metric.label}: ${metric.advice}`)
+    : [
+        'Maintain balanced meals and hydration to keep your diet score high.',
+        'Keep regular activity, sleep, and stress management routines.',
+        'Stay nicotine-free and keep up routine checkups.',
+      ];
+
+  let summary = 'Your cardiovascular health is trending well.';
+  if (score !== null) {
+    if (score >= 80) {
+      summary = 'High range. Keep your strongest habits steady.';
+    } else if (score >= 50) {
+      summary = 'Moderate range. Improving a few areas can lift your score.';
+    } else {
+      summary = 'Low range. It may be worth discussing this with a healthcare professional.';
+    }
+  }
+
+  const flags = getClinicianFlags(score);
+  const clinicianText = flags.length
+    ? `Consider discussing with a healthcare professional if any apply: ${flags.join(', ')}.`
+    : 'If you have symptoms or concerns, consider discussing your results with a healthcare professional.';
+
+  return { summary, listItems, clinicianText };
+}
+
+function renderAdvice(score, metrics) {
+  const { summary, listItems, clinicianText } = buildAdvice(score, metrics);
+
+  adviceSummary.textContent = summary;
+  adviceList.innerHTML = '';
+  listItems.forEach((item) => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    adviceList.appendChild(li);
+  });
+  adviceClinician.textContent = clinicianText;
+  adviceClinician.classList.toggle('hidden', !clinicianText);
+
+  modalAdviceSummary.textContent = summary;
+  modalAdviceList.innerHTML = '';
+  listItems.forEach((item) => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    modalAdviceList.appendChild(li);
+  });
+  modalAdviceClinician.textContent = clinicianText;
+  modalAdviceClinician.classList.toggle('hidden', !clinicianText);
+}
+
 function updateScore() {
-  const { complete, score } = calculateScore();
+  updateBmiDisplay();
+  const { complete, score, metrics } = calculateScore();
   const demographicsComplete = isDemographicsComplete();
   updateResultsButton(complete, demographicsComplete);
 
   if (!hasSubmitted) {
     scoreLabel.textContent = 'Fill out the form, then click Get Results.';
     updateScoreDisplay(null);
+    advicePanel.classList.add('hidden');
     return;
   }
 
   if (!complete) {
     scoreLabel.textContent = 'Complete all sections to see your score.';
     updateScoreDisplay(null);
+    advicePanel.classList.add('hidden');
     return;
   }
 
   updateScoreDisplay(score);
+  advicePanel.classList.remove('hidden');
+  renderAdvice(score, metrics);
 }
 
 function openModal(score) {
@@ -311,8 +479,21 @@ document.querySelectorAll('input[name="glucoseMode"]').forEach((input) => {
   input.addEventListener('change', updateScore);
 });
 
+bmiUnitInputs.forEach((input) => {
+  input.addEventListener('change', () => {
+    updateBmiUnitFields();
+    updateScore();
+  });
+});
+
+startAssessBtn.addEventListener('click', () => {
+  splash.classList.add('hidden');
+  mainApp.classList.remove('hidden');
+  mainApp.scrollIntoView({ behavior: 'smooth' });
+});
+
 getResultsBtn.addEventListener('click', () => {
-  const { complete, score } = calculateScore();
+  const { complete, score, metrics } = calculateScore();
   const demographicsComplete = isDemographicsComplete();
   if (!complete || !demographicsComplete) {
     updateScore();
@@ -320,6 +501,8 @@ getResultsBtn.addEventListener('click', () => {
   }
   hasSubmitted = true;
   updateScoreDisplay(score);
+  advicePanel.classList.remove('hidden');
+  renderAdvice(score, metrics);
   openModal(score);
 });
 
@@ -332,7 +515,9 @@ resetBtn.addEventListener('click', () => {
   form.reset();
   hasSubmitted = false;
   closeResults();
+  updateBmiUnitFields();
   updateScore();
 });
 
+updateBmiUnitFields();
 updateScore();

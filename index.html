@@ -7,7 +7,16 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="app">
+    <div class="splash" id="splash">
+      <div class="splash-content">
+        <img class="splash-logo" src="B-HEALTHY-LOGO-.png" alt="B-Healthy logo" />
+        <p class="splash-name">B-Healthy</p>
+        <button id="startAssessBtn" class="splash-button" type="button">Assess</button>
+        <p class="splash-tag">#BeatNCDs</p>
+      </div>
+    </div>
+
+    <main class="app hidden" id="mainApp">
       <header class="hero">
         <div class="brand">
           <img class="logo" src="B-HEALTHY-LOGO-.png" alt="B-Healthy logo" />
@@ -34,6 +43,12 @@
             <div class="indicator" id="scoreIndicator"></div>
           </div>
           <p class="scale-legend">Low &lt;50 · Moderate 50–79 · High ≥80</p>
+          <div class="advice hidden" id="advicePanel">
+            <p class="advice-title">Targeted advice</p>
+            <p class="advice-summary" id="adviceSummary"></p>
+            <ul class="advice-list" id="adviceList"></ul>
+            <p class="advice-clinician" id="adviceClinician"></p>
+          </div>
         </div>
       </section>
 
@@ -163,12 +178,40 @@
             <h3>Body Mass Index</h3>
             <span class="metric-pill">Factor</span>
           </div>
-          <p class="metric-help">Enter your BMI (kg/m²). Adult scoring uses standard ranges.</p>
+          <p class="metric-help">Enter weight and height. We will calculate BMI automatically.</p>
+          <div class="segmented">
+            <label>
+              <input type="radio" name="bmiUnit" value="imperial" checked /> Imperial (lb, in)
+            </label>
+            <label>
+              <input type="radio" name="bmiUnit" value="metric" /> Metric (kg, cm)
+            </label>
+          </div>
+          <div class="field-row" id="bmiImperialFields">
+            <label class="field">
+              <span>Weight (lb)</span>
+              <input id="weightLb" type="number" min="0" step="0.1" placeholder="e.g., 180" />
+            </label>
+            <label class="field">
+              <span>Height (in)</span>
+              <input id="heightIn" type="number" min="0" step="0.1" placeholder="e.g., 70" />
+            </label>
+          </div>
+          <div class="field-row hidden" id="bmiMetricFields">
+            <label class="field">
+              <span>Weight (kg)</span>
+              <input id="weightKg" type="number" min="0" step="0.1" placeholder="e.g., 82" />
+            </label>
+            <label class="field">
+              <span>Height (cm)</span>
+              <input id="heightCm" type="number" min="0" step="0.1" placeholder="e.g., 178" />
+            </label>
+          </div>
           <label class="field">
-            <span>BMI</span>
-            <input id="bmiValue" type="number" min="10" max="60" step="0.1" placeholder="e.g., 24.5" />
+            <span>Calculated BMI</span>
+            <input id="bmiResult" type="text" readonly placeholder="--" />
           </label>
-          <p class="metric-footnote">Under 18.5 may be unhealthy; consider clinician guidance.</p>
+          <p class="metric-footnote">BMI is one factor. Consider clinician guidance for context.</p>
         </article>
 
         <article class="metric-card">
@@ -249,6 +292,12 @@
         <p class="modal-label" id="modalLabel">Complete all sections to see your score.</p>
         <div class="scale" aria-hidden="true">
           <div class="indicator" id="modalIndicator"></div>
+        </div>
+        <div class="advice">
+          <p class="advice-title">Targeted advice</p>
+          <p class="advice-summary" id="modalAdviceSummary"></p>
+          <ul class="advice-list" id="modalAdviceList"></ul>
+          <p class="advice-clinician" id="modalAdviceClinician"></p>
         </div>
         <button id="closeModal" class="ghost" type="button">Close</button>
       </div>
