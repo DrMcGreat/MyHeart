@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MyHeart - Life's Essential 8 Check</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="hero">
+        <p class="eyebrow">MyHeart</p>
+        <h1>Life's Essential 8 Check</h1>
+        <p class="subhead">
+          A simple, private check-in on eight key cardiovascular health metrics. No profiles, no saving
+          data.
+        </p>
+      </header>
+
+      <section class="score-panel" aria-live="polite">
+        <div class="score-card">
+          <div class="score-header">
+            <h2>Overall Cardiovascular Health</h2>
+            <button id="resetBtn" class="ghost" type="button">Reset</button>
+          </div>
+          <div class="score-value" id="scoreValue">--</div>
+          <div class="score-label" id="scoreLabel">Complete all sections to see your score.</div>
+          <div class="scale" aria-hidden="true">
+            <div class="indicator" id="scoreIndicator"></div>
+          </div>
+          <p class="scale-legend">Low &lt;50 · Moderate 50–79 · High ≥80</p>
+        </div>
+      </section>
+
+      <form id="assessment" class="grid" autocomplete="off">
+        <article class="metric-card">
+          <div class="metric-head">
+            <h3>Diet Quality</h3>
+            <span class="metric-pill">Behavior</span>
+          </div>
+          <p class="metric-help">
+            Based on AHA diet scoring (DASH/HEI/MEPA percentile). Choose the range that fits your most
+            recent diet assessment.
+          </p>
+          <label class="field">
+            <span>Diet score percentile</span>
+            <select id="dietScore">
+              <option value="">Select...</option>
+              <option value="100">≥95th percentile</option>
+              <option value="80">75th–94th percentile</option>
+              <option value="50">50th–74th percentile</option>
+              <option value="25">25th–49th percentile</option>
+              <option value="0">1st–24th percentile</option>
+            </select>
+          </label>
+          <p class="metric-footnote">We can add a short diet quiz later to estimate this.</p>
+        </article>
+
+        <article class="metric-card">
+          <div class="metric-head">
+            <h3>Physical Activity</h3>
+            <span class="metric-pill">Behavior</span>
+          </div>
+          <p class="metric-help">Moderate minutes + 2× vigorous minutes per week.</p>
+          <div class="field-row">
+            <label class="field">
+              <span>Moderate min/week</span>
+              <input id="activityModerate" type="number" min="0" step="1" placeholder="e.g., 120" />
+            </label>
+            <label class="field">
+              <span>Vigorous min/week</span>
+              <input id="activityVigorous" type="number" min="0" step="1" placeholder="e.g., 30" />
+            </label>
+          </div>
+          <p class="metric-footnote">AHA scoring tops out at 150+ moderate-equivalent minutes.</p>
+        </article>
+
+        <article class="metric-card">
+          <div class="metric-head">
+            <h3>Nicotine Exposure</h3>
+            <span class="metric-pill">Behavior</span>
+          </div>
+          <p class="metric-help">Includes cigarettes, vaping, and secondhand smoke exposure.</p>
+          <label class="field">
+            <span>Status</span>
+            <select id="nicotineStatus">
+              <option value="">Select...</option>
+              <option value="100">Never smoker</option>
+              <option value="75">Former smoker, &gt;5 years</option>
+              <option value="50">Former smoker, 1–5 years</option>
+              <option value="25">Former smoker, &lt;1 year</option>
+              <option value="25">Current vaping / inhaled nicotine (no cigarettes)</option>
+              <option value="0">Current smoker</option>
+            </select>
+          </label>
+          <label class="toggle">
+            <input id="nicotineSecondhand" type="checkbox" /> Regular indoor secondhand exposure
+          </label>
+          <p class="metric-footnote">Indoor secondhand exposure reduces the score by 20 points.</p>
+        </article>
+
+        <article class="metric-card">
+          <div class="metric-head">
+            <h3>Sleep Health</h3>
+            <span class="metric-pill">Behavior</span>
+          </div>
+          <p class="metric-help">Average hours of sleep per night (adult scoring).</p>
+          <label class="field">
+            <span>Hours/night</span>
+            <input id="sleepHours" type="number" min="0" max="24" step="0.1" placeholder="e.g., 7.5" />
+          </label>
+        </article>
+
+        <article class="metric-card">
+          <div class="metric-head">
+            <h3>Body Mass Index</h3>
+            <span class="metric-pill">Factor</span>
+          </div>
+          <p class="metric-help">Enter your BMI (kg/m²). Adult scoring uses standard ranges.</p>
+          <label class="field">
+            <span>BMI</span>
+            <input id="bmiValue" type="number" min="10" max="60" step="0.1" placeholder="e.g., 24.5" />
+          </label>
+          <p class="metric-footnote">Under 18.5 may be unhealthy; consider clinician guidance.</p>
+        </article>
+
+        <article class="metric-card">
+          <div class="metric-head">
+            <h3>Blood Lipids (Non-HDL)</h3>
+            <span class="metric-pill">Factor</span>
+          </div>
+          <p class="metric-help">Most labs report non-HDL cholesterol (mg/dL).</p>
+          <label class="field">
+            <span>Non-HDL (mg/dL)</span>
+            <input id="lipidsNonHDL" type="number" min="0" step="1" placeholder="e.g., 140" />
+          </label>
+          <label class="toggle">
+            <input id="lipidsMeds" type="checkbox" /> On cholesterol-lowering medication
+          </label>
+        </article>
+
+        <article class="metric-card">
+          <div class="metric-head">
+            <h3>Blood Glucose</h3>
+            <span class="metric-pill">Factor</span>
+          </div>
+          <p class="metric-help">Use HbA1c (%) if available; scoring differs by diabetes status.</p>
+          <div class="segmented">
+            <label>
+              <input type="radio" name="glucoseMode" value="no-diabetes" /> No diabetes diagnosis
+            </label>
+            <label>
+              <input type="radio" name="glucoseMode" value="diabetes" /> Diabetes diagnosis
+            </label>
+          </div>
+          <label class="field">
+            <span>HbA1c (%)</span>
+            <input id="glucoseA1c" type="number" min="3" max="20" step="0.1" placeholder="e.g., 6.8" />
+          </label>
+          <p class="metric-footnote">If HbA1c ≥7.0% and you have diabetes, choose diabetes mode.</p>
+        </article>
+
+        <article class="metric-card">
+          <div class="metric-head">
+            <h3>Blood Pressure</h3>
+            <span class="metric-pill">Factor</span>
+          </div>
+          <p class="metric-help">Use your most recent resting BP (mmHg).</p>
+          <div class="field-row">
+            <label class="field">
+              <span>Systolic</span>
+              <input id="bpSystolic" type="number" min="0" step="1" placeholder="e.g., 118" />
+            </label>
+            <label class="field">
+              <span>Diastolic</span>
+              <input id="bpDiastolic" type="number" min="0" step="1" placeholder="e.g., 76" />
+            </label>
+          </div>
+          <label class="toggle">
+            <input id="bpMeds" type="checkbox" /> On blood pressure medication
+          </label>
+        </article>
+      </form>
+
+      <footer class="footer">
+        <p>
+          Adult scoring only. This tool is for general wellness awareness and does not replace
+          clinical advice.
+        </p>
+      </footer>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
