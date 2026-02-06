@@ -9,8 +9,11 @@
   <body>
     <main class="app">
       <header class="hero">
-        <p class="eyebrow">MyHeart</p>
-        <h1>Life's Essential 8 Check</h1>
+        <div class="brand">
+          <img class="logo" src="B-HEALTHY-LOGO-.png" alt="B-Healthy logo" />
+          <p class="eyebrow">MyHeart</p>
+        </div>
+        <h1>Check you heart health</h1>
         <p class="subhead">
           A simple, private check-in on eight key cardiovascular health metrics. No profiles, no saving
           data.
@@ -24,7 +27,9 @@
             <button id="resetBtn" class="ghost" type="button">Reset</button>
           </div>
           <div class="score-value" id="scoreValue">--</div>
-          <div class="score-label" id="scoreLabel">Complete all sections to see your score.</div>
+          <div class="score-label" id="scoreLabel">
+            Fill out the form, then click Get Results.
+          </div>
           <div class="scale" aria-hidden="true">
             <div class="indicator" id="scoreIndicator"></div>
           </div>
@@ -35,25 +40,67 @@
       <form id="assessment" class="grid" autocomplete="off">
         <article class="metric-card">
           <div class="metric-head">
+            <h3>About You</h3>
+            <span class="metric-pill">Stats</span>
+          </div>
+          <p class="metric-help">Age and sex help with aggregate statistics only. Not used in scoring.</p>
+          <div class="field-row">
+            <label class="field">
+              <span>Age</span>
+              <input id="age" type="number" min="18" max="120" step="1" placeholder="e.g., 42" />
+            </label>
+            <label class="field">
+              <span>Sex at birth</span>
+              <select id="sex">
+                <option value="">Select...</option>
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+                <option value="intersex">Intersex</option>
+                <option value="prefer-not">Prefer not to say</option>
+              </select>
+            </label>
+          </div>
+        </article>
+
+        <article class="metric-card">
+          <div class="metric-head">
             <h3>Diet Quality</h3>
             <span class="metric-pill">Behavior</span>
           </div>
           <p class="metric-help">
-            Based on AHA diet scoring (DASH/HEI/MEPA percentile). Choose the range that fits your most
-            recent diet assessment.
+            Quick diet check. We translate these answers into a diet score (0–100).
           </p>
-          <label class="field">
-            <span>Diet score percentile</span>
-            <select id="dietScore">
-              <option value="">Select...</option>
-              <option value="100">≥95th percentile</option>
-              <option value="80">75th–94th percentile</option>
-              <option value="50">50th–74th percentile</option>
-              <option value="25">25th–49th percentile</option>
-              <option value="0">1st–24th percentile</option>
-            </select>
-          </label>
-          <p class="metric-footnote">We can add a short diet quiz later to estimate this.</p>
+          <div class="question-group">
+            <p>Fruits and vegetables per day</p>
+            <label><input type="radio" name="dietProduce" value="0" /> 0–1 servings</label>
+            <label><input type="radio" name="dietProduce" value="10" /> 2–3 servings</label>
+            <label><input type="radio" name="dietProduce" value="20" /> 4+ servings</label>
+          </div>
+          <div class="question-group">
+            <p>Whole grains per day</p>
+            <label><input type="radio" name="dietGrains" value="0" /> 0–1 servings</label>
+            <label><input type="radio" name="dietGrains" value="10" /> 2–3 servings</label>
+            <label><input type="radio" name="dietGrains" value="20" /> 4+ servings</label>
+          </div>
+          <div class="question-group">
+            <p>Sugary drinks per week</p>
+            <label><input type="radio" name="dietSugary" value="20" /> 0–1 drinks</label>
+            <label><input type="radio" name="dietSugary" value="10" /> 2–6 drinks</label>
+            <label><input type="radio" name="dietSugary" value="0" /> 7+ drinks</label>
+          </div>
+          <div class="question-group">
+            <p>Processed or red meat per week</p>
+            <label><input type="radio" name="dietMeat" value="20" /> 0–1 servings</label>
+            <label><input type="radio" name="dietMeat" value="10" /> 2–6 servings</label>
+            <label><input type="radio" name="dietMeat" value="0" /> 7+ servings</label>
+          </div>
+          <div class="question-group">
+            <p>Fish or plant proteins per week</p>
+            <label><input type="radio" name="dietProtein" value="0" /> 0–1 servings</label>
+            <label><input type="radio" name="dietProtein" value="10" /> 2–3 servings</label>
+            <label><input type="radio" name="dietProtein" value="20" /> 4+ servings</label>
+          </div>
+          <p class="metric-footnote">We can refine this with a longer AHA diet screener later.</p>
         </article>
 
         <article class="metric-card">
@@ -182,6 +229,11 @@
         </article>
       </form>
 
+      <section class="actions">
+        <button id="getResultsBtn" class="primary" type="button" disabled>Get Results</button>
+        <p class="hint" id="resultsHint">Complete all fields to enable results.</p>
+      </section>
+
       <footer class="footer">
         <p>
           Adult scoring only. This tool is for general wellness awareness and does not replace
@@ -189,6 +241,18 @@
         </p>
       </footer>
     </main>
+
+    <div class="modal hidden" id="resultModal" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+      <div class="modal-card">
+        <h2 id="resultTitle">Your Cardiovascular Health Score</h2>
+        <div class="modal-score" id="modalScore">--</div>
+        <p class="modal-label" id="modalLabel">Complete all sections to see your score.</p>
+        <div class="scale" aria-hidden="true">
+          <div class="indicator" id="modalIndicator"></div>
+        </div>
+        <button id="closeModal" class="ghost" type="button">Close</button>
+      </div>
+    </div>
 
     <script src="app.js"></script>
   </body>

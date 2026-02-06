@@ -2,9 +2,18 @@ const form = document.getElementById('assessment');
 const scoreValue = document.getElementById('scoreValue');
 const scoreLabel = document.getElementById('scoreLabel');
 const scoreIndicator = document.getElementById('scoreIndicator');
+const modalIndicator = document.getElementById('modalIndicator');
+const modalScore = document.getElementById('modalScore');
+const modalLabel = document.getElementById('modalLabel');
+const resultModal = document.getElementById('resultModal');
+const closeModal = document.getElementById('closeModal');
 const resetBtn = document.getElementById('resetBtn');
+const getResultsBtn = document.getElementById('getResultsBtn');
+const resultsHint = document.getElementById('resultsHint');
 
-const dietScore = document.getElementById('dietScore');
+const ageInput = document.getElementById('age');
+const sexSelect = document.getElementById('sex');
+
 const activityModerate = document.getElementById('activityModerate');
 const activityVigorous = document.getElementById('activityVigorous');
 const nicotineStatus = document.getElementById('nicotineStatus');
@@ -17,6 +26,8 @@ const glucoseA1c = document.getElementById('glucoseA1c');
 const bpSystolic = document.getElementById('bpSystolic');
 const bpDiastolic = document.getElementById('bpDiastolic');
 const bpMeds = document.getElementById('bpMeds');
+
+let hasSubmitted = false;
 
 const labelMap = [
   { min: 80, text: 'High cardiovascular health' },
@@ -62,9 +73,22 @@ function parseNumber(value) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+function getRadioScore(name) {
+  const selected = form.querySelector(`input[name="${name}"]:checked`);
+  if (!selected) return null;
+  return Number(selected.value);
+}
+
 function scoreDiet() {
-  if (!dietScore.value) return null;
-  return Number(dietScore.value);
+  const produce = getRadioScore('dietProduce');
+  const grains = getRadioScore('dietGrains');
+  const sugary = getRadioScore('dietSugary');
+  const meat = getRadioScore('dietMeat');
+  const protein = getRadioScore('dietProtein');
+
+  const values = [produce, grains, sugary, meat, protein];
+  if (values.some((value) => value === null)) return null;
+  return values.reduce((sum, value) => sum + value, 0);
 }
 
 function scoreActivity() {
@@ -185,7 +209,14 @@ function scoreBloodPressure() {
   return score;
 }
 
-function updateScore() {
+function isDemographicsComplete() {
+  const age = parseNumber(ageInput.value);
+  if (age === null || age < 18) return false;
+  if (!sexSelect.value) return false;
+  return true;
+}
+
+function calculateScore() {
   const metrics = [
     scoreDiet(),
     scoreActivity(),
@@ -198,36 +229,109 @@ function updateScore() {
   ];
 
   const filledCount = metrics.filter((value) => value !== null).length;
-
   if (filledCount !== metrics.length) {
+    return { complete: false, score: null };
+  }
+
+  const total = metrics.reduce((sum, value) => sum + value, 0);
+  const average = Math.round(total / metrics.length);
+  return { complete: true, score: average };
+}
+
+function updateScoreDisplay(score) {
+  if (score === null) {
     scoreValue.textContent = '--';
     scoreValue.style.color = '';
-    scoreLabel.textContent = `Complete all sections to see your score. (${filledCount}/${metrics.length})`;
     scoreIndicator.style.left = '0%';
     scoreIndicator.style.background = '#c7ddd5';
     return;
   }
 
-  const total = metrics.reduce((sum, value) => sum + value, 0);
-  const average = Math.round(total / metrics.length);
-
-  scoreValue.textContent = `${average} / 100`;
-  scoreLabel.textContent = labelMap.find((entry) => average >= entry.min).text;
-
-  const color = interpolateColor(average);
-  scoreIndicator.style.left = `${average}%`;
+  const color = interpolateColor(score);
+  scoreValue.textContent = `${score} / 100`;
+  scoreLabel.textContent = labelMap.find((entry) => score >= entry.min).text;
+  scoreIndicator.style.left = `${score}%`;
   scoreIndicator.style.background = color;
   scoreValue.style.color = color;
 }
 
+function updateResultsButton(complete, demographicsComplete) {
+  const ready = complete && demographicsComplete;
+  getResultsBtn.disabled = !ready;
+  if (ready) {
+    resultsHint.textContent = 'Ready when you are.';
+    return;
+  }
+
+  if (!demographicsComplete) {
+    resultsHint.textContent = 'Add age and sex to enable results.';
+  } else {
+    resultsHint.textContent = 'Complete all health questions to enable results.';
+  }
+}
+
+function updateScore() {
+  const { complete, score } = calculateScore();
+  const demographicsComplete = isDemographicsComplete();
+  updateResultsButton(complete, demographicsComplete);
+
+  if (!hasSubmitted) {
+    scoreLabel.textContent = 'Fill out the form, then click Get Results.';
+    updateScoreDisplay(null);
+    return;
+  }
+
+  if (!complete) {
+    scoreLabel.textContent = 'Complete all sections to see your score.';
+    updateScoreDisplay(null);
+    return;
+  }
+
+  updateScoreDisplay(score);
+}
+
+function openModal(score) {
+  const color = interpolateColor(score);
+  modalScore.textContent = `${score} / 100`;
+  modalScore.style.color = color;
+  modalLabel.textContent = labelMap.find((entry) => score >= entry.min).text;
+  modalIndicator.style.left = `${score}%`;
+  modalIndicator.style.background = color;
+  resultModal.classList.remove('hidden');
+}
+
+function closeResults() {
+  resultModal.classList.add('hidden');
+}
+
 form.addEventListener('input', updateScore);
 form.addEventListener('change', updateScore);
+
 document.querySelectorAll('input[name="glucoseMode"]').forEach((input) => {
   input.addEventListener('change', updateScore);
 });
 
+getResultsBtn.addEventListener('click', () => {
+  const { complete, score } = calculateScore();
+  const demographicsComplete = isDemographicsComplete();
+  if (!complete || !demographicsComplete) {
+    updateScore();
+    return;
+  }
+  hasSubmitted = true;
+  updateScoreDisplay(score);
+  openModal(score);
+});
+
+closeModal.addEventListener('click', closeResults);
+resultModal.addEventListener('click', (event) => {
+  if (event.target === resultModal) closeResults();
+});
+
 resetBtn.addEventListener('click', () => {
   form.reset();
+  hasSubmitted = false;
+  closeResults();
   updateScore();
 });
 
