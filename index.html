@@ -9,10 +9,16 @@
   <body>
     <div class="splash" id="splash">
       <div class="splash-content">
-        <img class="splash-logo" src="B-HEALTHY-LOGO-.png" alt="B-Healthy logo" />
-        <p class="splash-name">B-Healthy</p>
-        <button id="startAssessBtn" class="splash-button" type="button">Assess</button>
-        <p class="splash-tag">#BeatNCDs</p>
+        <p class="sr-only">B-Healthy</p>
+        <button
+          id="startAssessBtn"
+          class="splash-button"
+          type="button"
+          aria-controls="mainApp"
+          onclick="document.getElementById('splash').classList.add('hidden'); document.getElementById('mainApp').classList.remove('hidden');"
+        >
+          Assess
+        </button>
       </div>
     </div>
 

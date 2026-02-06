@@ -486,11 +486,16 @@ bmiUnitInputs.forEach((input) => {
   });
 });
 
-startAssessBtn.addEventListener('click', () => {
+function showMainApp() {
+  if (!splash || !mainApp) return;
   splash.classList.add('hidden');
   mainApp.classList.remove('hidden');
   mainApp.scrollIntoView({ behavior: 'smooth' });
-});
+}
+
+if (startAssessBtn) {
+  startAssessBtn.addEventListener('click', showMainApp);
+}
 
 getResultsBtn.addEventListener('click', () => {
   const { complete, score, metrics } = calculateScore();
