@@ -58,6 +58,13 @@ const translations = {
       subhead:
         'A simple, private check-in on eight key cardiovascular health metrics. No profiles, no saving data.',
     },
+    install: {
+      summary: 'Install this app (optional)',
+      desktop:
+        'Desktop (Chrome/Edge): click the install icon in the address bar, or use the browser menu.',
+      android: 'Android (Chrome): Menu -> Install app or Add to Home screen.',
+      ios: 'iPhone/iPad (Safari): Share -> Add to Home Screen.',
+    },
     score: {
       heading: 'Overall Cardiovascular Health',
       fillForm: 'Fill out the form, then click Get Results.',
@@ -222,6 +229,13 @@ const translations = {
       subhead:
         'Un bref auto-bilan privé de huit indicateurs clés de santé cardiovasculaire. Sans compte, aucune donnée enregistrée.',
     },
+    install: {
+      summary: 'Installer cette app (optionnel)',
+      desktop:
+        "Ordinateur (Chrome/Edge) : cliquez sur l'icône d'installation dans la barre d'adresse, ou utilisez le menu.",
+      android: "Android (Chrome) : Menu -> Installer l'app ou Ajouter à l'écran d'accueil.",
+      ios: "iPhone/iPad (Safari) : Partager -> Ajouter à l'écran d'accueil.",
+    },
     score: {
       heading: 'Santé cardiovasculaire globale',
       fillForm: 'Remplissez le formulaire, puis cliquez sur Voir les résultats.',
@@ -385,6 +399,13 @@ const translations = {
       title: 'Revisa la salud de tu corazón',
       subhead:
         'Un chequeo privado y sencillo de ocho métricas clave de salud cardiovascular. Sin cuentas, sin guardar datos.',
+    },
+    install: {
+      summary: 'Instalar esta app (opcional)',
+      desktop:
+        'Escritorio (Chrome/Edge): haz clic en el icono de instalación en la barra de direcciones, o usa el menú.',
+      android: 'Android (Chrome): Menú -> Instalar app o Agregar a la pantalla de inicio.',
+      ios: 'iPhone/iPad (Safari): Compartir -> Agregar a pantalla de inicio.',
     },
     score: {
       heading: 'Salud cardiovascular general',
