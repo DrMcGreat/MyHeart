@@ -21,533 +21,980 @@
         <option value="es">Español</option>
       </select>
     </div>
-    <main class="app hidden" id="mainApp">
-      <header class="hero">
-        <div class="brand">
-          <img class="logo" src="B-HEALTHY-LOGO-.png" alt="B-Healthy logo" />
-          <p class="eyebrow">MyHeart</p>
-        </div>
-        <h1 data-i18n="hero.title">Check you heart health</h1>
-        <p class="subhead" data-i18n="hero.subhead">
-          A simple, private check-in on eight key cardiovascular health metrics. No profiles, no saving
-          data.
-        </p>
-        <details class="install-tip">
-          <summary data-i18n="install.summary">Install this app (optional)</summary>
-          <p data-i18n="install.desktop">
-            Desktop (Chrome/Edge): click the install icon in the address bar, or use the browser menu.
-          </p>
-          <p data-i18n="install.android">
-            Android (Chrome): Menu → Install app or Add to Home screen.
-          </p>
-          <p data-i18n="install.ios">
-            iPhone/iPad (Safari): Share → Add to Home Screen.
-          </p>
-        </details>
-      </header>
 
-      <section class="score-panel" aria-live="polite">
-        <div class="score-card">
-          <div class="score-header">
-            <h2 data-i18n="score.heading">Overall Cardiovascular Health</h2>
-            <button id="resetBtn" class="ghost" type="button" data-i18n="actions.reset">Reset</button>
-          </div>
-          <div class="score-value" id="scoreValue">--</div>
-          <div class="score-label" id="scoreLabel" data-i18n="score.fillForm">
-            Fill out the form, then click Get Results.
-          </div>
-          <div class="scale" aria-hidden="true">
-            <div class="indicator" id="scoreIndicator"></div>
-          </div>
-          <p class="scale-legend" data-i18n="score.legend">Low &lt;50 · Moderate 50–79 · High ≥80</p>
-          <div class="advice hidden" id="advicePanel">
-            <p class="advice-title" data-i18n="advice.title">Targeted advice</p>
-            <p class="advice-summary" id="adviceSummary"></p>
-            <ul class="advice-list" id="adviceList"></ul>
-            <p class="advice-clinician" id="adviceClinician"></p>
+    <main class="app" id="appRoot">
+      <div class="top-bar hidden" id="topBar">
+        <div class="top-bar-left">
+          <img class="top-logo" src="B-HEALTHY-LOGO-.png" alt="B-Healthy logo" />
+          <div>
+            <p class="top-title">MyHeart</p>
+            <p class="top-sub" id="userGreeting"></p>
           </div>
         </div>
-      </section>
+        <div class="top-bar-actions">
+          <button id="backToHubBtn" class="ghost hidden" type="button" data-i18n="nav.back">
+            Back to menu
+          </button>
+          <button id="signOutBtn" class="ghost" type="button" data-i18n="nav.signOut">
+            Sign out
+          </button>
+        </div>
+      </div>
 
-      <form id="assessment" class="grid" autocomplete="off">
-        <article class="metric-card">
-          <div class="metric-head">
-            <div class="metric-title">
-              <span class="metric-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <circle cx="12" cy="8" r="4" />
-                  <path d="M4 20c2-4 14-4 16 0" />
-                </svg>
-              </span>
-              <h3 data-i18n="metrics.about">About You</h3>
-            </div>
-            <span class="metric-pill" data-i18n="pills.stats">Stats</span>
+      <section id="authView" class="view auth-view">
+        <div class="auth-card">
+          <div class="auth-brand">
+            <img class="logo" src="B-HEALTHY-LOGO-.png" alt="B-Healthy logo" />
+            <p class="eyebrow">MyHeart</p>
           </div>
-          <p class="metric-help" data-i18n="about.help">
-            Age and sex help with aggregate statistics only. Not used in scoring.
+          <h1 data-i18n="auth.title">Welcome to MyHeart</h1>
+          <p class="subhead" data-i18n="auth.subtitle">
+            Sign in to continue or create a profile to get started.
           </p>
-          <div class="field-row">
+          <div class="auth-tabs">
+            <button id="tabSignIn" class="tab active" type="button" data-i18n="auth.signIn">
+              Sign in
+            </button>
+            <button id="tabSignUp" class="tab" type="button" data-i18n="auth.signUp">
+              Sign up
+            </button>
+          </div>
+
+          <form id="signInForm" class="auth-form">
             <label class="field">
-              <span data-i18n="about.age">Age</span>
-              <input
-                id="age"
-                type="number"
-                min="18"
-                max="120"
-                step="1"
-                placeholder="e.g., 42"
-                data-i18n-placeholder="placeholders.age"
-              />
+              <span data-i18n="auth.email">Email</span>
+              <input id="signInEmail" type="email" required />
             </label>
             <label class="field">
-              <span data-i18n="about.sex">Sex at birth</span>
-              <select id="sex">
+              <span data-i18n="auth.password">Password</span>
+              <input id="signInPassword" type="password" required />
+            </label>
+            <button class="primary" type="submit" data-i18n="auth.signIn">Sign in</button>
+            <p class="form-message" id="signInMessage"></p>
+          </form>
+
+          <form id="signUpForm" class="auth-form hidden">
+            <label class="field">
+              <span data-i18n="auth.email">Email</span>
+              <input id="signUpEmail" type="email" required />
+            </label>
+            <label class="field">
+              <span data-i18n="auth.password">Password</span>
+              <input id="signUpPassword" type="password" required />
+            </label>
+            <label class="field">
+              <span data-i18n="auth.confirmPassword">Confirm password</span>
+              <input id="signUpPasswordConfirm" type="password" required />
+            </label>
+            <label class="field">
+              <span data-i18n="auth.profileType">Profile type</span>
+              <select id="signUpRole" required>
                 <option value="" data-i18n="select.placeholder">Select...</option>
-                <option value="female" data-i18n="about.sexOptions.female">Female</option>
-                <option value="male" data-i18n="about.sexOptions.male">Male</option>
-                <option value="intersex" data-i18n="about.sexOptions.intersex">Intersex</option>
-                <option value="prefer-not" data-i18n="about.sexOptions.preferNot">Prefer not to say</option>
+                <option value="individual" data-i18n="roles.individual">Individual profile</option>
+                <option value="facility" data-i18n="roles.facility">Health facility profile</option>
+                <option value="doctor" data-i18n="roles.doctor">Medical practitioner profile</option>
               </select>
             </label>
-          </div>
-        </article>
-
-        <article class="metric-card">
-          <div class="metric-head">
-            <div class="metric-title">
-              <span class="metric-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path d="M5 19c3-9 10-12 14-14-1 8-4 14-10 14-2 0-3 0-4 0z" />
-                  <path d="M5 19c4-3 7-6 11-10" />
-                </svg>
-              </span>
-              <h3 data-i18n="metrics.diet">Diet Quality</h3>
-            </div>
-            <span class="metric-pill" data-i18n="pills.behavior">Behavior</span>
-          </div>
-          <p class="metric-help" data-i18n="diet.help">
-            Quick diet check. We translate these answers into a diet score (0–100).
-          </p>
-          <div class="question-group">
-            <p data-i18n="diet.produce.label">Fruits and vegetables per day</p>
-            <label>
-              <input type="radio" name="dietProduce" value="0" />
-              <span data-i18n="diet.produce.opt0">0–1 servings</span>
-            </label>
-            <label>
-              <input type="radio" name="dietProduce" value="10" />
-              <span data-i18n="diet.produce.opt1">2–3 servings</span>
-            </label>
-            <label>
-              <input type="radio" name="dietProduce" value="20" />
-              <span data-i18n="diet.produce.opt2">4+ servings</span>
-            </label>
-          </div>
-          <div class="question-group">
-            <p data-i18n="diet.grains.label">Whole grains per day</p>
-            <label>
-              <input type="radio" name="dietGrains" value="0" />
-              <span data-i18n="diet.grains.opt0">0–1 servings</span>
-            </label>
-            <label>
-              <input type="radio" name="dietGrains" value="10" />
-              <span data-i18n="diet.grains.opt1">2–3 servings</span>
-            </label>
-            <label>
-              <input type="radio" name="dietGrains" value="20" />
-              <span data-i18n="diet.grains.opt2">4+ servings</span>
-            </label>
-          </div>
-          <div class="question-group">
-            <p data-i18n="diet.sugary.label">Sugary drinks per week</p>
-            <label>
-              <input type="radio" name="dietSugary" value="20" />
-              <span data-i18n="diet.sugary.opt0">0–1 drinks</span>
-            </label>
-            <label>
-              <input type="radio" name="dietSugary" value="10" />
-              <span data-i18n="diet.sugary.opt1">2–6 drinks</span>
-            </label>
-            <label>
-              <input type="radio" name="dietSugary" value="0" />
-              <span data-i18n="diet.sugary.opt2">7+ drinks</span>
-            </label>
-          </div>
-          <div class="question-group">
-            <p data-i18n="diet.meat.label">Processed or red meat per week</p>
-            <label>
-              <input type="radio" name="dietMeat" value="20" />
-              <span data-i18n="diet.meat.opt0">0–1 servings</span>
-            </label>
-            <label>
-              <input type="radio" name="dietMeat" value="10" />
-              <span data-i18n="diet.meat.opt1">2–6 servings</span>
-            </label>
-            <label>
-              <input type="radio" name="dietMeat" value="0" />
-              <span data-i18n="diet.meat.opt2">7+ servings</span>
-            </label>
-          </div>
-          <div class="question-group">
-            <p data-i18n="diet.protein.label">Fish or plant proteins per week</p>
-            <label>
-              <input type="radio" name="dietProtein" value="0" />
-              <span data-i18n="diet.protein.opt0">0–1 servings</span>
-            </label>
-            <label>
-              <input type="radio" name="dietProtein" value="10" />
-              <span data-i18n="diet.protein.opt1">2–3 servings</span>
-            </label>
-            <label>
-              <input type="radio" name="dietProtein" value="20" />
-              <span data-i18n="diet.protein.opt2">4+ servings</span>
-            </label>
-          </div>
-          <p class="metric-footnote" data-i18n="diet.footnote">
-            We can refine this with a longer AHA diet screener later.
-          </p>
-        </article>
-
-        <article class="metric-card">
-          <div class="metric-head">
-            <div class="metric-title">
-              <span class="metric-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path d="M4 10v4" />
-                  <path d="M7 9v6" />
-                  <path d="M10 11h4" />
-                  <path d="M14 9v6" />
-                  <path d="M17 10v4" />
-                </svg>
-              </span>
-              <h3 data-i18n="metrics.activity">Physical Activity</h3>
-            </div>
-            <span class="metric-pill" data-i18n="pills.behavior">Behavior</span>
-          </div>
-          <p class="metric-help" data-i18n="activity.help">
-            Moderate minutes + 2× vigorous minutes per week.
-          </p>
-          <div class="field-row">
-            <label class="field">
-              <span data-i18n="activity.moderate">Moderate min/week</span>
-              <input
-                id="activityModerate"
-                type="number"
-                min="0"
-                step="1"
-                placeholder="e.g., 120"
-                data-i18n-placeholder="placeholders.moderate"
-              />
-            </label>
-            <label class="field">
-              <span data-i18n="activity.vigorous">Vigorous min/week</span>
-              <input
-                id="activityVigorous"
-                type="number"
-                min="0"
-                step="1"
-                placeholder="e.g., 30"
-                data-i18n-placeholder="placeholders.vigorous"
-              />
-            </label>
-          </div>
-          <p class="metric-footnote" data-i18n="activity.footnote">
-            AHA scoring tops out at 150+ moderate-equivalent minutes.
-          </p>
-        </article>
-
-        <article class="metric-card">
-          <div class="metric-head">
-            <div class="metric-title">
-              <span class="metric-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path d="M3 15h14" />
-                  <path d="M17 15h2" />
-                  <path d="M20 14v2" />
-                  <path d="M4 12c1-1 2-1 3 0" />
-                  <path d="M8 12c1-1 2-1 3 0" />
-                </svg>
-              </span>
-              <h3 data-i18n="metrics.nicotine">Nicotine Exposure</h3>
-            </div>
-            <span class="metric-pill" data-i18n="pills.behavior">Behavior</span>
-          </div>
-          <p class="metric-help" data-i18n="nicotine.help">
-            Includes cigarettes, vaping, and secondhand smoke exposure.
-          </p>
-          <label class="field">
-            <span data-i18n="nicotine.status">Status</span>
-            <select id="nicotineStatus">
-              <option value="" data-i18n="select.placeholder">Select...</option>
-              <option value="100" data-i18n="nicotine.options.never">Never smoker</option>
-              <option value="75" data-i18n="nicotine.options.former5">Former smoker, &gt;5 years</option>
-              <option value="50" data-i18n="nicotine.options.former1to5">Former smoker, 1–5 years</option>
-              <option value="25" data-i18n="nicotine.options.former1">Former smoker, &lt;1 year</option>
-              <option value="25" data-i18n="nicotine.options.vaping">
-                Current vaping / inhaled nicotine (no cigarettes)
-              </option>
-              <option value="0" data-i18n="nicotine.options.current">Current smoker</option>
-            </select>
-          </label>
-          <label class="toggle">
-            <input id="nicotineSecondhand" type="checkbox" />
-            <span data-i18n="nicotine.secondhand">Regular indoor secondhand exposure</span>
-          </label>
-          <p class="metric-footnote" data-i18n="nicotine.footnote">
-            Indoor secondhand exposure reduces the score by 20 points.
-          </p>
-        </article>
-
-        <article class="metric-card">
-          <div class="metric-head">
-            <div class="metric-title">
-              <span class="metric-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path d="M14 3a7 7 0 1 0 7 11A8 8 0 1 1 14 3z" />
-                </svg>
-              </span>
-              <h3 data-i18n="metrics.sleep">Sleep Health</h3>
-            </div>
-            <span class="metric-pill" data-i18n="pills.behavior">Behavior</span>
-          </div>
-          <p class="metric-help" data-i18n="sleep.help">
-            Average hours of sleep per night (adult scoring).
-          </p>
-          <label class="field">
-            <span data-i18n="sleep.hours">Hours/night</span>
-            <input
-              id="sleepHours"
-              type="number"
-              min="0"
-              max="24"
-              step="0.1"
-              placeholder="e.g., 7.5"
-              data-i18n-placeholder="placeholders.sleep"
-            />
-          </label>
-        </article>
-
-        <article class="metric-card">
-          <div class="metric-head">
-            <div class="metric-title">
-              <span class="metric-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <rect x="3" y="7" width="18" height="12" rx="3" />
-                  <path d="M7 10h10" />
-                  <path d="M12 10l2-2" />
-                </svg>
-              </span>
-              <h3 data-i18n="metrics.bmi">Body Mass Index</h3>
-            </div>
-            <span class="metric-pill" data-i18n="pills.factor">Factor</span>
-          </div>
-          <p class="metric-help" data-i18n="bmi.help">
-            Enter weight and height. We will calculate BMI automatically.
-          </p>
-          <div class="segmented">
-            <label>
-              <input type="radio" name="bmiUnit" value="imperial" checked />
-              <span data-i18n="bmi.unitImperial">Imperial (lb, in)</span>
-            </label>
-            <label>
-              <input type="radio" name="bmiUnit" value="metric" />
-              <span data-i18n="bmi.unitMetric">Metric (kg, cm)</span>
-            </label>
-          </div>
-          <div class="field-row" id="bmiImperialFields">
-            <label class="field">
-              <span data-i18n="bmi.weightLb">Weight (lb)</span>
-              <input
-                id="weightLb"
-                type="number"
-                min="0"
-                step="0.1"
-                placeholder="e.g., 180"
-                data-i18n-placeholder="placeholders.weightLb"
-              />
-            </label>
-            <label class="field">
-              <span data-i18n="bmi.heightIn">Height (in)</span>
-              <input
-                id="heightIn"
-                type="number"
-                min="0"
-                step="0.1"
-                placeholder="e.g., 70"
-                data-i18n-placeholder="placeholders.heightIn"
-              />
-            </label>
-          </div>
-          <div class="field-row hidden" id="bmiMetricFields">
-            <label class="field">
-              <span data-i18n="bmi.weightKg">Weight (kg)</span>
-              <input
-                id="weightKg"
-                type="number"
-                min="0"
-                step="0.1"
-                placeholder="e.g., 82"
-                data-i18n-placeholder="placeholders.weightKg"
-              />
-            </label>
-            <label class="field">
-              <span data-i18n="bmi.heightCm">Height (cm)</span>
-              <input
-                id="heightCm"
-                type="number"
-                min="0"
-                step="0.1"
-                placeholder="e.g., 178"
-                data-i18n-placeholder="placeholders.heightCm"
-              />
-            </label>
-          </div>
-          <label class="field">
-            <span data-i18n="bmi.calculated">Calculated BMI</span>
-            <input id="bmiResult" type="text" readonly placeholder="--" data-i18n-placeholder="placeholders.bmi" />
-          </label>
-          <p class="metric-footnote" data-i18n="bmi.footnote">
-            BMI is one factor. Consider clinician guidance for context.
-          </p>
-        </article>
-
-        <article class="metric-card">
-          <div class="metric-head">
-            <div class="metric-title">
-              <span class="metric-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 3c-3 4-6 7-6 10a6 6 0 0 0 12 0c0-3-3-6-6-10z" />
-                </svg>
-              </span>
-              <h3 data-i18n="metrics.lipids">Blood Lipids (Non-HDL)</h3>
-            </div>
-            <span class="metric-pill" data-i18n="pills.factor">Factor</span>
-          </div>
-          <p class="metric-help" data-i18n="lipids.help">
-            Most labs report non-HDL cholesterol (mg/dL).
-          </p>
-          <label class="field">
-            <span data-i18n="lipids.nonHdl">Non-HDL (mg/dL)</span>
-            <input
-              id="lipidsNonHDL"
-              type="number"
-              min="0"
-              step="1"
-              placeholder="e.g., 140"
-              data-i18n-placeholder="placeholders.nonHdl"
-            />
-          </label>
-          <label class="toggle">
-            <input id="lipidsMeds" type="checkbox" />
-            <span data-i18n="lipids.meds">On cholesterol-lowering medication</span>
-          </label>
-        </article>
-
-        <article class="metric-card">
-          <div class="metric-head">
-            <div class="metric-title">
-              <span class="metric-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 3c-3 4-6 7-6 10a6 6 0 0 0 12 0c0-3-3-6-6-10z" />
-                  <circle cx="12" cy="14" r="2.5" />
-                </svg>
-              </span>
-              <h3 data-i18n="metrics.glucose">Blood Glucose</h3>
-            </div>
-            <span class="metric-pill" data-i18n="pills.factor">Factor</span>
-          </div>
-          <p class="metric-help" data-i18n="glucose.help">
-            Use HbA1c (%) if available; scoring differs by diabetes status.
-          </p>
-          <div class="segmented">
-            <label>
-              <input type="radio" name="glucoseMode" value="no-diabetes" />
-              <span data-i18n="glucose.noDiabetes">No diabetes diagnosis</span>
-            </label>
-            <label>
-              <input type="radio" name="glucoseMode" value="diabetes" />
-              <span data-i18n="glucose.diabetes">Diabetes diagnosis</span>
-            </label>
-          </div>
-          <label class="field">
-            <span data-i18n="glucose.a1c">HbA1c (%)</span>
-            <input
-              id="glucoseA1c"
-              type="number"
-              min="3"
-              max="20"
-              step="0.1"
-              placeholder="e.g., 6.8"
-              data-i18n-placeholder="placeholders.a1c"
-            />
-          </label>
-          <p class="metric-footnote" data-i18n="glucose.footnote">
-            If HbA1c ≥7.0% and you have diabetes, choose diabetes mode.
-          </p>
-        </article>
-
-        <article class="metric-card">
-          <div class="metric-head">
-            <div class="metric-title">
-              <span class="metric-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 20s-6-4-8-8a5 5 0 0 1 8-6 5 5 0 0 1 8 6c-2 4-8 8-8 8z" />
-                  <path d="M4 12h4l2-3 3 6 2-3h5" />
-                </svg>
-              </span>
-              <h3 data-i18n="metrics.pressure">Blood Pressure</h3>
-            </div>
-            <span class="metric-pill" data-i18n="pills.factor">Factor</span>
-          </div>
-          <p class="metric-help" data-i18n="pressure.help">
-            Use your most recent resting BP (mmHg).
-          </p>
-          <div class="field-row">
-            <label class="field">
-              <span data-i18n="pressure.systolic">Systolic</span>
-              <input
-                id="bpSystolic"
-                type="number"
-                min="0"
-                step="1"
-                placeholder="e.g., 118"
-                data-i18n-placeholder="placeholders.systolic"
-              />
-            </label>
-            <label class="field">
-              <span data-i18n="pressure.diastolic">Diastolic</span>
-              <input
-                id="bpDiastolic"
-                type="number"
-                min="0"
-                step="1"
-                placeholder="e.g., 76"
-                data-i18n-placeholder="placeholders.diastolic"
-              />
-            </label>
-          </div>
-          <label class="toggle">
-            <input id="bpMeds" type="checkbox" />
-            <span data-i18n="pressure.meds">On blood pressure medication</span>
-          </label>
-        </article>
-      </form>
-
-      <section class="actions">
-        <button id="getResultsBtn" class="primary" type="button" disabled data-i18n="actions.getResults">
-          Get Results
-        </button>
-        <p class="hint" id="resultsHint" data-i18n="actions.hintDefault">
-          Complete all fields to enable results.
-        </p>
+            <button class="primary" type="submit" data-i18n="auth.createAccount">Create account</button>
+            <p class="form-message" id="signUpMessage"></p>
+          </form>
+        </div>
       </section>
 
-      <footer class="footer">
-        <p data-i18n="footer.disclaimer">
-          Adult scoring only. This tool is for general wellness awareness and does not replace
-          clinical advice.
+      <section id="registerView" class="view hidden">
+        <div class="panel">
+          <h2 data-i18n="register.title">Complete your profile</h2>
+          <p class="subhead" data-i18n="register.subtitle">
+            Tell us a bit more so we can personalize the experience.
+          </p>
+          <form id="registerForm" class="stack">
+            <label class="field">
+              <span data-i18n="register.role">Profile type</span>
+              <select id="registerRole" required>
+                <option value="" data-i18n="select.placeholder">Select...</option>
+                <option value="individual" data-i18n="roles.individual">Individual profile</option>
+                <option value="facility" data-i18n="roles.facility">Health facility profile</option>
+                <option value="doctor" data-i18n="roles.doctor">Medical practitioner profile</option>
+              </select>
+            </label>
+
+            <div id="individualFields" class="stack">
+              <div class="field-row">
+                <label class="field">
+                  <span data-i18n="profile.firstName">First name</span>
+                  <input id="individualFirstName" type="text" required />
+                </label>
+                <label class="field">
+                  <span data-i18n="profile.lastName">Surname</span>
+                  <input id="individualLastName" type="text" required />
+                </label>
+              </div>
+              <div class="field-row">
+                <label class="field">
+                  <span data-i18n="profile.dob">Date of birth</span>
+                  <input id="individualDob" type="date" required />
+                </label>
+                <label class="field">
+                  <span data-i18n="profile.sex">Sex</span>
+                  <select id="individualSex" required>
+                    <option value="" data-i18n="select.placeholder">Select...</option>
+                    <option value="female" data-i18n="about.sexOptions.female">Female</option>
+                    <option value="male" data-i18n="about.sexOptions.male">Male</option>
+                    <option value="intersex" data-i18n="about.sexOptions.intersex">Intersex</option>
+                    <option value="prefer-not" data-i18n="about.sexOptions.preferNot">Prefer not to say</option>
+                  </select>
+                </label>
+              </div>
+              <div class="field-row">
+                <label class="field">
+                  <span data-i18n="profile.phone">Phone number</span>
+                  <input id="individualPhone" type="tel" required />
+                </label>
+                <label class="field">
+                  <span data-i18n="profile.city">City</span>
+                  <input id="individualCity" type="text" required />
+                </label>
+              </div>
+              <div class="field-row">
+                <label class="field">
+                  <span data-i18n="profile.country">Country</span>
+                  <input id="individualCountry" type="text" required />
+                </label>
+                <label class="field">
+                  <span data-i18n="profile.email">Email address</span>
+                  <input id="individualEmail" type="email" disabled />
+                </label>
+              </div>
+            </div>
+
+            <div id="doctorFields" class="stack hidden">
+              <div class="field-row">
+                <label class="field">
+                  <span data-i18n="profile.firstName">First name</span>
+                  <input id="doctorFirstName" type="text" />
+                </label>
+                <label class="field">
+                  <span data-i18n="profile.lastName">Surname</span>
+                  <input id="doctorLastName" type="text" />
+                </label>
+              </div>
+              <div class="field-row">
+                <label class="field">
+                  <span data-i18n="profile.dob">Date of birth</span>
+                  <input id="doctorDob" type="date" />
+                </label>
+                <label class="field">
+                  <span data-i18n="profile.sex">Sex</span>
+                  <select id="doctorSex">
+                    <option value="" data-i18n="select.placeholder">Select...</option>
+                    <option value="female" data-i18n="about.sexOptions.female">Female</option>
+                    <option value="male" data-i18n="about.sexOptions.male">Male</option>
+                    <option value="intersex" data-i18n="about.sexOptions.intersex">Intersex</option>
+                    <option value="prefer-not" data-i18n="about.sexOptions.preferNot">Prefer not to say</option>
+                  </select>
+                </label>
+              </div>
+              <div class="field-row">
+                <label class="field">
+                  <span data-i18n="profile.phone">Phone number</span>
+                  <input id="doctorPhone" type="tel" />
+                </label>
+                <label class="field">
+                  <span data-i18n="profile.city">City</span>
+                  <input id="doctorCity" type="text" />
+                </label>
+              </div>
+              <div class="field-row">
+                <label class="field">
+                  <span data-i18n="profile.country">Country</span>
+                  <input id="doctorCountry" type="text" />
+                </label>
+                <label class="field">
+                  <span data-i18n="profile.email">Email address</span>
+                  <input id="doctorEmail" type="email" disabled />
+                </label>
+              </div>
+              <label class="field">
+                <span data-i18n="profile.specialty">Medical specialty</span>
+                <input id="doctorSpecialty" type="text" />
+              </label>
+            </div>
+
+            <div id="facilityFields" class="stack hidden">
+              <label class="field">
+                <span data-i18n="profile.facilityName">Facility name</span>
+                <input id="facilityName" type="text" />
+              </label>
+              <div class="field-row">
+                <label class="field">
+                  <span data-i18n="profile.phone">Phone number</span>
+                  <input id="facilityPhone" type="tel" />
+                </label>
+                <label class="field">
+                  <span data-i18n="profile.email">Email address</span>
+                  <input id="facilityEmail" type="email" disabled />
+                </label>
+              </div>
+              <div class="field-row">
+                <label class="field">
+                  <span data-i18n="profile.city">City</span>
+                  <input id="facilityCity" type="text" />
+                </label>
+                <label class="field">
+                  <span data-i18n="profile.country">Country</span>
+                  <input id="facilityCountry" type="text" />
+                </label>
+              </div>
+            </div>
+
+            <button class="primary" type="submit" data-i18n="register.save">Save profile</button>
+            <p class="form-message" id="registerMessage"></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="hubView" class="view hidden">
+        <div class="panel">
+          <h2 data-i18n="hub.title">What would you like to do?</h2>
+          <p class="subhead" data-i18n="hub.subtitle">Choose an option to continue.</p>
+          <div class="hub-options">
+            <button id="hubAssess" class="option-card" type="button" data-i18n="hub.assess">
+              Assess health
+            </button>
+            <button id="hubMeds" class="option-card" type="button" data-i18n="hub.meds">
+              Check medication
+            </button>
+            <button id="hubBook" class="option-card" type="button" data-i18n="hub.book">
+              Book an appointment
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="medsView" class="view hidden">
+        <div class="view-header">
+          <h2 data-i18n="meds.title">Check medication</h2>
+          <button id="backToHubFromMeds" class="ghost" type="button" data-i18n="nav.back">
+            Back to menu
+          </button>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="meds.current">Current medications</h3>
+          <ul id="medList" class="list"></ul>
+          <p id="medEmpty" class="muted" data-i18n="meds.empty">No medications yet.</p>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="meds.addTitle">Add medication</h3>
+          <form id="medForm" class="grid-form">
+            <label class="field">
+              <span data-i18n="meds.name">Medication name</span>
+              <input id="medName" type="text" required />
+            </label>
+            <label class="field">
+              <span data-i18n="meds.dosage">Dosage</span>
+              <input id="medDosage" type="text" />
+            </label>
+            <label class="field">
+              <span data-i18n="meds.posology">Posology</span>
+              <input id="medPosology" type="text" />
+            </label>
+            <label class="field">
+              <span data-i18n="meds.nextVisit">Next visit date (optional)</span>
+              <input id="medNextVisit" type="date" />
+            </label>
+            <label class="field full">
+              <span data-i18n="meds.notes">Notes</span>
+              <textarea id="medNotes" rows="3"></textarea>
+            </label>
+            <button class="primary" type="submit" data-i18n="meds.add">Save medication</button>
+            <p class="form-message" id="medMessage"></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="appointmentsView" class="view hidden">
+        <div class="view-header">
+          <h2 data-i18n="appointments.title">Book an appointment</h2>
+          <button id="backToHubFromAppointments" class="ghost" type="button" data-i18n="nav.back">
+            Back to menu
+          </button>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="appointments.bookTitle">Choose a doctor and time</h3>
+          <label class="field">
+            <span data-i18n="appointments.doctor">Doctor</span>
+            <select id="doctorSelect">
+              <option value="" data-i18n="select.placeholder">Select...</option>
+            </select>
+          </label>
+          <div id="slotList" class="list"></div>
+          <p id="slotEmpty" class="muted" data-i18n="appointments.noSlots">
+            No open slots for this doctor yet.
+          </p>
+          <p class="form-message" id="bookingMessage"></p>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="appointments.upcoming">Your upcoming appointments</h3>
+          <ul id="patientAppointments" class="list"></ul>
+          <p id="patientAppointmentsEmpty" class="muted" data-i18n="appointments.none">
+            No upcoming appointments.
+          </p>
+        </div>
+      </section>
+
+      <section id="doctorView" class="view hidden">
+        <div class="view-header">
+          <h2 data-i18n="doctor.title">Doctor dashboard</h2>
+          <button id="backToHubFromDoctor" class="ghost" type="button" data-i18n="nav.back">
+            Back to menu
+          </button>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="doctor.availability">Add availability</h3>
+          <form id="availabilityForm" class="grid-form">
+            <label class="field">
+              <span data-i18n="doctor.start">Start time</span>
+              <input id="availabilityStart" type="datetime-local" required />
+            </label>
+            <label class="field">
+              <span data-i18n="doctor.duration">Duration (minutes)</span>
+              <input id="availabilityDuration" type="number" min="10" step="5" value="30" required />
+            </label>
+            <button class="primary" type="submit" data-i18n="doctor.addSlot">Add slot</button>
+            <p class="form-message" id="availabilityMessage"></p>
+          </form>
+          <ul id="availabilityList" class="list"></ul>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="doctor.upcoming">Upcoming appointments</h3>
+          <ul id="doctorUpcoming" class="list"></ul>
+          <p id="doctorUpcomingEmpty" class="muted" data-i18n="doctor.none">No upcoming appointments.</p>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="doctor.patients">All patients</h3>
+          <label class="field">
+            <span data-i18n="doctor.selectPatient">Select a patient</span>
+            <select id="doctorPatientSelect">
+              <option value="" data-i18n="select.placeholder">Select...</option>
+            </select>
+          </label>
+          <p id="patientInfo" class="muted"></p>
+          <form id="diagnosisForm" class="grid-form">
+            <label class="field full">
+              <span data-i18n="doctor.diagnosis">Add diagnosis</span>
+              <textarea id="diagnosisText" rows="3"></textarea>
+            </label>
+            <button class="primary" type="submit" data-i18n="doctor.saveDiagnosis">Save diagnosis</button>
+            <p class="form-message" id="diagnosisMessage"></p>
+          </form>
+          <form id="prescriptionForm" class="grid-form">
+            <label class="field">
+              <span data-i18n="doctor.medication">Medication</span>
+              <input id="prescriptionName" type="text" />
+            </label>
+            <label class="field">
+              <span data-i18n="doctor.dosage">Dosage</span>
+              <input id="prescriptionDosage" type="text" />
+            </label>
+            <label class="field">
+              <span data-i18n="doctor.posology">Posology</span>
+              <input id="prescriptionPosology" type="text" />
+            </label>
+            <button class="primary" type="submit" data-i18n="doctor.prescribe">
+              Prescribe medication
+            </button>
+            <p class="form-message" id="prescriptionMessage"></p>
+          </form>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="doctor.missed">Missed visits</h3>
+          <ul id="doctorMissed" class="list"></ul>
+          <p id="doctorMissedEmpty" class="muted" data-i18n="doctor.noneMissed">No missed visits.</p>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="doctor.lost">Lost to follow-up</h3>
+          <ul id="doctorLost" class="list"></ul>
+          <p id="doctorLostEmpty" class="muted" data-i18n="doctor.noneLost">No patients lost to follow-up.</p>
+        </div>
+      </section>
+
+      <section id="facilityView" class="view hidden">
+        <div class="view-header">
+          <h2 data-i18n="facility.title">Facility dashboard</h2>
+          <button id="backToHubFromFacility" class="ghost" type="button" data-i18n="nav.back">
+            Back to menu
+          </button>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="facility.staff">Staff list</h3>
+          <ul id="staffList" class="list"></ul>
+          <p id="staffEmpty" class="muted" data-i18n="facility.none">No staff listed yet.</p>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="facility.addStaff">Add staff member</h3>
+          <form id="staffForm" class="grid-form">
+            <label class="field">
+              <span data-i18n="facility.staffName">Name</span>
+              <input id="staffName" type="text" required />
+            </label>
+            <label class="field">
+              <span data-i18n="facility.staffSpecialty">Specialty</span>
+              <input id="staffSpecialty" type="text" />
+            </label>
+            <label class="field">
+              <span data-i18n="facility.staffEmail">Email</span>
+              <input id="staffEmail" type="email" required />
+            </label>
+            <label class="field">
+              <span data-i18n="facility.staffContract">Contract status</span>
+              <input id="staffContract" type="text" />
+            </label>
+            <button class="primary" type="submit" data-i18n="facility.add">Add staff</button>
+            <p class="form-message" id="staffMessage"></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="assessmentView" class="view hidden">
+        <header class="hero">
+          <div class="brand">
+            <img class="logo" src="B-HEALTHY-LOGO-.png" alt="B-Healthy logo" />
+            <p class="eyebrow">MyHeart</p>
+          </div>
+          <h1 data-i18n="hero.title">Check you heart health</h1>
+        <p class="subhead" data-i18n="hero.subhead">
+            A simple, private check-in on eight key cardiovascular health metrics.
         </p>
-      </footer>
+          <details class="install-tip">
+            <summary data-i18n="install.summary">Install this app (optional)</summary>
+            <p data-i18n="install.desktop">
+              Desktop (Chrome/Edge): click the install icon in the address bar, or use the browser menu.
+            </p>
+            <p data-i18n="install.android">
+              Android (Chrome): Menu → Install app or Add to Home screen.
+            </p>
+            <p data-i18n="install.ios">
+              iPhone/iPad (Safari): Share → Add to Home Screen.
+            </p>
+          </details>
+        </header>
+
+        <section class="score-panel" aria-live="polite">
+          <div class="score-card">
+            <div class="score-header">
+              <h2 data-i18n="score.heading">Overall Cardiovascular Health</h2>
+              <button id="resetBtn" class="ghost" type="button" data-i18n="actions.reset">Reset</button>
+            </div>
+            <div class="score-value" id="scoreValue">--</div>
+            <div class="score-label" id="scoreLabel" data-i18n="score.fillForm">
+              Fill out the form, then click Get Results.
+            </div>
+            <div class="scale" aria-hidden="true">
+              <div class="indicator" id="scoreIndicator"></div>
+            </div>
+            <p class="scale-legend" data-i18n="score.legend">Low &lt;50 · Moderate 50–79 · High ≥80</p>
+            <div class="advice hidden" id="advicePanel">
+              <p class="advice-title" data-i18n="advice.title">Targeted advice</p>
+              <p class="advice-summary" id="adviceSummary"></p>
+              <ul class="advice-list" id="adviceList"></ul>
+              <p class="advice-clinician" id="adviceClinician"></p>
+            </div>
+          </div>
+        </section>
+
+        <form id="assessment" class="grid" autocomplete="off">
+          <article class="metric-card">
+            <div class="metric-head">
+              <div class="metric-title">
+                <span class="metric-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 20c2-4 14-4 16 0" />
+                  </svg>
+                </span>
+                <h3 data-i18n="metrics.about">About You</h3>
+              </div>
+              <span class="metric-pill" data-i18n="pills.stats">Stats</span>
+            </div>
+            <p class="metric-help" data-i18n="about.help">
+              Age and sex help with aggregate statistics only. Not used in scoring.
+            </p>
+            <div class="field-row">
+              <label class="field">
+                <span data-i18n="about.age">Age</span>
+                <input
+                  id="age"
+                  type="number"
+                  min="18"
+                  max="120"
+                  step="1"
+                  placeholder="e.g., 42"
+                  data-i18n-placeholder="placeholders.age"
+                />
+              </label>
+              <label class="field">
+                <span data-i18n="about.sex">Sex at birth</span>
+                <select id="sex">
+                  <option value="" data-i18n="select.placeholder">Select...</option>
+                  <option value="female" data-i18n="about.sexOptions.female">Female</option>
+                  <option value="male" data-i18n="about.sexOptions.male">Male</option>
+                  <option value="intersex" data-i18n="about.sexOptions.intersex">Intersex</option>
+                  <option value="prefer-not" data-i18n="about.sexOptions.preferNot">Prefer not to say</option>
+                </select>
+              </label>
+            </div>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-head">
+              <div class="metric-title">
+                <span class="metric-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M5 19c3-9 10-12 14-14-1 8-4 14-10 14-2 0-3 0-4 0z" />
+                    <path d="M5 19c4-3 7-6 11-10" />
+                  </svg>
+                </span>
+                <h3 data-i18n="metrics.diet">Diet Quality</h3>
+              </div>
+              <span class="metric-pill" data-i18n="pills.behavior">Behavior</span>
+            </div>
+            <p class="metric-help" data-i18n="diet.help">
+              Quick diet check. We translate these answers into a diet score (0–100).
+            </p>
+            <div class="question-group">
+              <p data-i18n="diet.produce.label">Fruits and vegetables per day</p>
+              <label>
+                <input type="radio" name="dietProduce" value="0" />
+                <span data-i18n="diet.produce.opt0">0–1 servings</span>
+              </label>
+              <label>
+                <input type="radio" name="dietProduce" value="10" />
+                <span data-i18n="diet.produce.opt1">2–3 servings</span>
+              </label>
+              <label>
+                <input type="radio" name="dietProduce" value="20" />
+                <span data-i18n="diet.produce.opt2">4+ servings</span>
+              </label>
+            </div>
+            <div class="question-group">
+              <p data-i18n="diet.grains.label">Whole grains per day</p>
+              <label>
+                <input type="radio" name="dietGrains" value="0" />
+                <span data-i18n="diet.grains.opt0">0–1 servings</span>
+              </label>
+              <label>
+                <input type="radio" name="dietGrains" value="10" />
+                <span data-i18n="diet.grains.opt1">2–3 servings</span>
+              </label>
+              <label>
+                <input type="radio" name="dietGrains" value="20" />
+                <span data-i18n="diet.grains.opt2">4+ servings</span>
+              </label>
+            </div>
+            <div class="question-group">
+              <p data-i18n="diet.sugary.label">Sugary drinks per week</p>
+              <label>
+                <input type="radio" name="dietSugary" value="20" />
+                <span data-i18n="diet.sugary.opt0">0–1 drinks</span>
+              </label>
+              <label>
+                <input type="radio" name="dietSugary" value="10" />
+                <span data-i18n="diet.sugary.opt1">2–6 drinks</span>
+              </label>
+              <label>
+                <input type="radio" name="dietSugary" value="0" />
+                <span data-i18n="diet.sugary.opt2">7+ drinks</span>
+              </label>
+            </div>
+            <div class="question-group">
+              <p data-i18n="diet.meat.label">Processed or red meat per week</p>
+              <label>
+                <input type="radio" name="dietMeat" value="20" />
+                <span data-i18n="diet.meat.opt0">0–1 servings</span>
+              </label>
+              <label>
+                <input type="radio" name="dietMeat" value="10" />
+                <span data-i18n="diet.meat.opt1">2–6 servings</span>
+              </label>
+              <label>
+                <input type="radio" name="dietMeat" value="0" />
+                <span data-i18n="diet.meat.opt2">7+ servings</span>
+              </label>
+            </div>
+            <div class="question-group">
+              <p data-i18n="diet.protein.label">Fish or plant proteins per week</p>
+              <label>
+                <input type="radio" name="dietProtein" value="0" />
+                <span data-i18n="diet.protein.opt0">0–1 servings</span>
+              </label>
+              <label>
+                <input type="radio" name="dietProtein" value="10" />
+                <span data-i18n="diet.protein.opt1">2–3 servings</span>
+              </label>
+              <label>
+                <input type="radio" name="dietProtein" value="20" />
+                <span data-i18n="diet.protein.opt2">4+ servings</span>
+              </label>
+            </div>
+            <p class="metric-footnote" data-i18n="diet.footnote">
+              We can refine this with a longer AHA diet screener later.
+            </p>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-head">
+              <div class="metric-title">
+                <span class="metric-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M4 10v4" />
+                    <path d="M7 9v6" />
+                    <path d="M10 11h4" />
+                    <path d="M13 8h4" />
+                    <path d="M17 6h3" />
+                    <path d="M14 14h4" />
+                  </svg>
+                </span>
+                <h3 data-i18n="metrics.activity">Physical Activity</h3>
+              </div>
+              <span class="metric-pill" data-i18n="pills.behavior">Behavior</span>
+            </div>
+            <p class="metric-help" data-i18n="activity.help">
+              Moderate minutes + 2× vigorous minutes per week.
+            </p>
+            <div class="field-row">
+              <label class="field">
+                <span data-i18n="activity.moderate">Moderate minutes/week</span>
+                <input
+                  id="activityModerate"
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="e.g., 120"
+                  data-i18n-placeholder="placeholders.moderate"
+                />
+              </label>
+              <label class="field">
+                <span data-i18n="activity.vigorous">Vigorous minutes/week</span>
+                <input
+                  id="activityVigorous"
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="e.g., 30"
+                  data-i18n-placeholder="placeholders.vigorous"
+                />
+              </label>
+            </div>
+            <p class="metric-footnote" data-i18n="activity.footnote">
+              AHA scoring caps at 150+ equivalent minutes.
+            </p>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-head">
+              <div class="metric-title">
+                <span class="metric-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M6 12c2-4 5-6 6-6s4 2 6 6" />
+                    <path d="M6 12c2 4 5 6 6 6s4-2 6-6" />
+                    <circle cx="12" cy="12" r="2" />
+                  </svg>
+                </span>
+                <h3 data-i18n="metrics.nicotine">Nicotine Exposure</h3>
+              </div>
+              <span class="metric-pill" data-i18n="pills.behavior">Behavior</span>
+            </div>
+            <p class="metric-help" data-i18n="nicotine.help">Includes smoking, vaping, and secondhand smoke.</p>
+            <label class="field">
+              <span data-i18n="nicotine.status">Status</span>
+              <select id="nicotineStatus">
+                <option value="" data-i18n="select.placeholder">Select...</option>
+                <option value="100" data-i18n="nicotine.options.never">Never used</option>
+                <option value="75" data-i18n="nicotine.options.former5">Former, &gt;5 years</option>
+                <option value="50" data-i18n="nicotine.options.former1to5">Former, 1–5 years</option>
+                <option value="25" data-i18n="nicotine.options.former1">Former, &lt;1 year</option>
+                <option value="25" data-i18n="nicotine.options.vaping">Current vaping/nicotine (no cigarettes)</option>
+                <option value="0" data-i18n="nicotine.options.current">Current smoker</option>
+              </select>
+            </label>
+            <label class="toggle">
+              <input id="nicotineSecondhand" type="checkbox" />
+              <span data-i18n="nicotine.secondhand">Regular secondhand smoke exposure indoors</span>
+            </label>
+            <p class="metric-footnote" data-i18n="nicotine.footnote">
+              Secondhand smoke lowers the score by 20 points.
+            </p>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-head">
+              <div class="metric-title">
+                <span class="metric-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M4 12h16" />
+                    <path d="M6 8h12" />
+                    <path d="M8 4h8" />
+                    <path d="M8 20h8" />
+                  </svg>
+                </span>
+                <h3 data-i18n="metrics.sleep">Sleep Health</h3>
+              </div>
+              <span class="metric-pill" data-i18n="pills.behavior">Behavior</span>
+            </div>
+            <p class="metric-help" data-i18n="sleep.help">Average hours of sleep per night (adults).</p>
+            <label class="field">
+              <span data-i18n="sleep.hours">Hours/night</span>
+              <input
+                id="sleepHours"
+                type="number"
+                min="0"
+                max="14"
+                step="0.1"
+                placeholder="e.g., 7.5"
+                data-i18n-placeholder="placeholders.sleep"
+              />
+            </label>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-head">
+              <div class="metric-title">
+                <span class="metric-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M5 20h14" />
+                    <path d="M7 4h10" />
+                    <path d="M12 4v16" />
+                    <path d="M9 8h6" />
+                  </svg>
+                </span>
+                <h3 data-i18n="metrics.bmi">Body Mass Index</h3>
+              </div>
+              <span class="metric-pill" data-i18n="pills.factor">Factor</span>
+            </div>
+            <p class="metric-help" data-i18n="bmi.help">
+              Enter weight and height. We compute BMI automatically.
+            </p>
+            <div class="field-row">
+              <label class="toggle">
+                <input type="radio" name="bmiUnit" value="imperial" checked />
+                <span data-i18n="bmi.unitImperial">Imperial (lb, in)</span>
+              </label>
+              <label class="toggle">
+                <input type="radio" name="bmiUnit" value="metric" />
+                <span data-i18n="bmi.unitMetric">Metric (kg, cm)</span>
+              </label>
+            </div>
+            <div class="field-row" id="bmiImperialFields">
+              <label class="field">
+                <span data-i18n="bmi.weightLb">Weight (lb)</span>
+                <input
+                  id="weightLb"
+                  type="number"
+                  min="0"
+                  step="0.1"
+                  placeholder="e.g., 180"
+                  data-i18n-placeholder="placeholders.weightLb"
+                />
+              </label>
+              <label class="field">
+                <span data-i18n="bmi.heightIn">Height (in)</span>
+                <input
+                  id="heightIn"
+                  type="number"
+                  min="0"
+                  step="0.1"
+                  placeholder="e.g., 70"
+                  data-i18n-placeholder="placeholders.heightIn"
+                />
+              </label>
+            </div>
+            <div class="field-row hidden" id="bmiMetricFields">
+              <label class="field">
+                <span data-i18n="bmi.weightKg">Weight (kg)</span>
+                <input
+                  id="weightKg"
+                  type="number"
+                  min="0"
+                  step="0.1"
+                  placeholder="e.g., 82"
+                  data-i18n-placeholder="placeholders.weightKg"
+                />
+              </label>
+              <label class="field">
+                <span data-i18n="bmi.heightCm">Height (cm)</span>
+                <input
+                  id="heightCm"
+                  type="number"
+                  min="0"
+                  step="0.1"
+                  placeholder="e.g., 178"
+                  data-i18n-placeholder="placeholders.heightCm"
+                />
+              </label>
+            </div>
+            <label class="field">
+              <span data-i18n="bmi.calculated">Calculated BMI</span>
+              <input id="bmiResult" type="text" readonly placeholder="--" />
+            </label>
+            <p class="metric-footnote" data-i18n="bmi.footnote">
+              BMI is a factor. Consider clinical context.
+            </p>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-head">
+              <div class="metric-title">
+                <span class="metric-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M5 13c2-2 4-3 7-3s5 1 7 3" />
+                    <path d="M6 17c2-1 4-2 6-2s4 1 6 2" />
+                    <path d="M9 7h6" />
+                  </svg>
+                </span>
+                <h3 data-i18n="metrics.lipids">Blood Lipids (Non-HDL)</h3>
+              </div>
+              <span class="metric-pill" data-i18n="pills.factor">Factor</span>
+            </div>
+            <p class="metric-help" data-i18n="lipids.help">
+              Most labs report non-HDL cholesterol (mg/dL).
+            </p>
+            <div class="field-row">
+              <label class="field">
+                <span data-i18n="lipids.nonHdl">Non-HDL (mg/dL)</span>
+                <input
+                  id="lipidsNonHDL"
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="e.g., 140"
+                  data-i18n-placeholder="placeholders.nonHdl"
+                />
+              </label>
+              <label class="field">
+                <span data-i18n="lipids.meds">On cholesterol medication</span>
+                <select id="lipidsMeds">
+                  <option value="" data-i18n="select.placeholder">Select...</option>
+                  <option value="yes" data-i18n="yes">Yes</option>
+                  <option value="no" data-i18n="no">No</option>
+                </select>
+              </label>
+            </div>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-head">
+              <div class="metric-title">
+                <span class="metric-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M5 12h14" />
+                    <path d="M8 6h8" />
+                    <path d="M9 18h6" />
+                  </svg>
+                </span>
+                <h3 data-i18n="metrics.glucose">Blood Glucose</h3>
+              </div>
+              <span class="metric-pill" data-i18n="pills.factor">Factor</span>
+            </div>
+            <p class="metric-help" data-i18n="glucose.help">
+              Use HbA1c (%) if available; scoring depends on diagnosis.
+            </p>
+            <div class="field-row">
+              <label class="toggle">
+                <input type="radio" name="glucoseMode" value="no-diabetes" checked />
+                <span data-i18n="glucose.noDiabetes">No diabetes diagnosis</span>
+              </label>
+              <label class="toggle">
+                <input type="radio" name="glucoseMode" value="diabetes" />
+                <span data-i18n="glucose.diabetes">Diabetes diagnosis</span>
+              </label>
+            </div>
+            <label class="field">
+              <span data-i18n="glucose.a1c">HbA1c (%)</span>
+              <input
+                id="glucoseA1c"
+                type="number"
+                min="3"
+                max="15"
+                step="0.1"
+                placeholder="e.g., 6.8"
+                data-i18n-placeholder="placeholders.a1c"
+              />
+            </label>
+            <p class="metric-footnote" data-i18n="glucose.footnote">
+              If HbA1c ≥7.0% and you have diabetes, choose diabetes mode.
+            </p>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-head">
+              <div class="metric-title">
+                <span class="metric-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M6 14c2 2 4 3 6 3s4-1 6-3" />
+                    <path d="M7 9c1-2 3-3 5-3s4 1 5 3" />
+                    <path d="M12 7v10" />
+                  </svg>
+                </span>
+                <h3 data-i18n="metrics.pressure">Blood Pressure</h3>
+              </div>
+              <span class="metric-pill" data-i18n="pills.factor">Factor</span>
+            </div>
+            <p class="metric-help" data-i18n="pressure.help">
+              Use your most recent resting blood pressure (mmHg).
+            </p>
+            <div class="field-row">
+              <label class="field">
+                <span data-i18n="pressure.systolic">Systolic</span>
+                <input
+                  id="bpSystolic"
+                  type="number"
+                  min="70"
+                  max="220"
+                  step="1"
+                  placeholder="e.g., 118"
+                  data-i18n-placeholder="placeholders.systolic"
+                />
+              </label>
+              <label class="field">
+                <span data-i18n="pressure.diastolic">Diastolic</span>
+                <input
+                  id="bpDiastolic"
+                  type="number"
+                  min="40"
+                  max="140"
+                  step="1"
+                  placeholder="e.g., 76"
+                  data-i18n-placeholder="placeholders.diastolic"
+                />
+              </label>
+            </div>
+            <label class="field">
+              <span data-i18n="pressure.meds">On blood pressure medication</span>
+              <select id="bpMeds">
+                <option value="" data-i18n="select.placeholder">Select...</option>
+                <option value="yes" data-i18n="yes">Yes</option>
+                <option value="no" data-i18n="no">No</option>
+              </select>
+            </label>
+          </article>
+        </form>
+
+        <section class="actions">
+          <button id="getResultsBtn" class="primary" type="button" disabled data-i18n="actions.getResults">
+            Get Results
+          </button>
+          <p class="hint" id="resultsHint" data-i18n="actions.hintDefault">
+            Complete all fields to enable results.
+          </p>
+        </section>
+
+        <footer class="footer">
+          <p data-i18n="footer.disclaimer">
+            Adult scoring only. This tool is for general wellness awareness and does not replace
+            clinical advice.
+          </p>
+        </footer>
+      </section>
     </main>
 
     <div class="modal hidden" id="resultModal" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
@@ -567,28 +1014,13 @@
           <p class="advice-clinician" id="modalAdviceClinician"></p>
         </div>
         <div class="modal-actions">
-          <button id="exitToSplash" class="ghost" type="button" data-i18n="modal.exit">Exit</button>
+          <button id="exitToHub" class="ghost" type="button" data-i18n="modal.exit">Exit</button>
           <button id="closeModal" class="ghost" type="button" data-i18n="modal.close">Close</button>
         </div>
       </div>
     </div>
 
-    <div class="splash" id="splash">
-      <div class="splash-content">
-        <p class="sr-only">B-Healthy</p>
-        <a
-          id="startAssessBtn"
-          class="splash-button"
-          href="#mainApp"
-          aria-controls="mainApp"
-          onclick="document.getElementById('splash').classList.add('hidden'); document.getElementById('mainApp').classList.remove('hidden');"
-          data-i18n="splash.assess"
-        >
-          Assess
-        </a>
-      </div>
-    </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="app.js"></script>
   </body>
 </html>

@@ -1,3 +1,125 @@
+const SUPABASE_URL = 'https://smaughjcwnzsnxzvzzvp.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_POhzK6LSp15-xPiag4QHgA_c6X-T4HQ';
+const isSupabaseConfigured =
+  !SUPABASE_URL.includes('YOUR_') && !SUPABASE_ANON_KEY.includes('YOUR_');
+const supabaseClient =
+  window.supabase && isSupabaseConfigured
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : null;
+
+const appRoot = document.getElementById('appRoot');
+const authView = document.getElementById('authView');
+const registerView = document.getElementById('registerView');
+const hubView = document.getElementById('hubView');
+const assessmentView = document.getElementById('assessmentView');
+const medsView = document.getElementById('medsView');
+const appointmentsView = document.getElementById('appointmentsView');
+const doctorView = document.getElementById('doctorView');
+const facilityView = document.getElementById('facilityView');
+
+const topBar = document.getElementById('topBar');
+const userGreeting = document.getElementById('userGreeting');
+const signOutBtn = document.getElementById('signOutBtn');
+const backToHubBtn = document.getElementById('backToHubBtn');
+
+const tabSignIn = document.getElementById('tabSignIn');
+const tabSignUp = document.getElementById('tabSignUp');
+const signInForm = document.getElementById('signInForm');
+const signUpForm = document.getElementById('signUpForm');
+const signInEmail = document.getElementById('signInEmail');
+const signInPassword = document.getElementById('signInPassword');
+const signUpEmail = document.getElementById('signUpEmail');
+const signUpPassword = document.getElementById('signUpPassword');
+const signUpPasswordConfirm = document.getElementById('signUpPasswordConfirm');
+const signUpRole = document.getElementById('signUpRole');
+const signInMessage = document.getElementById('signInMessage');
+const signUpMessage = document.getElementById('signUpMessage');
+
+const registerForm = document.getElementById('registerForm');
+const registerRole = document.getElementById('registerRole');
+const registerMessage = document.getElementById('registerMessage');
+const individualFields = document.getElementById('individualFields');
+const doctorFields = document.getElementById('doctorFields');
+const facilityFields = document.getElementById('facilityFields');
+const individualFirstName = document.getElementById('individualFirstName');
+const individualLastName = document.getElementById('individualLastName');
+const individualDob = document.getElementById('individualDob');
+const individualSex = document.getElementById('individualSex');
+const individualPhone = document.getElementById('individualPhone');
+const individualCity = document.getElementById('individualCity');
+const individualCountry = document.getElementById('individualCountry');
+const individualEmail = document.getElementById('individualEmail');
+const doctorFirstName = document.getElementById('doctorFirstName');
+const doctorLastName = document.getElementById('doctorLastName');
+const doctorDob = document.getElementById('doctorDob');
+const doctorSex = document.getElementById('doctorSex');
+const doctorPhone = document.getElementById('doctorPhone');
+const doctorCity = document.getElementById('doctorCity');
+const doctorCountry = document.getElementById('doctorCountry');
+const doctorEmail = document.getElementById('doctorEmail');
+const doctorSpecialty = document.getElementById('doctorSpecialty');
+const facilityName = document.getElementById('facilityName');
+const facilityPhone = document.getElementById('facilityPhone');
+const facilityEmail = document.getElementById('facilityEmail');
+const facilityCity = document.getElementById('facilityCity');
+const facilityCountry = document.getElementById('facilityCountry');
+
+const hubAssess = document.getElementById('hubAssess');
+const hubMeds = document.getElementById('hubMeds');
+const hubBook = document.getElementById('hubBook');
+const backToHubFromMeds = document.getElementById('backToHubFromMeds');
+const backToHubFromAppointments = document.getElementById('backToHubFromAppointments');
+const backToHubFromDoctor = document.getElementById('backToHubFromDoctor');
+const backToHubFromFacility = document.getElementById('backToHubFromFacility');
+
+const medForm = document.getElementById('medForm');
+const medList = document.getElementById('medList');
+const medEmpty = document.getElementById('medEmpty');
+const medMessage = document.getElementById('medMessage');
+const medName = document.getElementById('medName');
+const medDosage = document.getElementById('medDosage');
+const medPosology = document.getElementById('medPosology');
+const medNextVisit = document.getElementById('medNextVisit');
+const medNotes = document.getElementById('medNotes');
+
+const doctorSelect = document.getElementById('doctorSelect');
+const slotList = document.getElementById('slotList');
+const slotEmpty = document.getElementById('slotEmpty');
+const bookingMessage = document.getElementById('bookingMessage');
+const patientAppointments = document.getElementById('patientAppointments');
+const patientAppointmentsEmpty = document.getElementById('patientAppointmentsEmpty');
+
+const availabilityForm = document.getElementById('availabilityForm');
+const availabilityStart = document.getElementById('availabilityStart');
+const availabilityDuration = document.getElementById('availabilityDuration');
+const availabilityList = document.getElementById('availabilityList');
+const availabilityMessage = document.getElementById('availabilityMessage');
+const doctorUpcoming = document.getElementById('doctorUpcoming');
+const doctorUpcomingEmpty = document.getElementById('doctorUpcomingEmpty');
+const doctorPatientSelect = document.getElementById('doctorPatientSelect');
+const patientInfo = document.getElementById('patientInfo');
+const diagnosisForm = document.getElementById('diagnosisForm');
+const diagnosisText = document.getElementById('diagnosisText');
+const diagnosisMessage = document.getElementById('diagnosisMessage');
+const prescriptionForm = document.getElementById('prescriptionForm');
+const prescriptionName = document.getElementById('prescriptionName');
+const prescriptionDosage = document.getElementById('prescriptionDosage');
+const prescriptionPosology = document.getElementById('prescriptionPosology');
+const prescriptionMessage = document.getElementById('prescriptionMessage');
+const doctorMissed = document.getElementById('doctorMissed');
+const doctorMissedEmpty = document.getElementById('doctorMissedEmpty');
+const doctorLost = document.getElementById('doctorLost');
+const doctorLostEmpty = document.getElementById('doctorLostEmpty');
+
+const staffForm = document.getElementById('staffForm');
+const staffList = document.getElementById('staffList');
+const staffEmpty = document.getElementById('staffEmpty');
+const staffMessage = document.getElementById('staffMessage');
+const staffName = document.getElementById('staffName');
+const staffSpecialty = document.getElementById('staffSpecialty');
+const staffEmail = document.getElementById('staffEmail');
+const staffContract = document.getElementById('staffContract');
+
 const form = document.getElementById('assessment');
 const scoreValue = document.getElementById('scoreValue');
 const scoreLabel = document.getElementById('scoreLabel');
@@ -7,10 +129,7 @@ const modalScore = document.getElementById('modalScore');
 const modalLabel = document.getElementById('modalLabel');
 const resultModal = document.getElementById('resultModal');
 const closeModal = document.getElementById('closeModal');
-const exitToSplash = document.getElementById('exitToSplash');
-const splash = document.getElementById('splash');
-const mainApp = document.getElementById('mainApp');
-const startAssessBtn = document.getElementById('startAssessBtn');
+const exitToHub = document.getElementById('exitToHub');
 const resetBtn = document.getElementById('resetBtn');
 const getResultsBtn = document.getElementById('getResultsBtn');
 const resultsHint = document.getElementById('resultsHint');
@@ -31,7 +150,7 @@ const activityVigorous = document.getElementById('activityVigorous');
 const nicotineStatus = document.getElementById('nicotineStatus');
 const nicotineSecondhand = document.getElementById('nicotineSecondhand');
 const sleepHours = document.getElementById('sleepHours');
-const bmiUnitInputs = document.querySelectorAll('input[name="bmiUnit"]');
+const bmiUnitInputs = document.querySelectorAll('input[name=\"bmiUnit\"]');
 const bmiImperialFields = document.getElementById('bmiImperialFields');
 const bmiMetricFields = document.getElementById('bmiMetricFields');
 const weightLb = document.getElementById('weightLb');
@@ -48,15 +167,135 @@ const bpMeds = document.getElementById('bpMeds');
 
 let hasSubmitted = false;
 let currentLang = 'en';
+let currentUser = null;
+let currentProfile = null;
+let pendingRole = null;
+let cachedDoctors = [];
+let cachedAppointments = [];
 
 const translations = {
   en: {
     title: 'MyHeart - Check you heart health',
     language: { label: 'Language' },
+    nav: { back: 'Back to menu', signOut: 'Sign out' },
+    auth: {
+      title: 'Welcome to MyHeart',
+      subtitle: 'Sign in to continue or create a profile to get started.',
+      signIn: 'Sign in',
+      signUp: 'Sign up',
+      email: 'Email',
+      password: 'Password',
+      confirmPassword: 'Confirm password',
+      profileType: 'Profile type',
+      createAccount: 'Create account',
+    },
+    roles: {
+      individual: 'Individual profile',
+      facility: 'Health facility profile',
+      doctor: 'Medical practitioner profile',
+    },
+    register: {
+      title: 'Complete your profile',
+      subtitle: 'Tell us a bit more so we can personalize the experience.',
+      role: 'Profile type',
+      save: 'Save profile',
+    },
+    profile: {
+      firstName: 'First name',
+      lastName: 'Surname',
+      dob: 'Date of birth',
+      sex: 'Sex',
+      phone: 'Phone number',
+      city: 'City',
+      country: 'Country',
+      email: 'Email address',
+      specialty: 'Medical specialty',
+      facilityName: 'Facility name',
+    },
+    hub: {
+      title: 'What would you like to do?',
+      subtitle: 'Choose an option to continue.',
+      assess: 'Assess health',
+      meds: 'Check medication',
+      book: 'Book an appointment',
+    },
+    meds: {
+      title: 'Check medication',
+      current: 'Current medications',
+      empty: 'No medications yet.',
+      addTitle: 'Add medication',
+      name: 'Medication name',
+      dosage: 'Dosage',
+      posology: 'Posology',
+      nextVisit: 'Next visit date (optional)',
+      notes: 'Notes',
+      add: 'Save medication',
+      addedBy: 'Added by',
+      nextVisitShort: 'Next visit:',
+    },
+    appointments: {
+      title: 'Book an appointment',
+      bookTitle: 'Choose a doctor and time',
+      doctor: 'Doctor',
+      book: 'Book',
+      noSlots: 'No open slots for this doctor yet.',
+      upcoming: 'Your upcoming appointments',
+      none: 'No upcoming appointments.',
+      doctorFallback: 'Doctor',
+    },
+    doctor: {
+      title: 'Doctor dashboard',
+      availability: 'Add availability',
+      start: 'Start time',
+      duration: 'Duration (minutes)',
+      addSlot: 'Add slot',
+      upcoming: 'Upcoming appointments',
+      none: 'No upcoming appointments.',
+      patients: 'All patients',
+      selectPatient: 'Select a patient',
+      diagnosis: 'Add diagnosis',
+      saveDiagnosis: 'Save diagnosis',
+      medication: 'Medication',
+      dosage: 'Dosage',
+      posology: 'Posology',
+      prescribe: 'Prescribe medication',
+      missed: 'Missed visits',
+      noneMissed: 'No missed visits.',
+      lost: 'Lost to follow-up',
+      noneLost: 'No patients lost to follow-up.',
+      lastVisit: 'last visit',
+      patientFallback: 'Patient',
+    },
+    facility: {
+      title: 'Facility dashboard',
+      staff: 'Staff list',
+      none: 'No staff listed yet.',
+      addStaff: 'Add staff member',
+      staffName: 'Name',
+      staffSpecialty: 'Specialty',
+      staffEmail: 'Email',
+      staffContract: 'Contract status',
+      add: 'Add staff',
+    },
+    messages: {
+      supabaseMissing: 'Supabase is not configured yet. Please add your URL and anon key in app.js.',
+      signUpCheckEmail: 'Check your email to confirm your account, then sign in.',
+      signUpSuccess: 'Account created. Complete your profile.',
+      signOut: 'Signed out.',
+      profileSaved: 'Profile saved.',
+      saved: 'Saved.',
+      passwordMismatch: 'Passwords do not match.',
+      selectRole: 'Please choose a profile type.',
+      missingPatient: 'Select a patient first.',
+      slotBooked: 'Appointment booked.',
+      slotTaken: 'That slot is no longer available.',
+    },
+    yes: 'Yes',
+    no: 'No',
     hero: {
       title: 'Check you heart health',
       subhead:
-        'A simple, private check-in on eight key cardiovascular health metrics. No profiles, no saving data.',
+        'A simple, private check-in on eight key cardiovascular health metrics.',
     },
     install: {
       summary: 'Install this app (optional)',
@@ -78,6 +317,7 @@ const translations = {
     actions: {
       reset: 'Reset',
       getResults: 'Get Results',
+      remove: 'Remove',
       hintDefault: 'Complete all fields to enable results.',
       ready: 'Ready when you are.',
       needDemographics: 'Add age and sex to enable results.',
@@ -204,7 +444,6 @@ const translations = {
         'Adult scoring only. This tool is for general wellness awareness and does not replace clinical advice.',
     },
     modal: { exit: 'Exit', close: 'Close' },
-    splash: { assess: 'Assess' },
     placeholders: {
       age: 'e.g., 42',
       moderate: 'e.g., 120',
@@ -224,10 +463,126 @@ const translations = {
   fr: {
     title: 'MyHeart - Vérifiez la santé de votre cœur',
     language: { label: 'Langue' },
+    nav: { back: 'Retour au menu', signOut: 'Se déconnecter' },
+    auth: {
+      title: 'Bienvenue sur MyHeart',
+      subtitle: 'Connectez-vous pour continuer ou créez un profil pour démarrer.',
+      signIn: 'Se connecter',
+      signUp: "S'inscrire",
+      email: 'Email',
+      password: 'Mot de passe',
+      confirmPassword: 'Confirmer le mot de passe',
+      profileType: 'Type de profil',
+      createAccount: 'Créer un compte',
+    },
+    roles: {
+      individual: 'Profil individuel',
+      facility: 'Profil établissement de santé',
+      doctor: 'Profil médecin',
+    },
+    register: {
+      title: 'Complétez votre profil',
+      subtitle: 'Quelques informations pour personnaliser votre expérience.',
+      role: 'Type de profil',
+      save: 'Enregistrer le profil',
+    },
+    profile: {
+      firstName: 'Prénom',
+      lastName: 'Nom',
+      dob: 'Date de naissance',
+      sex: 'Sexe',
+      phone: 'Numéro de téléphone',
+      city: 'Ville',
+      country: 'Pays',
+      email: 'Adresse email',
+      specialty: 'Spécialité médicale',
+      facilityName: "Nom de l'établissement",
+    },
+    hub: {
+      title: 'Que souhaitez-vous faire ?',
+      subtitle: 'Choisissez une option pour continuer.',
+      assess: 'Évaluer la santé',
+      meds: 'Vérifier les médicaments',
+      book: 'Prendre rendez-vous',
+    },
+    meds: {
+      title: 'Vérifier les médicaments',
+      current: 'Médicaments en cours',
+      empty: 'Aucun médicament pour le moment.',
+      addTitle: 'Ajouter un médicament',
+      name: 'Nom du médicament',
+      dosage: 'Dosage',
+      posology: 'Posologie',
+      nextVisit: 'Date du prochain rendez-vous (optionnel)',
+      notes: 'Notes',
+      add: 'Enregistrer le médicament',
+      addedBy: 'Ajouté par',
+      nextVisitShort: 'Prochain rendez-vous :',
+    },
+    appointments: {
+      title: 'Prendre rendez-vous',
+      bookTitle: 'Choisissez un médecin et un créneau',
+      doctor: 'Médecin',
+      book: 'Réserver',
+      noSlots: 'Aucun créneau disponible pour ce médecin.',
+      upcoming: 'Vos prochains rendez-vous',
+      none: 'Aucun rendez-vous à venir.',
+      doctorFallback: 'Médecin',
+    },
+    doctor: {
+      title: 'Tableau de bord médecin',
+      availability: 'Ajouter des disponibilités',
+      start: 'Début',
+      duration: 'Durée (minutes)',
+      addSlot: 'Ajouter un créneau',
+      upcoming: 'Rendez-vous à venir',
+      none: 'Aucun rendez-vous à venir.',
+      patients: 'Tous les patients',
+      selectPatient: 'Sélectionner un patient',
+      diagnosis: 'Ajouter un diagnostic',
+      saveDiagnosis: 'Enregistrer le diagnostic',
+      medication: 'Médicament',
+      dosage: 'Dosage',
+      posology: 'Posologie',
+      prescribe: 'Prescrire un médicament',
+      missed: 'Rendez-vous manqués',
+      noneMissed: 'Aucun rendez-vous manqué.',
+      lost: 'Perdus de vue',
+      noneLost: 'Aucun patient perdu de vue.',
+      lastVisit: 'dernière visite',
+      patientFallback: 'Patient',
+    },
+    facility: {
+      title: 'Tableau de bord établissement',
+      staff: 'Liste du personnel',
+      none: 'Aucun personnel enregistré.',
+      addStaff: 'Ajouter un membre du personnel',
+      staffName: 'Nom',
+      staffSpecialty: 'Spécialité',
+      staffEmail: 'Email',
+      staffContract: 'Statut du contrat',
+      add: 'Ajouter',
+    },
+    messages: {
+      supabaseMissing:
+        'Supabase n’est pas encore configuré. Ajoutez votre URL et votre clé anonyme dans app.js.',
+      signUpCheckEmail: "Vérifiez votre email pour confirmer le compte, puis connectez-vous.",
+      signUpSuccess: 'Compte créé. Complétez votre profil.',
+      signOut: 'Déconnecté.',
+      profileSaved: 'Profil enregistré.',
+      saved: 'Enregistré.',
+      passwordMismatch: 'Les mots de passe ne correspondent pas.',
+      selectRole: 'Veuillez choisir un type de profil.',
+      missingPatient: 'Sélectionnez d’abord un patient.',
+      slotBooked: 'Rendez-vous réservé.',
+      slotTaken: 'Ce créneau n’est plus disponible.',
+    },
+    yes: 'Oui',
+    no: 'Non',
     hero: {
       title: 'Vérifiez la santé de votre cœur',
       subhead:
-        'Un bref auto-bilan privé de huit indicateurs clés de santé cardiovasculaire. Sans compte, aucune donnée enregistrée.',
+        'Un bref auto-bilan privé de huit indicateurs clés de santé cardiovasculaire.',
     },
     install: {
       summary: 'Installer cette app (optionnel)',
@@ -249,6 +604,7 @@ const translations = {
     actions: {
       reset: 'Réinitialiser',
       getResults: 'Voir les résultats',
+      remove: 'Retirer',
       hintDefault: 'Complétez tous les champs pour activer les résultats.',
       ready: 'Prêt quand vous l’êtes.',
       needDemographics: 'Ajoutez l’âge et le sexe pour activer les résultats.',
@@ -375,7 +731,6 @@ const translations = {
         'Réservé aux adultes. Cet outil est informatif et ne remplace pas un avis médical.',
     },
     modal: { exit: 'Quitter', close: 'Fermer' },
-    splash: { assess: 'Évaluer' },
     placeholders: {
       age: 'ex. 42',
       moderate: 'ex. 120',
@@ -395,10 +750,126 @@ const translations = {
   es: {
     title: 'MyHeart - Revisa la salud de tu corazón',
     language: { label: 'Idioma' },
+    nav: { back: 'Volver al menú', signOut: 'Cerrar sesión' },
+    auth: {
+      title: 'Bienvenido a MyHeart',
+      subtitle: 'Inicia sesión para continuar o crea un perfil para comenzar.',
+      signIn: 'Iniciar sesión',
+      signUp: 'Crear cuenta',
+      email: 'Correo electrónico',
+      password: 'Contraseña',
+      confirmPassword: 'Confirmar contraseña',
+      profileType: 'Tipo de perfil',
+      createAccount: 'Crear cuenta',
+    },
+    roles: {
+      individual: 'Perfil individual',
+      facility: 'Perfil de centro de salud',
+      doctor: 'Perfil de profesional médico',
+    },
+    register: {
+      title: 'Completa tu perfil',
+      subtitle: 'Comparte algunos datos para personalizar la experiencia.',
+      role: 'Tipo de perfil',
+      save: 'Guardar perfil',
+    },
+    profile: {
+      firstName: 'Nombre',
+      lastName: 'Apellido',
+      dob: 'Fecha de nacimiento',
+      sex: 'Sexo',
+      phone: 'Teléfono',
+      city: 'Ciudad',
+      country: 'País',
+      email: 'Correo electrónico',
+      specialty: 'Especialidad médica',
+      facilityName: 'Nombre del centro',
+    },
+    hub: {
+      title: '¿Qué te gustaría hacer?',
+      subtitle: 'Elige una opción para continuar.',
+      assess: 'Evaluar salud',
+      meds: 'Revisar medicación',
+      book: 'Reservar cita',
+    },
+    meds: {
+      title: 'Revisar medicación',
+      current: 'Medicaciones actuales',
+      empty: 'Aún no hay medicaciones.',
+      addTitle: 'Agregar medicación',
+      name: 'Nombre del medicamento',
+      dosage: 'Dosis',
+      posology: 'Posología',
+      nextVisit: 'Fecha de próxima visita (opcional)',
+      notes: 'Notas',
+      add: 'Guardar medicación',
+      addedBy: 'Añadido por',
+      nextVisitShort: 'Próxima visita:',
+    },
+    appointments: {
+      title: 'Reservar cita',
+      bookTitle: 'Elige un médico y un horario',
+      doctor: 'Médico',
+      book: 'Reservar',
+      noSlots: 'No hay horarios disponibles para este médico.',
+      upcoming: 'Tus próximas citas',
+      none: 'No hay citas próximas.',
+      doctorFallback: 'Médico',
+    },
+    doctor: {
+      title: 'Panel del médico',
+      availability: 'Agregar disponibilidad',
+      start: 'Inicio',
+      duration: 'Duración (minutos)',
+      addSlot: 'Agregar horario',
+      upcoming: 'Citas próximas',
+      none: 'No hay citas próximas.',
+      patients: 'Todos los pacientes',
+      selectPatient: 'Selecciona un paciente',
+      diagnosis: 'Agregar diagnóstico',
+      saveDiagnosis: 'Guardar diagnóstico',
+      medication: 'Medicamento',
+      dosage: 'Dosis',
+      posology: 'Posología',
+      prescribe: 'Prescribir medicamento',
+      missed: 'Citas perdidas',
+      noneMissed: 'No hay citas perdidas.',
+      lost: 'Perdidos en seguimiento',
+      noneLost: 'No hay pacientes perdidos en seguimiento.',
+      lastVisit: 'última visita',
+      patientFallback: 'Paciente',
+    },
+    facility: {
+      title: 'Panel del centro',
+      staff: 'Lista de personal',
+      none: 'Aún no hay personal.',
+      addStaff: 'Agregar personal',
+      staffName: 'Nombre',
+      staffSpecialty: 'Especialidad',
+      staffEmail: 'Correo',
+      staffContract: 'Estado del contrato',
+      add: 'Agregar',
+    },
+    messages: {
+      supabaseMissing:
+        'Supabase aún no está configurado. Agrega tu URL y tu clave anónima en app.js.',
+      signUpCheckEmail: 'Revisa tu correo para confirmar la cuenta y luego inicia sesión.',
+      signUpSuccess: 'Cuenta creada. Completa tu perfil.',
+      signOut: 'Sesión cerrada.',
+      profileSaved: 'Perfil guardado.',
+      saved: 'Guardado.',
+      passwordMismatch: 'Las contraseñas no coinciden.',
+      selectRole: 'Elige un tipo de perfil.',
+      missingPatient: 'Primero selecciona un paciente.',
+      slotBooked: 'Cita reservada.',
+      slotTaken: 'Ese horario ya no está disponible.',
+    },
+    yes: 'Sí',
+    no: 'No',
     hero: {
       title: 'Revisa la salud de tu corazón',
       subhead:
-        'Un chequeo privado y sencillo de ocho métricas clave de salud cardiovascular. Sin cuentas, sin guardar datos.',
+        'Un chequeo privado y sencillo de ocho métricas clave de salud cardiovascular.',
     },
     install: {
       summary: 'Instalar esta app (opcional)',
@@ -420,6 +891,7 @@ const translations = {
     actions: {
       reset: 'Restablecer',
       getResults: 'Ver resultados',
+      remove: 'Quitar',
       hintDefault: 'Completa todos los campos para habilitar resultados.',
       ready: 'Listo cuando lo estés.',
       needDemographics: 'Agrega edad y sexo para habilitar resultados.',
@@ -546,7 +1018,6 @@ const translations = {
         'Solo para adultos. Esta herramienta es informativa y no reemplaza el consejo médico.',
     },
     modal: { exit: 'Salir', close: 'Cerrar' },
-    splash: { assess: 'Evaluar' },
     placeholders: {
       age: 'ej. 42',
       moderate: 'ej. 120',
@@ -619,6 +1090,194 @@ function getMetricAdvice() {
   };
 }
 
+const views = {
+  auth: authView,
+  register: registerView,
+  hub: hubView,
+  assessment: assessmentView,
+  meds: medsView,
+  appointments: appointmentsView,
+  doctor: doctorView,
+  facility: facilityView,
+};
+
+function showView(viewKey) {
+  Object.values(views).forEach((view) => view && view.classList.add('hidden'));
+  const view = views[viewKey];
+  if (view) {
+    view.classList.remove('hidden');
+  }
+  updateTopBar(viewKey);
+  if (viewKey === 'assessment') {
+    applyProfileToAssessment();
+    updateScore();
+  }
+}
+
+function updateTopBar(viewKey) {
+  if (!topBar) return;
+  const authed = Boolean(currentUser);
+  topBar.classList.toggle('hidden', !authed || viewKey === 'auth');
+  const showBack =
+    currentProfile?.role === 'individual' &&
+    ['assessment', 'meds', 'appointments'].includes(viewKey);
+  if (backToHubBtn) {
+    backToHubBtn.classList.toggle('hidden', !showBack);
+  }
+  if (signOutBtn) {
+    signOutBtn.classList.toggle('hidden', !authed);
+  }
+}
+
+function setAuthMode(mode) {
+  const isSignIn = mode === 'signin';
+  signInForm.classList.toggle('hidden', !isSignIn);
+  signUpForm.classList.toggle('hidden', isSignIn);
+  tabSignIn.classList.toggle('active', isSignIn);
+  tabSignUp.classList.toggle('active', !isSignIn);
+}
+
+function setMessage(element, message, isError = false) {
+  if (!element) return;
+  element.textContent = message ?? '';
+  element.style.color = isError ? '#b42318' : '';
+}
+
+function setPendingRole(role) {
+  pendingRole = role || null;
+  try {
+    if (pendingRole) {
+      sessionStorage.setItem('pendingRole', pendingRole);
+    } else {
+      sessionStorage.removeItem('pendingRole');
+    }
+  } catch (error) {
+    // ignore
+  }
+}
+
+function loadPendingRole() {
+  try {
+    pendingRole = sessionStorage.getItem('pendingRole');
+  } catch (error) {
+    pendingRole = null;
+  }
+}
+
+function updateRegisterFields(role) {
+  const showIndividual = role === 'individual';
+  const showDoctor = role === 'doctor';
+  const showFacility = role === 'facility';
+
+  individualFields.classList.toggle('hidden', !showIndividual);
+  doctorFields.classList.toggle('hidden', !showDoctor);
+  facilityFields.classList.toggle('hidden', !showFacility);
+
+  const setRequired = (field, required) => {
+    if (field) field.required = required;
+  };
+
+  [
+    individualFirstName,
+    individualLastName,
+    individualDob,
+    individualSex,
+    individualPhone,
+    individualCity,
+    individualCountry,
+  ].forEach((field) => setRequired(field, showIndividual));
+
+  [
+    doctorFirstName,
+    doctorLastName,
+    doctorDob,
+    doctorSex,
+    doctorPhone,
+    doctorCity,
+    doctorCountry,
+    doctorSpecialty,
+  ].forEach((field) => setRequired(field, showDoctor));
+
+  [facilityName, facilityPhone, facilityCity, facilityCountry].forEach((field) =>
+    setRequired(field, showFacility)
+  );
+}
+
+function getProfileDisplayName(profile) {
+  if (!profile) return '';
+  if (profile.role === 'facility') return profile.facility_name || profile.email || '';
+  const name = [profile.first_name, profile.last_name].filter(Boolean).join(' ');
+  return name || profile.email || '';
+}
+
+function getRoleLabel(role) {
+  if (!role) return '';
+  if (role === 'individual') return t('roles.individual');
+  if (role === 'doctor') return t('roles.doctor');
+  if (role === 'facility') return t('roles.facility');
+  return role;
+}
+
+function updateGreeting() {
+  if (!userGreeting) return;
+  if (!currentProfile) {
+    userGreeting.textContent = '';
+    return;
+  }
+  const name = getProfileDisplayName(currentProfile);
+  const role = getRoleLabel(currentProfile.role);
+  userGreeting.textContent = name ? `${name} · ${role}` : role;
+}
+
+function calculateAgeFromDob(dob) {
+  if (!dob) return null;
+  const birthDate = new Date(dob);
+  if (Number.isNaN(birthDate.getTime())) return null;
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age -= 1;
+  }
+  return age;
+}
+
+function applyProfileToAssessment() {
+  if (!currentProfile) return;
+  if (currentProfile.date_of_birth && !ageInput.value) {
+    const age = calculateAgeFromDob(currentProfile.date_of_birth);
+    if (age !== null) {
+      ageInput.value = age;
+    }
+  }
+  if (currentProfile.sex && !sexSelect.value) {
+    sexSelect.value = currentProfile.sex;
+  }
+}
+
+function routeAfterLogin() {
+  if (!currentProfile) {
+    showView('register');
+    return;
+  }
+  updateGreeting();
+  if (currentProfile.role === 'individual') {
+    showView('hub');
+  } else if (currentProfile.role === 'doctor') {
+    showView('doctor');
+    refreshDoctorDashboard();
+  } else if (currentProfile.role === 'facility') {
+    showView('facility');
+    loadFacilityStaff();
+  } else {
+    showView('hub');
+  }
+}
+
+function goToHome() {
+  routeAfterLogin();
+}
+
 function setLanguage(lang) {
   if (!translations[lang]) return;
   currentLang = lang;
@@ -631,6 +1290,7 @@ function setLanguage(lang) {
     // Ignore storage errors in private mode.
   }
   applyTranslations();
+  updateGreeting();
   updateScore();
 
   const { complete, score, metrics } = calculateScore();
@@ -1044,6 +1704,502 @@ function closeResults() {
   resultModal.classList.add('hidden');
 }
 
+async function initAuth() {
+  loadPendingRole();
+  if (!supabaseClient) {
+    setMessage(signInMessage, t('messages.supabaseMissing'), true);
+    setMessage(signUpMessage, t('messages.supabaseMissing'), true);
+    showView('auth');
+    return;
+  }
+
+  const { data } = await supabaseClient.auth.getSession();
+  await handleSession(data?.session ?? null);
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    handleSession(session);
+  });
+}
+
+async function handleSession(session) {
+  currentUser = session?.user ?? null;
+  currentProfile = null;
+  if (!currentUser) {
+    updateGreeting();
+    showView('auth');
+    return;
+  }
+  await loadProfile();
+}
+
+async function loadProfile() {
+  const { data, error } = await supabaseClient
+    .from('profiles')
+    .select('*')
+    .eq('id', currentUser.id)
+    .maybeSingle();
+
+  if (error) {
+    setMessage(signInMessage, error.message, true);
+    showView('auth');
+    return;
+  }
+
+  if (!data) {
+    if (registerRole) {
+      registerRole.value = pendingRole || '';
+      updateRegisterFields(registerRole.value);
+    }
+    const email = currentUser.email || '';
+    if (individualEmail) individualEmail.value = email;
+    if (doctorEmail) doctorEmail.value = email;
+    if (facilityEmail) facilityEmail.value = email;
+    showView('register');
+    return;
+  }
+
+  currentProfile = data;
+  routeAfterLogin();
+}
+
+async function saveProfile(profileData) {
+  const { error } = await supabaseClient.from('profiles').upsert(profileData, { onConflict: 'id' });
+  if (error) {
+    setMessage(registerMessage, error.message, true);
+    return false;
+  }
+  currentProfile = profileData;
+  setPendingRole(null);
+  setMessage(registerMessage, t('messages.profileSaved'));
+  routeAfterLogin();
+  return true;
+}
+
+async function loadMedications() {
+  if (!currentProfile) return;
+  const { data, error } = await supabaseClient
+    .from('medications')
+    .select('*')
+    .eq('patient_id', currentProfile.id)
+    .order('created_at', { ascending: false });
+  if (error) {
+    setMessage(medMessage, error.message, true);
+    return;
+  }
+  renderMedications(data || []);
+}
+
+function renderMedications(items) {
+  if (!medList || !medEmpty) return;
+  medList.innerHTML = '';
+  if (!items.length) {
+    medEmpty.classList.remove('hidden');
+    return;
+  }
+  medEmpty.classList.add('hidden');
+  items.forEach((item) => {
+    const li = document.createElement('li');
+    li.className = 'list-item';
+    const title = document.createElement('div');
+    const name = document.createElement('strong');
+    name.textContent = item.name;
+    const detail = document.createElement('div');
+    detail.className = 'muted';
+    const parts = [item.dosage, item.posology, item.notes].filter(Boolean);
+    if (item.next_visit) {
+      parts.push(`${t('meds.nextVisitShort')} ${new Date(item.next_visit).toLocaleDateString()}`);
+    }
+    detail.textContent = parts.join(' · ');
+    title.appendChild(name);
+    if (detail.textContent) title.appendChild(detail);
+
+    const meta = document.createElement('div');
+    meta.className = 'muted';
+    const addedBy = item.added_by_name ? `${item.added_by_name}` : '';
+    const role = item.added_by_role ? ` (${item.added_by_role})` : '';
+    meta.textContent = addedBy ? `${t('meds.addedBy')} ${addedBy}${role}` : '';
+    li.appendChild(title);
+    li.appendChild(meta);
+    medList.appendChild(li);
+  });
+}
+
+async function loadDoctors() {
+  const { data, error } = await supabaseClient
+    .from('profiles')
+    .select('id, first_name, last_name, specialty, city, country')
+    .eq('role', 'doctor')
+    .order('first_name', { ascending: true });
+  if (error) {
+    setMessage(bookingMessage, error.message, true);
+    return [];
+  }
+  cachedDoctors = data || [];
+  if (doctorSelect) {
+    doctorSelect.innerHTML = '<option value=\"\">' + t('select.placeholder') + '</option>';
+    cachedDoctors.forEach((doc) => {
+      const option = document.createElement('option');
+      option.value = doc.id;
+      const name = [doc.first_name, doc.last_name].filter(Boolean).join(' ');
+      option.textContent = doc.specialty ? `${name} · ${doc.specialty}` : name;
+      doctorSelect.appendChild(option);
+    });
+  }
+  return cachedDoctors;
+}
+
+async function loadAvailability(doctorId) {
+  if (!doctorId) {
+    renderSlots([]);
+    return;
+  }
+  const nowIso = new Date().toISOString();
+  const { data, error } = await supabaseClient
+    .from('availability_slots')
+    .select('*')
+    .eq('doctor_id', doctorId)
+    .eq('status', 'open')
+    .gte('start_time', nowIso)
+    .order('start_time', { ascending: true });
+  if (error) {
+    setMessage(bookingMessage, error.message, true);
+    return;
+  }
+  renderSlots(data || []);
+}
+
+function renderSlots(slots) {
+  if (!slotList || !slotEmpty) return;
+  slotList.innerHTML = '';
+  if (!slots.length) {
+    slotEmpty.classList.remove('hidden');
+    return;
+  }
+  slotEmpty.classList.add('hidden');
+  slots.forEach((slot) => {
+    const li = document.createElement('div');
+    li.className = 'list-item';
+    const label = document.createElement('div');
+    label.textContent = formatDateTime(slot.start_time, slot.end_time);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'primary';
+    button.textContent = t('appointments.book');
+    button.addEventListener('click', () => bookSlot(slot));
+    li.appendChild(label);
+    li.appendChild(button);
+    slotList.appendChild(li);
+  });
+}
+
+async function bookSlot(slot) {
+  if (!currentProfile) return;
+  setMessage(bookingMessage, '');
+  const { data: updated, error: updateError } = await supabaseClient
+    .from('availability_slots')
+    .update({ status: 'booked', booked_by: currentProfile.id })
+    .eq('id', slot.id)
+    .eq('status', 'open')
+    .select();
+
+  if (updateError) {
+    setMessage(bookingMessage, updateError.message, true);
+    return;
+  }
+  if (!updated || updated.length === 0) {
+    setMessage(bookingMessage, t('messages.slotTaken'), true);
+    return;
+  }
+
+  const { error } = await supabaseClient.from('appointments').insert({
+    patient_id: currentProfile.id,
+    doctor_id: slot.doctor_id,
+    start_time: slot.start_time,
+    end_time: slot.end_time,
+    status: 'scheduled',
+  });
+  if (error) {
+    setMessage(bookingMessage, error.message, true);
+    return;
+  }
+  setMessage(bookingMessage, t('messages.slotBooked'));
+  await loadAvailability(slot.doctor_id);
+  await loadPatientAppointments();
+}
+
+async function loadPatientAppointments() {
+  if (!currentProfile) return;
+  const nowIso = new Date().toISOString();
+  const { data, error } = await supabaseClient
+    .from('appointments')
+    .select('*, doctor:profiles!appointments_doctor_id_fkey(first_name,last_name,specialty)')
+    .eq('patient_id', currentProfile.id)
+    .gte('start_time', nowIso)
+    .order('start_time', { ascending: true });
+  if (error) {
+    setMessage(bookingMessage, error.message, true);
+    return;
+  }
+  renderPatientAppointments(data || []);
+}
+
+function renderPatientAppointments(items) {
+  if (!patientAppointments || !patientAppointmentsEmpty) return;
+  patientAppointments.innerHTML = '';
+  if (!items.length) {
+    patientAppointmentsEmpty.classList.remove('hidden');
+    return;
+  }
+  patientAppointmentsEmpty.classList.add('hidden');
+  items.forEach((appt) => {
+    const li = document.createElement('li');
+    li.className = 'list-item';
+    const nameParts = [appt.doctor?.first_name, appt.doctor?.last_name].filter(Boolean);
+    const docName = nameParts.join(' ') || 'Doctor';
+    const label = document.createElement('div');
+    label.textContent = `${docName || t('appointments.doctorFallback')} · ${formatDateTime(
+      appt.start_time,
+      appt.end_time
+    )}`;
+    li.appendChild(label);
+    patientAppointments.appendChild(li);
+  });
+}
+
+async function refreshDoctorDashboard() {
+  await Promise.all([loadDoctorAvailability(), loadDoctorAppointments()]);
+}
+
+async function loadDoctorAvailability() {
+  if (!currentProfile) return;
+  const nowIso = new Date().toISOString();
+  const { data, error } = await supabaseClient
+    .from('availability_slots')
+    .select('*')
+    .eq('doctor_id', currentProfile.id)
+    .gte('start_time', nowIso)
+    .order('start_time', { ascending: true });
+  if (error) {
+    setMessage(availabilityMessage, error.message, true);
+    return;
+  }
+  renderDoctorAvailability(data || []);
+}
+
+function renderDoctorAvailability(slots) {
+  if (!availabilityList) return;
+  availabilityList.innerHTML = '';
+  slots.forEach((slot) => {
+    const li = document.createElement('li');
+    li.className = 'list-item';
+    const label = document.createElement('div');
+    label.textContent = `${formatDateTime(slot.start_time, slot.end_time)} · ${slot.status}`;
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'ghost';
+    removeBtn.textContent = t('actions.remove');
+    removeBtn.addEventListener('click', async () => {
+      await supabaseClient.from('availability_slots').delete().eq('id', slot.id);
+      loadDoctorAvailability();
+    });
+    li.appendChild(label);
+    li.appendChild(removeBtn);
+    availabilityList.appendChild(li);
+  });
+}
+
+async function loadDoctorAppointments() {
+  if (!currentProfile) return;
+  const { data, error } = await supabaseClient
+    .from('appointments')
+    .select('*, patient:profiles!appointments_patient_id_fkey(id, first_name, last_name, email)')
+    .eq('doctor_id', currentProfile.id)
+    .order('start_time', { ascending: true });
+  if (error) {
+    return;
+  }
+  cachedAppointments = data || [];
+  renderDoctorAppointments(cachedAppointments);
+  renderDoctorPatients(cachedAppointments);
+  renderDoctorMissed(cachedAppointments);
+  renderDoctorLost(cachedAppointments);
+}
+
+function renderDoctorAppointments(items) {
+  if (!doctorUpcoming || !doctorUpcomingEmpty) return;
+  const now = new Date();
+  const upcoming = items.filter(
+    (appt) => new Date(appt.start_time) >= now && appt.status === 'scheduled'
+  );
+  doctorUpcoming.innerHTML = '';
+  if (!upcoming.length) {
+    doctorUpcomingEmpty.classList.remove('hidden');
+    return;
+  }
+  doctorUpcomingEmpty.classList.add('hidden');
+  upcoming.forEach((appt) => {
+    const li = document.createElement('li');
+    li.className = 'list-item';
+    const name = [appt.patient?.first_name, appt.patient?.last_name]
+      .filter(Boolean)
+      .join(' ');
+    const label = document.createElement('div');
+    label.textContent = `${name || t('doctor.patientFallback')} · ${formatDateTime(
+      appt.start_time,
+      appt.end_time
+    )}`;
+    const status = createStatusSelect(appt);
+    li.appendChild(label);
+    li.appendChild(status);
+    doctorUpcoming.appendChild(li);
+  });
+}
+
+function createStatusSelect(appt) {
+  const select = document.createElement('select');
+  ['scheduled', 'completed', 'missed', 'no_show', 'cancelled'].forEach((status) => {
+    const option = document.createElement('option');
+    option.value = status;
+    option.textContent = status.replace('_', ' ');
+    select.appendChild(option);
+  });
+  select.value = appt.status;
+  select.addEventListener('change', async () => {
+    await supabaseClient
+      .from('appointments')
+      .update({ status: select.value })
+      .eq('id', appt.id);
+    loadDoctorAppointments();
+  });
+  return select;
+}
+
+function renderDoctorPatients(items) {
+  if (!doctorPatientSelect) return;
+  const patientMap = new Map();
+  items.forEach((appt) => {
+    if (appt.patient?.id) {
+      patientMap.set(appt.patient.id, appt.patient);
+    }
+  });
+  doctorPatientSelect.innerHTML = '<option value=\"\">' + t('select.placeholder') + '</option>';
+  patientMap.forEach((patient, id) => {
+    const option = document.createElement('option');
+    option.value = id;
+    const name = [patient.first_name, patient.last_name].filter(Boolean).join(' ');
+    option.textContent = name || patient.email || id;
+    doctorPatientSelect.appendChild(option);
+  });
+}
+
+function renderDoctorMissed(items) {
+  if (!doctorMissed || !doctorMissedEmpty) return;
+  const missed = items.filter((appt) => ['missed', 'no_show'].includes(appt.status));
+  doctorMissed.innerHTML = '';
+  if (!missed.length) {
+    doctorMissedEmpty.classList.remove('hidden');
+    return;
+  }
+  doctorMissedEmpty.classList.add('hidden');
+  missed.forEach((appt) => {
+    const li = document.createElement('li');
+    li.className = 'list-item';
+    const name = [appt.patient?.first_name, appt.patient?.last_name].filter(Boolean).join(' ');
+    li.textContent = `${name || t('doctor.patientFallback')} · ${formatDateTime(
+      appt.start_time,
+      appt.end_time
+    )}`;
+    doctorMissed.appendChild(li);
+  });
+}
+
+function renderDoctorLost(items) {
+  if (!doctorLost || !doctorLostEmpty) return;
+  const now = new Date();
+  const threshold = new Date(now);
+  threshold.setDate(threshold.getDate() - 90);
+
+  const patientStats = new Map();
+  items.forEach((appt) => {
+    if (!appt.patient?.id) return;
+    const patientId = appt.patient.id;
+    const start = new Date(appt.start_time);
+    const stat = patientStats.get(patientId) || {
+      patient: appt.patient,
+      last: start,
+      hasUpcoming: false,
+    };
+    if (start > stat.last) stat.last = start;
+    if (appt.status === 'scheduled' && start >= now) {
+      stat.hasUpcoming = true;
+    }
+    patientStats.set(patientId, stat);
+  });
+
+  const lost = Array.from(patientStats.values()).filter(
+    (stat) => stat.last < threshold && !stat.hasUpcoming
+  );
+
+  doctorLost.innerHTML = '';
+  if (!lost.length) {
+    doctorLostEmpty.classList.remove('hidden');
+    return;
+  }
+  doctorLostEmpty.classList.add('hidden');
+  lost.forEach((stat) => {
+    const li = document.createElement('li');
+    li.className = 'list-item';
+    const name = [stat.patient?.first_name, stat.patient?.last_name].filter(Boolean).join(' ');
+    li.textContent = `${name || t('doctor.patientFallback')} · ${t('doctor.lastVisit')} ${stat.last.toLocaleDateString()}`;
+    doctorLost.appendChild(li);
+  });
+}
+
+async function loadFacilityStaff() {
+  if (!currentProfile) return;
+  const { data, error } = await supabaseClient
+    .from('facility_staff')
+    .select('*')
+    .eq('facility_id', currentProfile.id)
+    .order('created_at', { ascending: false });
+  if (error) {
+    setMessage(staffMessage, error.message, true);
+    return;
+  }
+  renderFacilityStaff(data || []);
+}
+
+function renderFacilityStaff(items) {
+  if (!staffList || !staffEmpty) return;
+  staffList.innerHTML = '';
+  if (!items.length) {
+    staffEmpty.classList.remove('hidden');
+    return;
+  }
+  staffEmpty.classList.add('hidden');
+  items.forEach((staff) => {
+    const li = document.createElement('li');
+    li.className = 'list-item';
+    const label = document.createElement('div');
+    label.textContent = `${staff.doctor_name} · ${staff.specialty || ''}`;
+    const meta = document.createElement('div');
+    meta.className = 'muted';
+    meta.textContent = `${staff.email}${staff.contract_status ? ' · ' + staff.contract_status : ''}`;
+    li.appendChild(label);
+    li.appendChild(meta);
+    staffList.appendChild(li);
+  });
+}
+
+function formatDateTime(start, end) {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  if (Number.isNaN(startDate.getTime())) return '';
+  const date = startDate.toLocaleDateString();
+  const startTime = startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const endTime = endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  return `${date} ${startTime}–${endTime}`;
+}
+
 form.addEventListener('input', updateScore);
 form.addEventListener('change', updateScore);
 
@@ -1066,26 +2222,299 @@ bmiUnitInputs.forEach((input) => {
   });
 });
 
-function showMainApp() {
-  if (!splash || !mainApp) return;
-  splash.classList.add('hidden');
-  mainApp.classList.remove('hidden');
-  mainApp.scrollIntoView({ behavior: 'smooth' });
+if (tabSignIn) {
+  tabSignIn.addEventListener('click', () => setAuthMode('signin'));
+}
+if (tabSignUp) {
+  tabSignUp.addEventListener('click', () => setAuthMode('signup'));
 }
 
-function showSplash() {
-  if (!splash || !mainApp) return;
-  hasSubmitted = false;
-  closeResults();
-  mainApp.classList.add('hidden');
-  splash.classList.remove('hidden');
-  if (window.location.hash === '#mainApp') {
-    history.replaceState('', document.title, window.location.pathname + window.location.search);
-  }
+if (signInForm) {
+  signInForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    setMessage(signInMessage, '');
+    if (!supabaseClient) {
+      setMessage(signInMessage, t('messages.supabaseMissing'), true);
+      return;
+    }
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email: signInEmail.value.trim(),
+      password: signInPassword.value,
+    });
+    if (error) {
+      setMessage(signInMessage, error.message, true);
+    }
+  });
 }
 
-if (startAssessBtn) {
-  startAssessBtn.addEventListener('click', showMainApp);
+if (signUpForm) {
+  signUpForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    setMessage(signUpMessage, '');
+    if (!supabaseClient) {
+      setMessage(signUpMessage, t('messages.supabaseMissing'), true);
+      return;
+    }
+    if (signUpPassword.value !== signUpPasswordConfirm.value) {
+      setMessage(signUpMessage, t('messages.passwordMismatch'), true);
+      return;
+    }
+    if (!signUpRole.value) {
+      setMessage(signUpMessage, t('messages.selectRole'), true);
+      return;
+    }
+    setPendingRole(signUpRole.value);
+    const { data, error } = await supabaseClient.auth.signUp({
+      email: signUpEmail.value.trim(),
+      password: signUpPassword.value,
+    });
+    if (error) {
+      setMessage(signUpMessage, error.message, true);
+      return;
+    }
+    if (data?.session) {
+      setMessage(signUpMessage, t('messages.signUpSuccess'));
+      handleSession(data.session);
+      return;
+    }
+    setMessage(signUpMessage, t('messages.signUpCheckEmail'));
+  });
+}
+
+if (registerRole) {
+  registerRole.addEventListener('change', (event) => {
+    updateRegisterFields(event.target.value);
+  });
+}
+
+if (registerForm) {
+  registerForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!currentUser) return;
+    const role = registerRole.value;
+    if (!role) {
+      setMessage(registerMessage, t('messages.selectRole'), true);
+      return;
+    }
+    const base = {
+      id: currentUser.id,
+      role,
+      email: currentUser.email,
+    };
+    let profileData = { ...base };
+    if (role === 'individual') {
+      profileData = {
+        ...base,
+        first_name: individualFirstName.value.trim(),
+        last_name: individualLastName.value.trim(),
+        date_of_birth: individualDob.value || null,
+        sex: individualSex.value || null,
+        phone: individualPhone.value.trim(),
+        city: individualCity.value.trim(),
+        country: individualCountry.value.trim(),
+      };
+    } else if (role === 'doctor') {
+      profileData = {
+        ...base,
+        first_name: doctorFirstName.value.trim(),
+        last_name: doctorLastName.value.trim(),
+        date_of_birth: doctorDob.value || null,
+        sex: doctorSex.value || null,
+        phone: doctorPhone.value.trim(),
+        city: doctorCity.value.trim(),
+        country: doctorCountry.value.trim(),
+        specialty: doctorSpecialty.value.trim(),
+      };
+    } else if (role === 'facility') {
+      profileData = {
+        ...base,
+        facility_name: facilityName.value.trim(),
+        phone: facilityPhone.value.trim(),
+        city: facilityCity.value.trim(),
+        country: facilityCountry.value.trim(),
+      };
+    }
+    await saveProfile(profileData);
+  });
+}
+
+if (signOutBtn) {
+  signOutBtn.addEventListener('click', async () => {
+    if (!supabaseClient) return;
+    await supabaseClient.auth.signOut();
+    setMessage(signInMessage, t('messages.signOut'));
+  });
+}
+
+if (hubAssess) {
+  hubAssess.addEventListener('click', () => showView('assessment'));
+}
+if (hubMeds) {
+  hubMeds.addEventListener('click', async () => {
+    showView('meds');
+    await loadMedications();
+  });
+}
+if (hubBook) {
+  hubBook.addEventListener('click', async () => {
+    showView('appointments');
+    await loadDoctors();
+    await loadPatientAppointments();
+  });
+}
+
+if (backToHubBtn) {
+  backToHubBtn.addEventListener('click', () => showView('hub'));
+}
+if (backToHubFromMeds) {
+  backToHubFromMeds.addEventListener('click', () => showView('hub'));
+}
+if (backToHubFromAppointments) {
+  backToHubFromAppointments.addEventListener('click', () => showView('hub'));
+}
+if (backToHubFromDoctor) {
+  backToHubFromDoctor.addEventListener('click', () => showView('doctor'));
+}
+if (backToHubFromFacility) {
+  backToHubFromFacility.addEventListener('click', () => showView('facility'));
+}
+
+if (medForm) {
+  medForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!currentProfile) return;
+    const { error } = await supabaseClient.from('medications').insert({
+      patient_id: currentProfile.id,
+      added_by: currentProfile.id,
+      added_by_name: getProfileDisplayName(currentProfile),
+      added_by_role: currentProfile.role,
+      name: medName.value.trim(),
+      dosage: medDosage.value.trim(),
+      posology: medPosology.value.trim(),
+      notes: medNotes.value.trim(),
+      next_visit: medNextVisit.value || null,
+    });
+    if (error) {
+      setMessage(medMessage, error.message, true);
+      return;
+    }
+    medForm.reset();
+    await loadMedications();
+  });
+}
+
+if (doctorSelect) {
+  doctorSelect.addEventListener('change', (event) => {
+    loadAvailability(event.target.value);
+  });
+}
+
+if (availabilityForm) {
+  availabilityForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!currentProfile) return;
+    const start = new Date(availabilityStart.value);
+    const minutes = Number.parseInt(availabilityDuration.value, 10) || 30;
+    if (Number.isNaN(start.getTime())) return;
+    const end = new Date(start.getTime() + minutes * 60000);
+    const { error } = await supabaseClient.from('availability_slots').insert({
+      doctor_id: currentProfile.id,
+      start_time: start.toISOString(),
+      end_time: end.toISOString(),
+      status: 'open',
+    });
+    if (error) {
+      setMessage(availabilityMessage, error.message, true);
+      return;
+    }
+    availabilityForm.reset();
+    await loadDoctorAvailability();
+  });
+}
+
+if (doctorPatientSelect) {
+  doctorPatientSelect.addEventListener('change', () => {
+    const patientId = doctorPatientSelect.value;
+    if (!patientId) {
+      patientInfo.textContent = '';
+      return;
+    }
+    const patient = cachedAppointments.find((appt) => appt.patient?.id === patientId)?.patient;
+    if (patient) {
+      const name = [patient.first_name, patient.last_name].filter(Boolean).join(' ');
+      patientInfo.textContent = `${name || patient.email}`;
+    }
+  });
+}
+
+if (diagnosisForm) {
+  diagnosisForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const patientId = doctorPatientSelect.value;
+    if (!patientId) {
+      setMessage(diagnosisMessage, t('messages.missingPatient'), true);
+      return;
+    }
+    if (!diagnosisText.value.trim()) return;
+    const { error } = await supabaseClient.from('diagnoses').insert({
+      patient_id: patientId,
+      doctor_id: currentProfile.id,
+      summary: diagnosisText.value.trim(),
+    });
+    if (error) {
+      setMessage(diagnosisMessage, error.message, true);
+      return;
+    }
+    diagnosisForm.reset();
+    setMessage(diagnosisMessage, t('messages.saved'));
+  });
+}
+
+if (prescriptionForm) {
+  prescriptionForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const patientId = doctorPatientSelect.value;
+    if (!patientId) {
+      setMessage(prescriptionMessage, t('messages.missingPatient'), true);
+      return;
+    }
+    if (!prescriptionName.value.trim()) return;
+    const { error } = await supabaseClient.from('medications').insert({
+      patient_id: patientId,
+      added_by: currentProfile.id,
+      added_by_name: getProfileDisplayName(currentProfile),
+      added_by_role: currentProfile.role,
+      name: prescriptionName.value.trim(),
+      dosage: prescriptionDosage.value.trim(),
+      posology: prescriptionPosology.value.trim(),
+    });
+    if (error) {
+      setMessage(prescriptionMessage, error.message, true);
+      return;
+    }
+    prescriptionForm.reset();
+    setMessage(prescriptionMessage, t('messages.saved'));
+  });
+}
+
+if (staffForm) {
+  staffForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!currentProfile) return;
+    const { error } = await supabaseClient.from('facility_staff').insert({
+      facility_id: currentProfile.id,
+      doctor_name: staffName.value.trim(),
+      specialty: staffSpecialty.value.trim(),
+      email: staffEmail.value.trim(),
+      contract_status: staffContract.value.trim(),
+    });
+    if (error) {
+      setMessage(staffMessage, error.message, true);
+      return;
+    }
+    staffForm.reset();
+    loadFacilityStaff();
+  });
 }
 
 getResultsBtn.addEventListener('click', () => {
@@ -1103,8 +2532,12 @@ getResultsBtn.addEventListener('click', () => {
 });
 
 closeModal.addEventListener('click', closeResults);
-if (exitToSplash) {
-  exitToSplash.addEventListener('click', showSplash);
+if (exitToHub) {
+  exitToHub.addEventListener('click', () => {
+    closeResults();
+    hasSubmitted = false;
+    goToHome();
+  });
 }
 resultModal.addEventListener('click', (event) => {
   if (event.target === resultModal) closeResults();
@@ -1140,6 +2573,9 @@ if (langSelect) {
 applyTranslations();
 updateBmiUnitFields();
 updateScore();
+setAuthMode('signin');
+showView('auth');
+initAuth();
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
