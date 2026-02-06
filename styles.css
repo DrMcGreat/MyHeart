@@ -476,6 +476,8 @@ h1 {
   box-shadow: var(--shadow);
   max-width: 420px;
   width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
   text-align: center;
   display: grid;
   gap: 16px;
