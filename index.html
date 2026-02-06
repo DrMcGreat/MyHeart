@@ -7,21 +7,6 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="splash" id="splash">
-      <div class="splash-content">
-        <p class="sr-only">B-Healthy</p>
-        <button
-          id="startAssessBtn"
-          class="splash-button"
-          type="button"
-          aria-controls="mainApp"
-          onclick="document.getElementById('splash').classList.add('hidden'); document.getElementById('mainApp').classList.remove('hidden');"
-        >
-          Assess
-        </button>
-      </div>
-    </div>
-
     <main class="app hidden" id="mainApp">
       <header class="hero">
         <div class="brand">
@@ -306,6 +291,21 @@
           <p class="advice-clinician" id="modalAdviceClinician"></p>
         </div>
         <button id="closeModal" class="ghost" type="button">Close</button>
+      </div>
+    </div>
+
+    <div class="splash" id="splash">
+      <div class="splash-content">
+        <p class="sr-only">B-Healthy</p>
+        <a
+          id="startAssessBtn"
+          class="splash-button"
+          href="#mainApp"
+          aria-controls="mainApp"
+          onclick="document.getElementById('splash').classList.add('hidden'); document.getElementById('mainApp').classList.remove('hidden');"
+        >
+          Assess
+        </a>
       </div>
     </div>
 

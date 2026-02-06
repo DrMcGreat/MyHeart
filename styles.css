@@ -46,6 +46,8 @@
   font-weight: 700;
   font-size: 1.05rem;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .sr-only {
@@ -425,6 +427,14 @@ h1 {
 
 .modal-card .advice {
   text-align: left;
+}
+
+#mainApp:target {
+  display: block;
+}
+
+#mainApp:target ~ #splash {
+  display: none;
 }
 
 .modal-score {
