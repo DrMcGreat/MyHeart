@@ -2344,9 +2344,11 @@ if (signUpForm) {
       return;
     }
     setPendingRole(signUpRole.value);
+    const email = signUpEmail.value.trim();
+    const password = signUpPassword.value;
     const { data, error } = await supabaseClient.auth.signUp({
-      email: signUpEmail.value.trim(),
-      password: signUpPassword.value,
+      email,
+      password,
     });
     if (error) {
       setMessage(signUpMessage, error.message, true);
@@ -2357,7 +2359,21 @@ if (signUpForm) {
       handleSession(data.session);
       return;
     }
-    setMessage(signUpMessage, t('messages.signUpCheckEmail'));
+    const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (signInError) {
+      const msg = signInError.message.toLowerCase();
+      if (msg.includes('confirm') || msg.includes('verification') || msg.includes('email')) {
+        setMessage(signUpMessage, t('messages.signUpCheckEmail'));
+      } else {
+        setMessage(signUpMessage, signInError.message, true);
+      }
+      return;
+    }
+    setMessage(signUpMessage, t('messages.signUpSuccess'));
+    handleSession(signInData.session);
   });
 }
 
