@@ -88,6 +88,9 @@ const slotEmpty = document.getElementById('slotEmpty');
 const bookingMessage = document.getElementById('bookingMessage');
 const patientAppointments = document.getElementById('patientAppointments');
 const patientAppointmentsEmpty = document.getElementById('patientAppointmentsEmpty');
+const appointmentSearch = document.getElementById('appointmentSearch');
+const modeInPerson = document.getElementById('modeInPerson');
+const modeRemote = document.getElementById('modeRemote');
 
 const availabilityForm = document.getElementById('availabilityForm');
 const availabilityStart = document.getElementById('availabilityStart');
@@ -172,14 +175,15 @@ let currentProfile = null;
 let pendingRole = null;
 let cachedDoctors = [];
 let cachedAppointments = [];
+let appointmentMode = 'in_person';
 
 const translations = {
   en: {
-    title: 'MyHeart - Check you heart health',
+    title: 'B-Healthy - Check you heart health',
     language: { label: 'Language' },
     nav: { back: 'Back to menu', signOut: 'Sign out' },
     auth: {
-      title: 'Welcome to MyHeart',
+      title: 'Welcome to B-Healthy',
       subtitle: 'Sign in to continue or create a profile to get started.',
       signIn: 'Sign in',
       signUp: 'Sign up',
@@ -235,6 +239,18 @@ const translations = {
     },
     appointments: {
       title: 'Book an appointment',
+      greeting: 'How are you feeling?',
+      takeAppointment: 'Book an appointment',
+      searchLabel: 'Search',
+      searchPlaceholder: 'Search doctors, specialties, or city',
+      modeInPerson: 'In clinic',
+      modeInPersonHint: 'Meet a practitioner on site',
+      modeRemote: 'Remote',
+      modeRemoteHint: 'Video consultation from home',
+      suggestions: 'Suggestions',
+      suggestionCardio: 'Heart health check',
+      suggestionLifestyle: 'Lifestyle coaching',
+      suggestionCta: 'Book appointment',
       bookTitle: 'Choose a doctor and time',
       doctor: 'Doctor',
       book: 'Book',
@@ -461,11 +477,11 @@ const translations = {
     },
   },
   fr: {
-    title: 'MyHeart - Vérifiez la santé de votre cœur',
+    title: 'B-Healthy - Vérifiez la santé de votre cœur',
     language: { label: 'Langue' },
     nav: { back: 'Retour au menu', signOut: 'Se déconnecter' },
     auth: {
-      title: 'Bienvenue sur MyHeart',
+      title: 'Bienvenue sur B-Healthy',
       subtitle: 'Connectez-vous pour continuer ou créez un profil pour démarrer.',
       signIn: 'Se connecter',
       signUp: "S'inscrire",
@@ -521,6 +537,18 @@ const translations = {
     },
     appointments: {
       title: 'Prendre rendez-vous',
+      greeting: 'Comment vous sentez-vous ?',
+      takeAppointment: 'Prendre rendez-vous',
+      searchLabel: 'Rechercher',
+      searchPlaceholder: 'Rechercher un médecin, une spécialité ou une ville',
+      modeInPerson: 'Au cabinet',
+      modeInPersonHint: 'Rencontre en présentiel',
+      modeRemote: 'À distance',
+      modeRemoteHint: 'Consultation vidéo à domicile',
+      suggestions: 'Suggestions',
+      suggestionCardio: 'Bilan cardiaque',
+      suggestionLifestyle: 'Coaching de mode de vie',
+      suggestionCta: 'Prendre rendez-vous',
       bookTitle: 'Choisissez un médecin et un créneau',
       doctor: 'Médecin',
       book: 'Réserver',
@@ -748,11 +776,11 @@ const translations = {
     },
   },
   es: {
-    title: 'MyHeart - Revisa la salud de tu corazón',
+    title: 'B-Healthy - Revisa la salud de tu corazón',
     language: { label: 'Idioma' },
     nav: { back: 'Volver al menú', signOut: 'Cerrar sesión' },
     auth: {
-      title: 'Bienvenido a MyHeart',
+      title: 'Bienvenido a B-Healthy',
       subtitle: 'Inicia sesión para continuar o crea un perfil para comenzar.',
       signIn: 'Iniciar sesión',
       signUp: 'Crear cuenta',
@@ -808,6 +836,18 @@ const translations = {
     },
     appointments: {
       title: 'Reservar cita',
+      greeting: '¿Cómo te sientes?',
+      takeAppointment: 'Reservar cita',
+      searchLabel: 'Buscar',
+      searchPlaceholder: 'Buscar médicos, especialidades o ciudad',
+      modeInPerson: 'En consulta',
+      modeInPersonHint: 'Consulta presencial',
+      modeRemote: 'A distancia',
+      modeRemoteHint: 'Consulta en video desde casa',
+      suggestions: 'Sugerencias',
+      suggestionCardio: 'Chequeo cardíaco',
+      suggestionLifestyle: 'Coaching de estilo de vida',
+      suggestionCta: 'Reservar cita',
       bookTitle: 'Elige un médico y un horario',
       doctor: 'Médico',
       book: 'Reservar',
@@ -1278,6 +1318,54 @@ function goToHome() {
   routeAfterLogin();
 }
 
+function setAppointmentMode(mode) {
+  appointmentMode = mode;
+  if (modeInPerson) {
+    modeInPerson.classList.toggle('active', mode === 'in_person');
+  }
+  if (modeRemote) {
+    modeRemote.classList.toggle('active', mode === 'remote');
+  }
+}
+
+function getDoctorSearchText(doctor) {
+  return [doctor.first_name, doctor.last_name, doctor.specialty, doctor.city, doctor.country]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+}
+
+function renderDoctorOptions(doctors) {
+  if (!doctorSelect) return;
+  doctorSelect.innerHTML = '<option value=\"\">' + t('select.placeholder') + '</option>';
+  doctors.forEach((doc) => {
+    const option = document.createElement('option');
+    option.value = doc.id;
+    const name = [doc.first_name, doc.last_name].filter(Boolean).join(' ');
+    option.textContent = doc.specialty ? `${name} · ${doc.specialty}` : name;
+    doctorSelect.appendChild(option);
+  });
+}
+
+function filterDoctors() {
+  if (!appointmentSearch) {
+    renderDoctorOptions(cachedDoctors);
+    return;
+  }
+  const term = appointmentSearch.value.trim().toLowerCase();
+  const filtered = term
+    ? cachedDoctors.filter((doctor) => getDoctorSearchText(doctor).includes(term))
+    : cachedDoctors;
+  renderDoctorOptions(filtered);
+  if (doctorSelect && doctorSelect.value) {
+    const exists = filtered.some((doctor) => doctor.id === doctorSelect.value);
+    if (!exists) {
+      doctorSelect.value = '';
+      renderSlots([]);
+    }
+  }
+}
+
 function setLanguage(lang) {
   if (!translations[lang]) return;
   currentLang = lang;
@@ -1290,6 +1378,7 @@ function setLanguage(lang) {
     // Ignore storage errors in private mode.
   }
   applyTranslations();
+  filterDoctors();
   updateGreeting();
   updateScore();
 
@@ -1834,16 +1923,7 @@ async function loadDoctors() {
     return [];
   }
   cachedDoctors = data || [];
-  if (doctorSelect) {
-    doctorSelect.innerHTML = '<option value=\"\">' + t('select.placeholder') + '</option>';
-    cachedDoctors.forEach((doc) => {
-      const option = document.createElement('option');
-      option.value = doc.id;
-      const name = [doc.first_name, doc.last_name].filter(Boolean).join(' ');
-      option.textContent = doc.specialty ? `${name} · ${doc.specialty}` : name;
-      doctorSelect.appendChild(option);
-    });
-  }
+  filterDoctors();
   return cachedDoctors;
 }
 
@@ -2358,9 +2438,23 @@ if (hubMeds) {
 if (hubBook) {
   hubBook.addEventListener('click', async () => {
     showView('appointments');
+    if (appointmentSearch) {
+      appointmentSearch.value = '';
+    }
+    setAppointmentMode('in_person');
     await loadDoctors();
     await loadPatientAppointments();
   });
+}
+
+if (modeInPerson) {
+  modeInPerson.addEventListener('click', () => setAppointmentMode('in_person'));
+}
+if (modeRemote) {
+  modeRemote.addEventListener('click', () => setAppointmentMode('remote'));
+}
+if (appointmentSearch) {
+  appointmentSearch.addEventListener('input', filterDoctors);
 }
 
 if (backToHubBtn) {

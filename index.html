@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MyHeart - Check you heart health</title>
+    <title>B-Healthy - Check you heart health</title>
     <link rel="icon" href="icons/icon-192.png" />
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
     <link rel="manifest" href="manifest.webmanifest" />
@@ -27,7 +27,7 @@
         <div class="top-bar-left">
           <img class="top-logo" src="B-HEALTHY-LOGO-.png" alt="B-Healthy logo" />
           <div>
-            <p class="top-title">MyHeart</p>
+            <p class="top-title">B-Healthy</p>
             <p class="top-sub" id="userGreeting"></p>
           </div>
         </div>
@@ -45,12 +45,24 @@
         <div class="auth-card">
           <div class="auth-brand">
             <img class="logo" src="B-HEALTHY-LOGO-.png" alt="B-Healthy logo" />
-            <p class="eyebrow">MyHeart</p>
+            <p class="eyebrow">B-Healthy</p>
           </div>
-          <h1 data-i18n="auth.title">Welcome to MyHeart</h1>
+          <h1 data-i18n="auth.title">Welcome to B-Healthy</h1>
           <p class="subhead" data-i18n="auth.subtitle">
             Sign in to continue or create a profile to get started.
           </p>
+          <details class="install-tip">
+            <summary data-i18n="install.summary">Install this app (optional)</summary>
+            <p data-i18n="install.desktop">
+              Desktop (Chrome/Edge): click the install icon in the address bar, or use the browser menu.
+            </p>
+            <p data-i18n="install.android">
+              Android (Chrome): Menu → Install app or Add to Home screen.
+            </p>
+            <p data-i18n="install.ios">
+              iPhone/iPad (Safari): Share → Add to Home Screen.
+            </p>
+          </details>
           <div class="auth-tabs">
             <button id="tabSignIn" class="tab active" type="button" data-i18n="auth.signIn">
               Sign in
@@ -319,6 +331,78 @@
             Back to menu
           </button>
         </div>
+        <div class="panel appointment-panel">
+          <h3 data-i18n="appointments.greeting">How are you feeling?</h3>
+          <p class="subhead" data-i18n="appointments.takeAppointment">Book an appointment</p>
+          <label class="search-field">
+            <span class="sr-only" data-i18n="appointments.searchLabel">Search</span>
+            <span class="search-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="7"></circle>
+                <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+              </svg>
+            </span>
+            <input
+              id="appointmentSearch"
+              type="search"
+              placeholder="Search doctors, specialties, or city"
+              data-i18n-placeholder="appointments.searchPlaceholder"
+            />
+          </label>
+          <div class="appointment-modes">
+            <button id="modeInPerson" class="mode-card active" type="button" data-mode="in_person">
+              <div class="mode-text">
+                <p class="mode-title" data-i18n="appointments.modeInPerson">In clinic</p>
+                <p class="mode-sub" data-i18n="appointments.modeInPersonHint">
+                  Meet a practitioner on site
+                </p>
+              </div>
+              <span class="mode-icon" aria-hidden="true">
+                <svg viewBox="0 0 64 64">
+                  <rect x="10" y="30" width="44" height="20" rx="6"></rect>
+                  <circle cx="24" cy="24" r="8"></circle>
+                  <circle cx="44" cy="24" r="6"></circle>
+                </svg>
+              </span>
+            </button>
+            <button id="modeRemote" class="mode-card" type="button" data-mode="remote">
+              <div class="mode-text">
+                <p class="mode-title" data-i18n="appointments.modeRemote">Remote</p>
+                <p class="mode-sub" data-i18n="appointments.modeRemoteHint">
+                  Video consultation from home
+                </p>
+              </div>
+              <span class="mode-icon" aria-hidden="true">
+                <svg viewBox="0 0 64 64">
+                  <rect x="8" y="18" width="48" height="28" rx="8"></rect>
+                  <circle cx="28" cy="32" r="8"></circle>
+                  <polygon points="40,26 50,32 40,38"></polygon>
+                </svg>
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="panel suggestions-panel">
+          <h3 data-i18n="appointments.suggestions">Suggestions</h3>
+          <div class="suggestion-row">
+            <button class="suggestion-card" type="button">
+              <div>
+                <p class="suggestion-title" data-i18n="appointments.suggestionCardio">
+                  Heart health check
+                </p>
+                <p class="suggestion-cta" data-i18n="appointments.suggestionCta">Book appointment</p>
+              </div>
+            </button>
+            <button class="suggestion-card" type="button">
+              <div>
+                <p class="suggestion-title" data-i18n="appointments.suggestionLifestyle">
+                  Lifestyle coaching
+                </p>
+                <p class="suggestion-cta" data-i18n="appointments.suggestionCta">Book appointment</p>
+              </div>
+            </button>
+          </div>
+        </div>
         <div class="panel">
           <h3 data-i18n="appointments.bookTitle">Choose a doctor and time</h3>
           <label class="field">
@@ -459,7 +543,7 @@
         <header class="hero">
           <div class="brand">
             <img class="logo" src="B-HEALTHY-LOGO-.png" alt="B-Healthy logo" />
-            <p class="eyebrow">MyHeart</p>
+            <p class="eyebrow">B-Healthy</p>
           </div>
           <h1 data-i18n="hero.title">Check you heart health</h1>
         <p class="subhead" data-i18n="hero.subhead">

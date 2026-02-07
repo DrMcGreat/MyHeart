@@ -1,6 +1,6 @@
 {
-  "name": "MyHeart",
-  "short_name": "MyHeart",
+  "name": "B-Healthy",
+  "short_name": "B-Healthy",
   "description": "Simple cardiovascular health check using Life's Essential 8.",
   "start_url": "/index.html",
   "scope": "/",
