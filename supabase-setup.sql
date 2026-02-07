@@ -8,7 +8,10 @@ create table if not exists profiles (
   first_name text,
   last_name text,
   facility_name text,
+  profile_photo_url text,
+  facility_logo_url text,
   specialty text,
+  facility_id uuid references profiles(id) on delete set null,
   date_of_birth date,
   sex text,
   phone text,
@@ -17,6 +20,10 @@ create table if not exists profiles (
   email text,
   created_at timestamptz default now()
 );
+
+alter table profiles add column if not exists facility_id uuid references profiles(id) on delete set null;
+alter table profiles add column if not exists profile_photo_url text;
+alter table profiles add column if not exists facility_logo_url text;
 
 create table if not exists facility_staff (
   id uuid primary key default gen_random_uuid(),
@@ -182,3 +189,38 @@ drop policy if exists "appointments_delete" on appointments;
 create policy "appointments_delete" on appointments
   for delete to authenticated
   using (patient_id = auth.uid() or doctor_id = auth.uid());
+
+-- Storage bucket for profile assets (run once).
+insert into storage.buckets (id, name, public)
+values ('profile-assets', 'profile-assets', true)
+on conflict (id) do nothing;
+
+alter table storage.objects enable row level security;
+drop policy if exists "profile_assets_read" on storage.objects;
+create policy "profile_assets_read" on storage.objects
+  for select to public
+  using (bucket_id = 'profile-assets');
+drop policy if exists "profile_assets_insert" on storage.objects;
+create policy "profile_assets_insert" on storage.objects
+  for insert to authenticated
+  with check (
+    bucket_id = 'profile-assets'
+    and split_part(name, '/', 1) in ('profiles', 'facilities')
+    and split_part(name, '/', 2) = auth.uid()::text
+  );
+drop policy if exists "profile_assets_update" on storage.objects;
+create policy "profile_assets_update" on storage.objects
+  for update to authenticated
+  using (
+    bucket_id = 'profile-assets'
+    and split_part(name, '/', 1) in ('profiles', 'facilities')
+    and split_part(name, '/', 2) = auth.uid()::text
+  );
+drop policy if exists "profile_assets_delete" on storage.objects;
+create policy "profile_assets_delete" on storage.objects
+  for delete to authenticated
+  using (
+    bucket_id = 'profile-assets'
+    and split_part(name, '/', 1) in ('profiles', 'facilities')
+    and split_part(name, '/', 2) = auth.uid()::text
+  );

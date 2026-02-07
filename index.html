@@ -26,6 +26,7 @@
       <div class="top-bar hidden" id="topBar">
         <div class="top-bar-left">
           <img class="top-logo" src="B-HEALTHY-LOGO-.png" alt="B-Healthy logo" />
+          <img class="top-avatar hidden" id="userAvatar" alt="Profile photo" />
           <div>
             <p class="top-title">B-Healthy</p>
             <p class="top-sub" id="userGreeting"></p>
@@ -73,7 +74,7 @@
           </div>
 
           <form id="signInForm" class="auth-form">
-            <label class="field" id="registerRoleField">
+            <label class="field">
               <span data-i18n="auth.email">Email</span>
               <input id="signInEmail" type="email" required />
             </label>
@@ -98,15 +99,6 @@
               <span data-i18n="auth.confirmPassword">Confirm password</span>
               <input id="signUpPasswordConfirm" type="password" required />
             </label>
-            <label class="field">
-              <span data-i18n="auth.profileType">Profile type</span>
-              <select id="signUpRole" required>
-                <option value="" data-i18n="select.placeholder">Select...</option>
-                <option value="individual" data-i18n="roles.individual">Individual profile</option>
-                <option value="facility" data-i18n="roles.facility">Health facility profile</option>
-                <option value="doctor" data-i18n="roles.doctor">Medical practitioner profile</option>
-              </select>
-            </label>
             <button class="primary" type="submit" data-i18n="auth.createAccount">Create account</button>
             <p class="form-message" id="signUpMessage"></p>
           </form>
@@ -120,16 +112,6 @@
             Tell us a bit more so we can personalize the experience.
           </p>
           <form id="registerForm" class="stack">
-            <label class="field">
-              <span data-i18n="register.role">Profile type</span>
-              <select id="registerRole" required>
-                <option value="" data-i18n="select.placeholder">Select...</option>
-                <option value="individual" data-i18n="roles.individual">Individual profile</option>
-                <option value="facility" data-i18n="roles.facility">Health facility profile</option>
-                <option value="doctor" data-i18n="roles.doctor">Medical practitioner profile</option>
-              </select>
-            </label>
-
             <div id="individualFields" class="stack">
               <div class="field-row">
                 <label class="field">
@@ -177,86 +159,11 @@
                   <input id="individualEmail" type="email" disabled />
                 </label>
               </div>
-            </div>
-
-            <div id="doctorFields" class="stack hidden">
-              <div class="field-row">
-                <label class="field">
-                  <span data-i18n="profile.firstName">First name</span>
-                  <input id="doctorFirstName" type="text" />
-                </label>
-                <label class="field">
-                  <span data-i18n="profile.lastName">Surname</span>
-                  <input id="doctorLastName" type="text" />
-                </label>
-              </div>
-              <div class="field-row">
-                <label class="field">
-                  <span data-i18n="profile.dob">Date of birth</span>
-                  <input id="doctorDob" type="date" />
-                </label>
-                <label class="field">
-                  <span data-i18n="profile.sex">Sex</span>
-                  <select id="doctorSex">
-                    <option value="" data-i18n="select.placeholder">Select...</option>
-                    <option value="female" data-i18n="about.sexOptions.female">Female</option>
-                    <option value="male" data-i18n="about.sexOptions.male">Male</option>
-                    <option value="intersex" data-i18n="about.sexOptions.intersex">Intersex</option>
-                    <option value="prefer-not" data-i18n="about.sexOptions.preferNot">Prefer not to say</option>
-                  </select>
-                </label>
-              </div>
-              <div class="field-row">
-                <label class="field">
-                  <span data-i18n="profile.phone">Phone number</span>
-                  <input id="doctorPhone" type="tel" />
-                </label>
-                <label class="field">
-                  <span data-i18n="profile.city">City</span>
-                  <input id="doctorCity" type="text" />
-                </label>
-              </div>
-              <div class="field-row">
-                <label class="field">
-                  <span data-i18n="profile.country">Country</span>
-                  <input id="doctorCountry" type="text" />
-                </label>
-                <label class="field">
-                  <span data-i18n="profile.email">Email address</span>
-                  <input id="doctorEmail" type="email" disabled />
-                </label>
-              </div>
               <label class="field">
-                <span data-i18n="profile.specialty">Medical specialty</span>
-                <input id="doctorSpecialty" type="text" />
+                <span data-i18n="profile.photo">Profile photo (optional)</span>
+                <input id="individualPhoto" type="file" accept="image/*" />
               </label>
-            </div>
-
-            <div id="facilityFields" class="stack hidden">
-              <label class="field">
-                <span data-i18n="profile.facilityName">Facility name</span>
-                <input id="facilityName" type="text" />
-              </label>
-              <div class="field-row">
-                <label class="field">
-                  <span data-i18n="profile.phone">Phone number</span>
-                  <input id="facilityPhone" type="tel" />
-                </label>
-                <label class="field">
-                  <span data-i18n="profile.email">Email address</span>
-                  <input id="facilityEmail" type="email" disabled />
-                </label>
-              </div>
-              <div class="field-row">
-                <label class="field">
-                  <span data-i18n="profile.city">City</span>
-                  <input id="facilityCity" type="text" />
-                </label>
-                <label class="field">
-                  <span data-i18n="profile.country">Country</span>
-                  <input id="facilityCountry" type="text" />
-                </label>
-              </div>
+              <img id="individualPhotoPreview" class="preview-image hidden" alt="Profile preview" />
             </div>
 
             <button class="primary" type="submit" data-i18n="register.save">Save profile</button>
@@ -471,9 +378,50 @@
             Back to menu
           </button>
         </div>
+        <div class="panel doctor-summary">
+          <h3 data-i18n="doctor.overview">Overview</h3>
+          <div class="summary-grid">
+            <div class="summary-tile">
+              <p class="summary-label" data-i18n="doctor.totalPatients">Patients followed</p>
+              <p class="summary-value" id="doctorPatientCount">0</p>
+            </div>
+            <div class="summary-tile">
+              <p class="summary-label" data-i18n="doctor.facilityCount">Facilities</p>
+              <p class="summary-value" id="doctorFacilityCount">0</p>
+            </div>
+          </div>
+        </div>
         <div class="panel">
           <h3 data-i18n="doctor.availability">Add availability</h3>
+          <p class="muted" data-i18n="doctor.hours">Working hours: 09:00–12:30 &amp; 13:30–17:00</p>
+          <div class="grid-form schedule-form">
+            <label class="field">
+              <span data-i18n="doctor.scheduleDate">Date</span>
+              <input id="scheduleDate" type="date" />
+            </label>
+            <label class="field">
+              <span data-i18n="doctor.slotLength">Slot length (minutes)</span>
+              <input id="scheduleDuration" type="number" min="5" step="5" value="30" />
+            </label>
+            <button id="generateScheduleBtn" class="ghost" type="button" data-i18n="doctor.generate">
+              Generate day slots
+            </button>
+            <p class="form-message" id="scheduleMessage"></p>
+          </div>
           <form id="availabilityForm" class="grid-form">
+            <label class="field">
+              <span data-i18n="doctor.facility">Facility</span>
+              <select id="doctorFacilitySelect">
+                <option value="" data-i18n="select.placeholder">Select...</option>
+              </select>
+            </label>
+            <label class="field">
+              <span data-i18n="doctor.appointmentType">Appointment type</span>
+              <select id="availabilityType">
+                <option value="in_person" data-i18n="doctor.typeInPerson">In clinic</option>
+                <option value="remote" data-i18n="doctor.typeRemote">Remote</option>
+              </select>
+            </label>
             <label class="field">
               <span data-i18n="doctor.start">Start time</span>
               <input id="availabilityStart" type="datetime-local" required />

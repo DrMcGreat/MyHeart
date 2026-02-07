@@ -6,6 +6,7 @@ const supabaseClient =
   window.supabase && isSupabaseConfigured
     ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
     : null;
+const STORAGE_BUCKET = 'profile-assets';
 
 const appRoot = document.getElementById('appRoot');
 const authView = document.getElementById('authView');
@@ -19,6 +20,7 @@ const facilityView = document.getElementById('facilityView');
 
 const topBar = document.getElementById('topBar');
 const userGreeting = document.getElementById('userGreeting');
+const userAvatar = document.getElementById('userAvatar');
 const signOutBtn = document.getElementById('signOutBtn');
 const backToHubBtn = document.getElementById('backToHubBtn');
 
@@ -31,17 +33,12 @@ const signInPassword = document.getElementById('signInPassword');
 const signUpEmail = document.getElementById('signUpEmail');
 const signUpPassword = document.getElementById('signUpPassword');
 const signUpPasswordConfirm = document.getElementById('signUpPasswordConfirm');
-const signUpRole = document.getElementById('signUpRole');
 const signInMessage = document.getElementById('signInMessage');
 const signUpMessage = document.getElementById('signUpMessage');
 
 const registerForm = document.getElementById('registerForm');
-const registerRole = document.getElementById('registerRole');
-const registerRoleField = document.getElementById('registerRoleField');
 const registerMessage = document.getElementById('registerMessage');
 const individualFields = document.getElementById('individualFields');
-const doctorFields = document.getElementById('doctorFields');
-const facilityFields = document.getElementById('facilityFields');
 const individualFirstName = document.getElementById('individualFirstName');
 const individualLastName = document.getElementById('individualLastName');
 const individualDob = document.getElementById('individualDob');
@@ -50,20 +47,8 @@ const individualPhone = document.getElementById('individualPhone');
 const individualCity = document.getElementById('individualCity');
 const individualCountry = document.getElementById('individualCountry');
 const individualEmail = document.getElementById('individualEmail');
-const doctorFirstName = document.getElementById('doctorFirstName');
-const doctorLastName = document.getElementById('doctorLastName');
-const doctorDob = document.getElementById('doctorDob');
-const doctorSex = document.getElementById('doctorSex');
-const doctorPhone = document.getElementById('doctorPhone');
-const doctorCity = document.getElementById('doctorCity');
-const doctorCountry = document.getElementById('doctorCountry');
-const doctorEmail = document.getElementById('doctorEmail');
-const doctorSpecialty = document.getElementById('doctorSpecialty');
-const facilityName = document.getElementById('facilityName');
-const facilityPhone = document.getElementById('facilityPhone');
-const facilityEmail = document.getElementById('facilityEmail');
-const facilityCity = document.getElementById('facilityCity');
-const facilityCountry = document.getElementById('facilityCountry');
+const individualPhoto = document.getElementById('individualPhoto');
+const individualPhotoPreview = document.getElementById('individualPhotoPreview');
 
 const hubAssess = document.getElementById('hubAssess');
 const hubMeds = document.getElementById('hubMeds');
@@ -105,8 +90,16 @@ const modeRemote = document.getElementById('modeRemote');
 const availabilityForm = document.getElementById('availabilityForm');
 const availabilityStart = document.getElementById('availabilityStart');
 const availabilityDuration = document.getElementById('availabilityDuration');
+const doctorFacilitySelect = document.getElementById('doctorFacilitySelect');
+const availabilityType = document.getElementById('availabilityType');
 const availabilityList = document.getElementById('availabilityList');
 const availabilityMessage = document.getElementById('availabilityMessage');
+const doctorPatientCount = document.getElementById('doctorPatientCount');
+const doctorFacilityCount = document.getElementById('doctorFacilityCount');
+const scheduleDate = document.getElementById('scheduleDate');
+const scheduleDuration = document.getElementById('scheduleDuration');
+const generateScheduleBtn = document.getElementById('generateScheduleBtn');
+const scheduleMessage = document.getElementById('scheduleMessage');
 const doctorUpcoming = document.getElementById('doctorUpcoming');
 const doctorUpcomingEmpty = document.getElementById('doctorUpcomingEmpty');
 const doctorPatientSelect = document.getElementById('doctorPatientSelect');
@@ -186,6 +179,9 @@ let pendingRole = null;
 let cachedDoctors = [];
 let cachedAppointments = [];
 let appointmentMode = 'in_person';
+let cachedFacilities = [];
+let doctorFacilityTotal = 0;
+let pendingIndividualPhotoFile = null;
 
 const translations = {
   en: {
@@ -224,7 +220,10 @@ const translations = {
       country: 'Country',
       email: 'Email address',
       specialty: 'Medical specialty',
+      facility: 'Health facility (optional)',
       facilityName: 'Facility name',
+      photo: 'Profile photo (optional)',
+      logo: 'Facility logo (optional)',
     },
     hub: {
       title: 'What would you like to do?',
@@ -284,7 +283,18 @@ const translations = {
     },
     doctor: {
       title: 'Doctor dashboard',
+      overview: 'Overview',
+      totalPatients: 'Patients followed',
+      facilityCount: 'Facilities',
       availability: 'Add availability',
+      facility: 'Facility',
+      appointmentType: 'Appointment type',
+      typeInPerson: 'In clinic',
+      typeRemote: 'Remote',
+      hours: 'Working hours: 09:00–12:30 & 13:30–17:00',
+      scheduleDate: 'Date',
+      slotLength: 'Slot length (minutes)',
+      generate: 'Generate day slots',
       start: 'Start time',
       duration: 'Duration (minutes)',
       addSlot: 'Add slot',
@@ -304,6 +314,11 @@ const translations = {
       noneLost: 'No patients lost to follow-up.',
       lastVisit: 'last visit',
       patientFallback: 'Patient',
+      statusOpen: 'open',
+      statusBooked: 'booked',
+      statusBlocked: 'occupied',
+      markBusy: 'Mark occupied',
+      reopen: 'Reopen',
     },
     facility: {
       title: 'Facility dashboard',
@@ -325,6 +340,10 @@ const translations = {
       saved: 'Saved.',
       passwordMismatch: 'Passwords do not match.',
       selectRole: 'Please choose a profile type.',
+      individualOnly: 'This app is for individual accounts. Please use the facility app.',
+      facilityRequired: 'Select a facility for in-clinic appointments.',
+      scheduleCreated: 'Day schedule generated.',
+      scheduleEmpty: 'All slots already exist for that day.',
       missingPatient: 'Select a patient first.',
       slotBooked: 'Appointment booked.',
       slotTaken: 'That slot is no longer available.',
@@ -535,7 +554,10 @@ const translations = {
       country: 'Pays',
       email: 'Adresse email',
       specialty: 'Spécialité médicale',
+      facility: 'Établissement de santé (optionnel)',
       facilityName: "Nom de l'établissement",
+      photo: 'Photo de profil (optionnel)',
+      logo: "Logo de l'établissement (optionnel)",
     },
     hub: {
       title: 'Que souhaitez-vous faire ?',
@@ -595,7 +617,18 @@ const translations = {
     },
     doctor: {
       title: 'Tableau de bord médecin',
+      overview: 'Aperçu',
+      totalPatients: 'Patients suivis',
+      facilityCount: 'Établissements',
       availability: 'Ajouter des disponibilités',
+      facility: 'Établissement',
+      appointmentType: 'Type de rendez-vous',
+      typeInPerson: 'Au cabinet',
+      typeRemote: 'À distance',
+      hours: 'Horaires : 09:00–12:30 & 13:30–17:00',
+      scheduleDate: 'Date',
+      slotLength: 'Durée du créneau (minutes)',
+      generate: 'Générer les créneaux du jour',
       start: 'Début',
       duration: 'Durée (minutes)',
       addSlot: 'Ajouter un créneau',
@@ -615,6 +648,11 @@ const translations = {
       noneLost: 'Aucun patient perdu de vue.',
       lastVisit: 'dernière visite',
       patientFallback: 'Patient',
+      statusOpen: 'libre',
+      statusBooked: 'réservé',
+      statusBlocked: 'occupé',
+      markBusy: 'Marquer occupé',
+      reopen: 'Réouvrir',
     },
     facility: {
       title: 'Tableau de bord établissement',
@@ -637,6 +675,11 @@ const translations = {
       saved: 'Enregistré.',
       passwordMismatch: 'Les mots de passe ne correspondent pas.',
       selectRole: 'Veuillez choisir un type de profil.',
+      individualOnly:
+        "Cette application est réservée aux profils individuels. Veuillez utiliser l'application établissement.",
+      facilityRequired: 'Sélectionnez un établissement pour un rendez-vous en présentiel.',
+      scheduleCreated: 'Créneaux générés pour la journée.',
+      scheduleEmpty: 'Tous les créneaux existent déjà pour ce jour.',
       missingPatient: 'Sélectionnez d’abord un patient.',
       slotBooked: 'Rendez-vous réservé.',
       slotTaken: 'Ce créneau n’est plus disponible.',
@@ -847,7 +890,10 @@ const translations = {
       country: 'País',
       email: 'Correo electrónico',
       specialty: 'Especialidad médica',
+      facility: 'Centro de salud (opcional)',
       facilityName: 'Nombre del centro',
+      photo: 'Foto de perfil (opcional)',
+      logo: 'Logo del centro (opcional)',
     },
     hub: {
       title: '¿Qué te gustaría hacer?',
@@ -907,7 +953,18 @@ const translations = {
     },
     doctor: {
       title: 'Panel del médico',
+      overview: 'Resumen',
+      totalPatients: 'Pacientes seguidos',
+      facilityCount: 'Centros',
       availability: 'Agregar disponibilidad',
+      facility: 'Centro',
+      appointmentType: 'Tipo de cita',
+      typeInPerson: 'En consulta',
+      typeRemote: 'A distancia',
+      hours: 'Horario: 09:00–12:30 y 13:30–17:00',
+      scheduleDate: 'Fecha',
+      slotLength: 'Duración del turno (minutos)',
+      generate: 'Generar turnos del día',
       start: 'Inicio',
       duration: 'Duración (minutos)',
       addSlot: 'Agregar horario',
@@ -927,6 +984,11 @@ const translations = {
       noneLost: 'No hay pacientes perdidos en seguimiento.',
       lastVisit: 'última visita',
       patientFallback: 'Paciente',
+      statusOpen: 'libre',
+      statusBooked: 'reservado',
+      statusBlocked: 'ocupado',
+      markBusy: 'Marcar ocupado',
+      reopen: 'Reabrir',
     },
     facility: {
       title: 'Panel del centro',
@@ -949,6 +1011,10 @@ const translations = {
       saved: 'Guardado.',
       passwordMismatch: 'Las contraseñas no coinciden.',
       selectRole: 'Elige un tipo de perfil.',
+      individualOnly: 'Esta app es solo para cuentas individuales. Usa la app de centros.',
+      facilityRequired: 'Selecciona un centro para citas presenciales.',
+      scheduleCreated: 'Turnos generados para el día.',
+      scheduleEmpty: 'Todos los turnos ya existen para ese día.',
       missingPatient: 'Primero selecciona un paciente.',
       slotBooked: 'Cita reservada.',
       slotTaken: 'Ese horario ya no está disponible.',
@@ -1248,6 +1314,58 @@ function setPendingRole(role) {
   }
 }
 
+function resetImagePreview(previewEl) {
+  if (!previewEl) return;
+  const oldUrl = previewEl.dataset.objectUrl;
+  if (oldUrl) {
+    URL.revokeObjectURL(oldUrl);
+  }
+  previewEl.dataset.objectUrl = '';
+  previewEl.removeAttribute('src');
+  previewEl.classList.add('hidden');
+}
+
+function updateImagePreview(file, previewEl) {
+  resetImagePreview(previewEl);
+  if (!file || !previewEl) return;
+  const objectUrl = URL.createObjectURL(file);
+  previewEl.src = objectUrl;
+  previewEl.dataset.objectUrl = objectUrl;
+  previewEl.classList.remove('hidden');
+}
+
+function getFileExtension(file) {
+  const name = file?.name || '';
+  const parts = name.split('.');
+  if (parts.length > 1) {
+    return parts.pop().toLowerCase();
+  }
+  const mime = file?.type || '';
+  const mimeParts = mime.split('/');
+  if (mimeParts.length > 1) {
+    return mimeParts.pop().toLowerCase();
+  }
+  return 'jpg';
+}
+
+async function uploadProfileAsset(file, folder, baseName) {
+  if (!file || !supabaseClient || !currentUser) {
+    return { url: null, error: null };
+  }
+  const extension = getFileExtension(file);
+  const path = `${folder}/${currentUser.id}/${baseName}.${extension}`;
+  const { error } = await supabaseClient.storage.from(STORAGE_BUCKET).upload(path, file, {
+    upsert: true,
+    cacheControl: '3600',
+    contentType: file.type || undefined,
+  });
+  if (error) {
+    return { url: null, error };
+  }
+  const { data } = supabaseClient.storage.from(STORAGE_BUCKET).getPublicUrl(path);
+  return { url: data?.publicUrl || null, error: null };
+}
+
 function loadPendingRole() {
   try {
     pendingRole = sessionStorage.getItem('pendingRole');
@@ -1256,43 +1374,10 @@ function loadPendingRole() {
   }
 }
 
-function updateRegisterFields(role) {
-  const showIndividual = role === 'individual';
-  const showDoctor = role === 'doctor';
-  const showFacility = role === 'facility';
-
-  individualFields.classList.toggle('hidden', !showIndividual);
-  doctorFields.classList.toggle('hidden', !showDoctor);
-  facilityFields.classList.toggle('hidden', !showFacility);
-
-  const setRequired = (field, required) => {
-    if (field) field.required = required;
-  };
-
-  [
-    individualFirstName,
-    individualLastName,
-    individualDob,
-    individualSex,
-    individualPhone,
-    individualCity,
-    individualCountry,
-  ].forEach((field) => setRequired(field, showIndividual));
-
-  [
-    doctorFirstName,
-    doctorLastName,
-    doctorDob,
-    doctorSex,
-    doctorPhone,
-    doctorCity,
-    doctorCountry,
-    doctorSpecialty,
-  ].forEach((field) => setRequired(field, showDoctor));
-
-  [facilityName, facilityPhone, facilityCity, facilityCountry].forEach((field) =>
-    setRequired(field, showFacility)
-  );
+function ensureIndividualFieldsVisible() {
+  if (individualFields) {
+    individualFields.classList.remove('hidden');
+  }
 }
 
 function getProfileDisplayName(profile) {
@@ -1300,6 +1385,26 @@ function getProfileDisplayName(profile) {
   if (profile.role === 'facility') return profile.facility_name || profile.email || '';
   const name = [profile.first_name, profile.last_name].filter(Boolean).join(' ');
   return name || profile.email || '';
+}
+
+function getProfileAvatarUrl(profile) {
+  if (!profile) return '';
+  if (profile.role === 'facility') {
+    return profile.facility_logo_url || '';
+  }
+  return profile.profile_photo_url || '';
+}
+
+function updateAvatar() {
+  if (!userAvatar) return;
+  const avatarUrl = getProfileAvatarUrl(currentProfile);
+  if (avatarUrl) {
+    userAvatar.src = avatarUrl;
+    userAvatar.classList.remove('hidden');
+  } else {
+    userAvatar.removeAttribute('src');
+    userAvatar.classList.add('hidden');
+  }
 }
 
 function getRoleLabel(role) {
@@ -1310,15 +1415,82 @@ function getRoleLabel(role) {
   return role;
 }
 
+function renderFacilityOptions(selectEl) {
+  if (!selectEl) return;
+  selectEl.innerHTML = '<option value=\"\">' + t('select.placeholder') + '</option>';
+  cachedFacilities.forEach((facility) => {
+    const option = document.createElement('option');
+    option.value = facility.id;
+    const name = facility.facility_name || facility.email || facility.id;
+    const location = [facility.city, facility.country].filter(Boolean).join(', ');
+    option.textContent = location ? `${name} · ${location}` : name;
+    selectEl.appendChild(option);
+  });
+}
+
+async function loadFacilities() {
+  if (!supabaseClient) return;
+  const { data, error } = await supabaseClient
+    .from('profiles')
+    .select('id, facility_name, city, country, email')
+    .eq('role', 'facility')
+    .order('facility_name', { ascending: true });
+  if (error) {
+    return;
+  }
+  cachedFacilities = data || [];
+  renderFacilityOptions(doctorFacility);
+  renderFacilityOptions(doctorFacilitySelect);
+}
+
+function getFacilityNameById(id) {
+  if (!id) return '';
+  const facility = cachedFacilities.find((item) => item.id === id);
+  return facility?.facility_name || facility?.email || '';
+}
+
+function updateDoctorSummary() {
+  if (doctorPatientCount) {
+    const uniquePatients = new Set(
+      cachedAppointments.map((appt) => appt.patient_id).filter(Boolean)
+    );
+    doctorPatientCount.textContent = uniquePatients.size.toString();
+  }
+  if (doctorFacilityCount) {
+    doctorFacilityCount.textContent = doctorFacilityTotal.toString();
+  }
+}
+
+async function loadDoctorStats() {
+  if (!currentProfile || !supabaseClient) return;
+  const facilityIds = new Set();
+  if (currentProfile.facility_id) {
+    facilityIds.add(currentProfile.facility_id);
+  }
+  const { data, error } = await supabaseClient
+    .from('facility_staff')
+    .select('facility_id')
+    .eq('doctor_id', currentProfile.id);
+  if (!error && data) {
+    data.forEach((row) => {
+      if (row.facility_id) facilityIds.add(row.facility_id);
+    });
+  }
+  doctorFacilityTotal = facilityIds.size;
+  updateDoctorSummary();
+}
+
 function updateGreeting() {
   if (!userGreeting) return;
   if (!currentProfile) {
     userGreeting.textContent = '';
+    updateAvatar();
     return;
   }
   const name = getProfileDisplayName(currentProfile);
   const role = getRoleLabel(currentProfile.role);
   userGreeting.textContent = name ? `${name} · ${role}` : role;
+  updateAvatar();
 }
 
 function calculateAgeFromDob(dob) {
@@ -1347,23 +1519,22 @@ function applyProfileToAssessment() {
   }
 }
 
-function routeAfterLogin() {
+async function routeAfterLogin() {
   if (!currentProfile) {
     showView('register');
     return;
   }
   updateGreeting();
-  if (currentProfile.role === 'individual') {
-    showView('hub');
-  } else if (currentProfile.role === 'doctor') {
-    showView('doctor');
-    refreshDoctorDashboard();
-  } else if (currentProfile.role === 'facility') {
-    showView('facility');
-    loadFacilityStaff();
-  } else {
-    showView('hub');
+  if (currentProfile.role !== 'individual') {
+    await supabaseClient.auth.signOut();
+    currentUser = null;
+    currentProfile = null;
+    updateGreeting();
+    showView('auth');
+    setMessage(signInMessage, t('messages.individualOnly'), true);
+    return;
   }
+  showView('hub');
 }
 
 function goToHome() {
@@ -1890,39 +2061,87 @@ async function loadProfile() {
   }
 
   if (!data) {
-    const metaRole = currentUser?.user_metadata?.role;
-    const roleValue = pendingRole || metaRole || '';
-    if (registerRole) {
-      registerRole.value = roleValue;
-      updateRegisterFields(registerRole.value);
-      if (metaRole && registerRoleField) {
-        registerRoleField.classList.add('hidden');
-      } else if (registerRoleField) {
-        registerRoleField.classList.remove('hidden');
+    const metaProfile = currentUser?.user_metadata?.profile;
+    if (metaProfile && metaProfile.role) {
+      const profileData = {
+        id: currentUser.id,
+        email: currentUser.email,
+        ...metaProfile,
+      };
+      const { error: insertError } = await supabaseClient.from('profiles').insert(profileData);
+      if (!insertError) {
+        currentProfile = profileData;
+        await routeAfterLogin();
+        return;
       }
     }
+
+    ensureIndividualFieldsVisible();
     const email = currentUser.email || '';
     if (individualEmail) individualEmail.value = email;
-    if (doctorEmail) doctorEmail.value = email;
-    if (facilityEmail) facilityEmail.value = email;
     showView('register');
     return;
   }
 
   currentProfile = data;
-  routeAfterLogin();
+  await routeAfterLogin();
 }
 
-async function saveProfile(profileData) {
-  const { error } = await supabaseClient.from('profiles').upsert(profileData, { onConflict: 'id' });
+async function saveProfile(profileData, assets = {}) {
+  let nextProfile = { ...profileData };
+
+  if (currentProfile?.profile_photo_url && !nextProfile.profile_photo_url) {
+    nextProfile.profile_photo_url = currentProfile.profile_photo_url;
+  }
+  if (currentProfile?.facility_logo_url && !nextProfile.facility_logo_url) {
+    nextProfile.facility_logo_url = currentProfile.facility_logo_url;
+  }
+
+  if (assets.profilePhotoFile) {
+    const { url, error } = await uploadProfileAsset(assets.profilePhotoFile, 'profiles', 'photo');
+    if (error) {
+      setMessage(registerMessage, error.message, true);
+      return false;
+    }
+    if (url) {
+      nextProfile.profile_photo_url = url;
+    }
+  }
+
+  const { error } = await supabaseClient.from('profiles').upsert(nextProfile, {
+    onConflict: 'id',
+  });
   if (error) {
     setMessage(registerMessage, error.message, true);
     return false;
   }
-  currentProfile = profileData;
+  await supabaseClient.auth.updateUser({
+    data: {
+      role: nextProfile.role,
+      profile: {
+        role: nextProfile.role,
+        first_name: nextProfile.first_name || null,
+        last_name: nextProfile.last_name || null,
+        facility_name: nextProfile.facility_name || null,
+        specialty: nextProfile.specialty || null,
+        facility_id: nextProfile.facility_id || null,
+        date_of_birth: nextProfile.date_of_birth || null,
+        sex: nextProfile.sex || null,
+        phone: nextProfile.phone || null,
+        city: nextProfile.city || null,
+        country: nextProfile.country || null,
+        profile_photo_url: nextProfile.profile_photo_url || null,
+        facility_logo_url: nextProfile.facility_logo_url || null,
+      },
+    },
+  });
+  currentProfile = nextProfile;
+  pendingIndividualPhotoFile = null;
+  if (individualPhoto) individualPhoto.value = '';
+  resetImagePreview(individualPhotoPreview);
   setPendingRole(null);
   setMessage(registerMessage, t('messages.profileSaved'));
-  routeAfterLogin();
+  await routeAfterLogin();
   return true;
 }
 
@@ -1996,13 +2215,22 @@ async function loadAvailability(doctorId) {
     return;
   }
   const nowIso = new Date().toISOString();
-  const { data, error } = await supabaseClient
+  let query = supabaseClient
     .from('availability_slots')
     .select('*')
     .eq('doctor_id', doctorId)
     .eq('status', 'open')
     .gte('start_time', nowIso)
     .order('start_time', { ascending: true });
+
+  if (appointmentMode === 'in_person') {
+    query = query.not('facility_id', 'is', null);
+  }
+  if (appointmentMode === 'remote') {
+    query = query.is('facility_id', null);
+  }
+
+  const { data, error } = await query;
   if (error) {
     setMessage(bookingMessage, error.message, true);
     return;
@@ -2022,7 +2250,10 @@ function renderSlots(slots) {
     const li = document.createElement('div');
     li.className = 'list-item';
     const label = document.createElement('div');
-    label.textContent = formatDateTime(slot.start_time, slot.end_time);
+    const facilityName = slot.facility_id ? getFacilityNameById(slot.facility_id) : '';
+    label.textContent = facilityName
+      ? `${formatDateTime(slot.start_time, slot.end_time)} · ${facilityName}`
+      : formatDateTime(slot.start_time, slot.end_time);
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'primary';
@@ -2056,6 +2287,7 @@ async function bookSlot(slot) {
   const { error } = await supabaseClient.from('appointments').insert({
     patient_id: currentProfile.id,
     doctor_id: slot.doctor_id,
+    facility_id: slot.facility_id || null,
     start_time: slot.start_time,
     end_time: slot.end_time,
     status: 'scheduled',
@@ -2136,17 +2368,40 @@ function renderDoctorAvailability(slots) {
     const li = document.createElement('li');
     li.className = 'list-item';
     const label = document.createElement('div');
-    label.textContent = `${formatDateTime(slot.start_time, slot.end_time)} · ${slot.status}`;
-    const removeBtn = document.createElement('button');
-    removeBtn.type = 'button';
-    removeBtn.className = 'ghost';
-    removeBtn.textContent = t('actions.remove');
-    removeBtn.addEventListener('click', async () => {
-      await supabaseClient.from('availability_slots').delete().eq('id', slot.id);
-      loadDoctorAvailability();
-    });
+    const typeLabel = slot.facility_id ? t('doctor.typeInPerson') : t('doctor.typeRemote');
+    const facilityName = slot.facility_id ? getFacilityNameById(slot.facility_id) : '';
+    const facilityText = facilityName ? ` · ${facilityName}` : '';
+    const statusLabel = (() => {
+      if (slot.status === 'booked') return t('doctor.statusBooked');
+      if (slot.status === 'blocked') return t('doctor.statusBlocked');
+      return t('doctor.statusOpen');
+    })();
+    label.textContent = `${formatDateTime(slot.start_time, slot.end_time)} · ${typeLabel}${facilityText} · ${statusLabel}`;
+
+    let actionBtn = null;
+    if (slot.status === 'open') {
+      actionBtn = document.createElement('button');
+      actionBtn.type = 'button';
+      actionBtn.className = 'ghost';
+      actionBtn.textContent = t('doctor.markBusy');
+      actionBtn.addEventListener('click', async () => {
+        await supabaseClient.from('availability_slots').update({ status: 'blocked' }).eq('id', slot.id);
+        loadDoctorAvailability();
+      });
+    } else if (slot.status === 'blocked') {
+      actionBtn = document.createElement('button');
+      actionBtn.type = 'button';
+      actionBtn.className = 'ghost';
+      actionBtn.textContent = t('doctor.reopen');
+      actionBtn.addEventListener('click', async () => {
+        await supabaseClient.from('availability_slots').update({ status: 'open' }).eq('id', slot.id);
+        loadDoctorAvailability();
+      });
+    }
     li.appendChild(label);
-    li.appendChild(removeBtn);
+    if (actionBtn) {
+      li.appendChild(actionBtn);
+    }
     availabilityList.appendChild(li);
   });
 }
@@ -2166,6 +2421,7 @@ async function loadDoctorAppointments() {
   renderDoctorPatients(cachedAppointments);
   renderDoctorMissed(cachedAppointments);
   renderDoctorLost(cachedAppointments);
+  updateDoctorSummary();
 }
 
 function renderDoctorAppointments(items) {
@@ -2344,6 +2600,91 @@ function formatDateTime(start, end) {
   return `${date} ${startTime}–${endTime}`;
 }
 
+function buildLocalDate(dateStr, hour, minute) {
+  if (!dateStr) return null;
+  const [year, month, day] = dateStr.split('-').map((value) => Number.parseInt(value, 10));
+  if (!year || !month || !day) return null;
+  return new Date(year, month - 1, day, hour, minute, 0, 0);
+}
+
+function buildDailySlots(dateStr, durationMinutes) {
+  const duration = Math.max(5, Number.parseInt(durationMinutes, 10) || 30);
+  const segments = [
+    { start: { h: 9, m: 0 }, end: { h: 12, m: 30 } },
+    { start: { h: 13, m: 30 }, end: { h: 17, m: 0 } },
+  ];
+  const slots = [];
+  segments.forEach((segment) => {
+    let cursor = buildLocalDate(dateStr, segment.start.h, segment.start.m);
+    const end = buildLocalDate(dateStr, segment.end.h, segment.end.m);
+    if (!cursor || !end) return;
+    while (cursor.getTime() + duration * 60000 <= end.getTime()) {
+      const slotStart = new Date(cursor);
+      const slotEnd = new Date(cursor.getTime() + duration * 60000);
+      slots.push({ start: slotStart, end: slotEnd });
+      cursor = slotEnd;
+    }
+  });
+  return slots;
+}
+
+async function generateDaySchedule() {
+  if (!currentProfile || !supabaseClient) return;
+  const dateValue = scheduleDate?.value;
+  const duration = scheduleDuration?.value || 30;
+  if (!dateValue) return;
+
+  const type = availabilityType?.value || 'in_person';
+  const facilityId = doctorFacilitySelect?.value || currentProfile.facility_id || null;
+  if (type === 'in_person' && !facilityId) {
+    setMessage(scheduleMessage, t('messages.facilityRequired'), true);
+    return;
+  }
+
+  const slots = buildDailySlots(dateValue, duration);
+  if (slots.length === 0) {
+    setMessage(scheduleMessage, t('messages.scheduleEmpty'));
+    return;
+  }
+
+  const dayStart = buildLocalDate(dateValue, 0, 0);
+  const dayEnd = buildLocalDate(dateValue, 23, 59);
+  const { data: existing, error } = await supabaseClient
+    .from('availability_slots')
+    .select('start_time')
+    .eq('doctor_id', currentProfile.id)
+    .gte('start_time', dayStart.toISOString())
+    .lte('start_time', dayEnd.toISOString());
+  if (error) {
+    setMessage(scheduleMessage, error.message, true);
+    return;
+  }
+
+  const existingStarts = new Set(
+    (existing || []).map((slot) => new Date(slot.start_time).getTime())
+  );
+  const newSlots = slots.filter((slot) => !existingStarts.has(slot.start.getTime()));
+  if (newSlots.length === 0) {
+    setMessage(scheduleMessage, t('messages.scheduleEmpty'));
+    return;
+  }
+
+  const rows = newSlots.map((slot) => ({
+    doctor_id: currentProfile.id,
+    start_time: slot.start.toISOString(),
+    end_time: slot.end.toISOString(),
+    status: 'open',
+    facility_id: type === 'in_person' ? facilityId : null,
+  }));
+  const { error: insertError } = await supabaseClient.from('availability_slots').insert(rows);
+  if (insertError) {
+    setMessage(scheduleMessage, insertError.message, true);
+    return;
+  }
+  setMessage(scheduleMessage, t('messages.scheduleCreated'));
+  await loadDoctorAvailability();
+}
+
 function getStepsKey() {
   if (currentUser?.id) {
     return `bhealthy_steps_${currentUser.id}`;
@@ -2517,11 +2858,7 @@ if (signUpForm) {
       setMessage(signUpMessage, t('messages.passwordMismatch'), true);
       return;
     }
-    if (!signUpRole.value) {
-      setMessage(signUpMessage, t('messages.selectRole'), true);
-      return;
-    }
-    setPendingRole(signUpRole.value);
+    setPendingRole('individual');
     const email = signUpEmail.value.trim();
     const password = signUpPassword.value;
     const { data, error } = await supabaseClient.auth.signUp({
@@ -2529,7 +2866,7 @@ if (signUpForm) {
       password,
       options: {
         data: {
-          role: signUpRole.value,
+          role: 'individual',
         },
       },
     });
@@ -2560,9 +2897,11 @@ if (signUpForm) {
   });
 }
 
-if (registerRole) {
-  registerRole.addEventListener('change', (event) => {
-    updateRegisterFields(event.target.value);
+if (individualPhoto) {
+  individualPhoto.addEventListener('change', (event) => {
+    const file = event.target.files?.[0] || null;
+    pendingIndividualPhotoFile = file;
+    updateImagePreview(file, individualPhotoPreview);
   });
 }
 
@@ -2570,50 +2909,25 @@ if (registerForm) {
   registerForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!currentUser) return;
-    const role = registerRole.value;
-    if (!role) {
-      setMessage(registerMessage, t('messages.selectRole'), true);
-      return;
-    }
+    const role = 'individual';
     const base = {
       id: currentUser.id,
       role,
       email: currentUser.email,
     };
-    let profileData = { ...base };
-    if (role === 'individual') {
-      profileData = {
-        ...base,
-        first_name: individualFirstName.value.trim(),
-        last_name: individualLastName.value.trim(),
-        date_of_birth: individualDob.value || null,
-        sex: individualSex.value || null,
-        phone: individualPhone.value.trim(),
-        city: individualCity.value.trim(),
-        country: individualCountry.value.trim(),
-      };
-    } else if (role === 'doctor') {
-      profileData = {
-        ...base,
-        first_name: doctorFirstName.value.trim(),
-        last_name: doctorLastName.value.trim(),
-        date_of_birth: doctorDob.value || null,
-        sex: doctorSex.value || null,
-        phone: doctorPhone.value.trim(),
-        city: doctorCity.value.trim(),
-        country: doctorCountry.value.trim(),
-        specialty: doctorSpecialty.value.trim(),
-      };
-    } else if (role === 'facility') {
-      profileData = {
-        ...base,
-        facility_name: facilityName.value.trim(),
-        phone: facilityPhone.value.trim(),
-        city: facilityCity.value.trim(),
-        country: facilityCountry.value.trim(),
-      };
-    }
-    await saveProfile(profileData);
+    const profileData = {
+      ...base,
+      first_name: individualFirstName.value.trim(),
+      last_name: individualLastName.value.trim(),
+      date_of_birth: individualDob.value || null,
+      sex: individualSex.value || null,
+      phone: individualPhone.value.trim(),
+      city: individualCity.value.trim(),
+      country: individualCountry.value.trim(),
+    };
+    await saveProfile(profileData, {
+      profilePhotoFile: pendingIndividualPhotoFile,
+    });
   });
 }
 
@@ -2641,16 +2955,27 @@ if (hubBook) {
       appointmentSearch.value = '';
     }
     setAppointmentMode('in_person');
+    await loadFacilities();
     await loadDoctors();
     await loadPatientAppointments();
   });
 }
 
 if (modeInPerson) {
-  modeInPerson.addEventListener('click', () => setAppointmentMode('in_person'));
+  modeInPerson.addEventListener('click', () => {
+    setAppointmentMode('in_person');
+    if (doctorSelect?.value) {
+      loadAvailability(doctorSelect.value);
+    }
+  });
 }
 if (modeRemote) {
-  modeRemote.addEventListener('click', () => setAppointmentMode('remote'));
+  modeRemote.addEventListener('click', () => {
+    setAppointmentMode('remote');
+    if (doctorSelect?.value) {
+      loadAvailability(doctorSelect.value);
+    }
+  });
 }
 if (appointmentSearch) {
   appointmentSearch.addEventListener('input', filterDoctors);
@@ -2707,6 +3032,12 @@ if (availabilityForm) {
   availabilityForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!currentProfile) return;
+    const type = availabilityType?.value || 'in_person';
+    const facilityId = doctorFacilitySelect?.value || currentProfile.facility_id || null;
+    if (type === 'in_person' && !facilityId) {
+      setMessage(availabilityMessage, t('messages.facilityRequired'), true);
+      return;
+    }
     const start = new Date(availabilityStart.value);
     const minutes = Number.parseInt(availabilityDuration.value, 10) || 30;
     if (Number.isNaN(start.getTime())) return;
@@ -2716,6 +3047,7 @@ if (availabilityForm) {
       start_time: start.toISOString(),
       end_time: end.toISOString(),
       status: 'open',
+      facility_id: type === 'in_person' ? facilityId : null,
     });
     if (error) {
       setMessage(availabilityMessage, error.message, true);
@@ -2723,6 +3055,27 @@ if (availabilityForm) {
     }
     availabilityForm.reset();
     await loadDoctorAvailability();
+  });
+}
+
+if (generateScheduleBtn) {
+  generateScheduleBtn.addEventListener('click', () => {
+    generateDaySchedule();
+  });
+}
+
+if (doctorFacilitySelect) {
+  doctorFacilitySelect.addEventListener('change', async () => {
+    if (!currentProfile || currentProfile.role !== 'doctor') return;
+    const facilityId = doctorFacilitySelect.value || null;
+    const { error } = await supabaseClient
+      .from('profiles')
+      .update({ facility_id: facilityId })
+      .eq('id', currentProfile.id);
+    if (!error) {
+      currentProfile = { ...currentProfile, facility_id: facilityId };
+      await loadDoctorStats();
+    }
   });
 }
 

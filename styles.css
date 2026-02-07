@@ -72,6 +72,15 @@
   width: auto;
 }
 
+.top-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffffff;
+  box-shadow: 0 6px 16px rgba(24, 40, 32, 0.18);
+}
+
 .top-title {
   margin: 0;
   font-weight: 700;
@@ -329,6 +338,34 @@
   margin-top: -8px;
 }
 
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.summary-tile {
+  background: #f8fcfa;
+  border: 1px solid #d8e5df;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.summary-label {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.summary-value {
+  margin: 8px 0 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  font-family: 'Fraunces', serif;
+  color: var(--ink);
+}
+
 .reminder-section {
   display: grid;
   gap: 8px;
@@ -369,6 +406,14 @@
 
 .grid-form .full {
   grid-column: 1 / -1;
+}
+
+.schedule-form {
+  align-items: end;
+}
+
+.schedule-form .ghost {
+  height: 44px;
 }
 
 .list {
@@ -728,6 +773,20 @@ h1 {
 .field textarea:focus {
   outline: 2px solid #9fd8c7;
   border-color: transparent;
+}
+
+.field input[type='file'] {
+  padding: 8px;
+  background: #f7f9f8;
+}
+
+.preview-image {
+  width: 140px;
+  height: 140px;
+  border-radius: 18px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  background: #f7f9f8;
 }
 
 .segmented {
