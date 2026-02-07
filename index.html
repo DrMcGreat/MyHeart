@@ -73,7 +73,7 @@
           </div>
 
           <form id="signInForm" class="auth-form">
-            <label class="field">
+            <label class="field" id="registerRoleField">
               <span data-i18n="auth.email">Email</span>
               <input id="signInEmail" type="email" required />
             </label>
@@ -279,6 +279,44 @@
             <button id="hubBook" class="option-card" type="button" data-i18n="hub.book">
               Book an appointment
             </button>
+          </div>
+        </div>
+        <div class="hub-summary">
+          <div class="panel summary-card">
+            <h3 data-i18n="hub.activityTitle">Daily activity</h3>
+            <p class="subhead" data-i18n="hub.activitySub">Track your daily steps.</p>
+            <form id="stepsForm" class="grid-form">
+              <label class="field">
+                <span data-i18n="hub.stepsToday">Today's steps</span>
+                <input id="stepsToday" type="number" min="0" step="1" placeholder="e.g., 7500" />
+              </label>
+              <label class="field">
+                <span data-i18n="hub.stepsGoal">Daily goal</span>
+                <input id="stepsGoal" type="number" min="0" step="1" placeholder="e.g., 10000" />
+              </label>
+              <button class="primary" type="submit" data-i18n="hub.saveSteps">Save</button>
+              <p class="form-message" id="stepsMessage"></p>
+            </form>
+            <p class="muted" id="stepsSummary" data-i18n="hub.stepsEmpty">
+              No steps logged yet.
+            </p>
+          </div>
+          <div class="panel summary-card">
+            <h3 data-i18n="hub.remindersTitle">Reminders</h3>
+            <div class="reminder-section">
+              <p class="reminder-label" data-i18n="hub.medsReminder">Medications</p>
+              <ul id="hubMedList" class="list"></ul>
+              <p id="hubMedEmpty" class="muted" data-i18n="hub.medsEmpty">
+                No medications yet.
+              </p>
+            </div>
+            <div class="reminder-section">
+              <p class="reminder-label" data-i18n="hub.appointmentsReminder">Upcoming appointments</p>
+              <ul id="hubAppointmentList" class="list"></ul>
+              <p id="hubAppointmentEmpty" class="muted" data-i18n="hub.appointmentsEmpty">
+                No upcoming appointments.
+              </p>
+            </div>
           </div>
         </div>
       </section>

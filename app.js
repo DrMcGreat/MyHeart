@@ -37,6 +37,7 @@ const signUpMessage = document.getElementById('signUpMessage');
 
 const registerForm = document.getElementById('registerForm');
 const registerRole = document.getElementById('registerRole');
+const registerRoleField = document.getElementById('registerRoleField');
 const registerMessage = document.getElementById('registerMessage');
 const individualFields = document.getElementById('individualFields');
 const doctorFields = document.getElementById('doctorFields');
@@ -71,6 +72,15 @@ const backToHubFromMeds = document.getElementById('backToHubFromMeds');
 const backToHubFromAppointments = document.getElementById('backToHubFromAppointments');
 const backToHubFromDoctor = document.getElementById('backToHubFromDoctor');
 const backToHubFromFacility = document.getElementById('backToHubFromFacility');
+const stepsForm = document.getElementById('stepsForm');
+const stepsToday = document.getElementById('stepsToday');
+const stepsGoal = document.getElementById('stepsGoal');
+const stepsMessage = document.getElementById('stepsMessage');
+const stepsSummary = document.getElementById('stepsSummary');
+const hubMedList = document.getElementById('hubMedList');
+const hubMedEmpty = document.getElementById('hubMedEmpty');
+const hubAppointmentList = document.getElementById('hubAppointmentList');
+const hubAppointmentEmpty = document.getElementById('hubAppointmentEmpty');
 
 const medForm = document.getElementById('medForm');
 const medList = document.getElementById('medList');
@@ -222,6 +232,19 @@ const translations = {
       assess: 'Assess health',
       meds: 'Check medication',
       book: 'Book an appointment',
+      activityTitle: 'Daily activity',
+      activitySub: 'Track your daily steps.',
+      stepsToday: "Today's steps",
+      stepsGoal: 'Daily goal',
+      saveSteps: 'Save',
+      stepsEmpty: 'No steps logged yet.',
+      stepsUnit: 'steps',
+      stepsGoalLabel: 'of goal',
+      remindersTitle: 'Reminders',
+      medsReminder: 'Medications',
+      medsEmpty: 'No medications yet.',
+      appointmentsReminder: 'Upcoming appointments',
+      appointmentsEmpty: 'No upcoming appointments.',
     },
     meds: {
       title: 'Check medication',
@@ -520,6 +543,19 @@ const translations = {
       assess: 'Évaluer la santé',
       meds: 'Vérifier les médicaments',
       book: 'Prendre rendez-vous',
+      activityTitle: 'Activité quotidienne',
+      activitySub: 'Suivez vos pas du jour.',
+      stepsToday: 'Pas du jour',
+      stepsGoal: 'Objectif quotidien',
+      saveSteps: 'Enregistrer',
+      stepsEmpty: 'Aucun pas enregistré pour l’instant.',
+      stepsUnit: 'pas',
+      stepsGoalLabel: 'de l’objectif',
+      remindersTitle: 'Rappels',
+      medsReminder: 'Médicaments',
+      medsEmpty: 'Aucun médicament pour le moment.',
+      appointmentsReminder: 'Rendez-vous à venir',
+      appointmentsEmpty: 'Aucun rendez-vous à venir.',
     },
     meds: {
       title: 'Vérifier les médicaments',
@@ -819,6 +855,19 @@ const translations = {
       assess: 'Evaluar salud',
       meds: 'Revisar medicación',
       book: 'Reservar cita',
+      activityTitle: 'Actividad diaria',
+      activitySub: 'Registra tus pasos diarios.',
+      stepsToday: 'Pasos de hoy',
+      stepsGoal: 'Meta diaria',
+      saveSteps: 'Guardar',
+      stepsEmpty: 'Aún no hay pasos registrados.',
+      stepsUnit: 'pasos',
+      stepsGoalLabel: 'de la meta',
+      remindersTitle: 'Recordatorios',
+      medsReminder: 'Medicaciones',
+      medsEmpty: 'Aún no hay medicaciones.',
+      appointmentsReminder: 'Próximas citas',
+      appointmentsEmpty: 'No hay citas próximas.',
     },
     meds: {
       title: 'Revisar medicación',
@@ -1148,6 +1197,9 @@ function showView(viewKey) {
     view.classList.remove('hidden');
   }
   updateTopBar(viewKey);
+  if (viewKey === 'hub' && currentProfile?.role === 'individual') {
+    loadHubSummary();
+  }
   if (viewKey === 'assessment') {
     applyProfileToAssessment();
     updateScore();
@@ -1381,6 +1433,10 @@ function setLanguage(lang) {
   filterDoctors();
   updateGreeting();
   updateScore();
+
+  if (currentProfile?.role === 'individual' && hubView && !hubView.classList.contains('hidden')) {
+    loadHubSummary();
+  }
 
   const { complete, score, metrics } = calculateScore();
   if (complete && hasSubmitted) {
@@ -1834,9 +1890,16 @@ async function loadProfile() {
   }
 
   if (!data) {
+    const metaRole = currentUser?.user_metadata?.role;
+    const roleValue = pendingRole || metaRole || '';
     if (registerRole) {
-      registerRole.value = pendingRole || '';
+      registerRole.value = roleValue;
       updateRegisterFields(registerRole.value);
+      if (metaRole && registerRoleField) {
+        registerRoleField.classList.add('hidden');
+      } else if (registerRoleField) {
+        registerRoleField.classList.remove('hidden');
+      }
     }
     const email = currentUser.email || '';
     if (individualEmail) individualEmail.value = email;
@@ -2004,6 +2067,7 @@ async function bookSlot(slot) {
   setMessage(bookingMessage, t('messages.slotBooked'));
   await loadAvailability(slot.doctor_id);
   await loadPatientAppointments();
+  await loadHubAppointments();
 }
 
 async function loadPatientAppointments() {
@@ -2280,6 +2344,120 @@ function formatDateTime(start, end) {
   return `${date} ${startTime}–${endTime}`;
 }
 
+function getStepsKey() {
+  if (currentUser?.id) {
+    return `bhealthy_steps_${currentUser.id}`;
+  }
+  return 'bhealthy_steps_guest';
+}
+
+function loadStepsData() {
+  try {
+    const raw = localStorage.getItem(getStepsKey());
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+function renderStepsSummary(data) {
+  if (!stepsSummary) return;
+  if (!data || (!data.today && !data.goal)) {
+    stepsSummary.textContent = t('hub.stepsEmpty');
+    return;
+  }
+  const today = data.today ?? 0;
+  if (data.goal) {
+    const percent = Math.min(100, Math.round((today / data.goal) * 100));
+    stepsSummary.textContent = `${today} ${t('hub.stepsUnit')} · ${percent}% ${t(
+      'hub.stepsGoalLabel'
+    )}`;
+  } else {
+    stepsSummary.textContent = `${today} ${t('hub.stepsUnit')}`;
+  }
+}
+
+function loadHubSteps() {
+  const data = loadStepsData();
+  if (stepsToday) stepsToday.value = data?.today ?? '';
+  if (stepsGoal) stepsGoal.value = data?.goal ?? '';
+  renderStepsSummary(data);
+}
+
+async function loadHubMedications() {
+  if (!currentProfile) return;
+  const { data, error } = await supabaseClient
+    .from('medications')
+    .select('*')
+    .eq('patient_id', currentProfile.id)
+    .order('created_at', { ascending: false })
+    .limit(3);
+  if (error) {
+    return;
+  }
+  if (!hubMedList || !hubMedEmpty) return;
+  hubMedList.innerHTML = '';
+  if (!data || data.length === 0) {
+    hubMedEmpty.classList.remove('hidden');
+    return;
+  }
+  hubMedEmpty.classList.add('hidden');
+  data.forEach((item) => {
+    const li = document.createElement('li');
+    li.className = 'list-item';
+    const label = document.createElement('div');
+    const name = document.createElement('strong');
+    name.textContent = item.name;
+    const detail = document.createElement('div');
+    detail.className = 'muted';
+    const parts = [item.dosage, item.posology].filter(Boolean);
+    if (item.next_visit) {
+      parts.push(`${t('meds.nextVisitShort')} ${new Date(item.next_visit).toLocaleDateString()}`);
+    }
+    detail.textContent = parts.join(' · ');
+    label.appendChild(name);
+    if (detail.textContent) label.appendChild(detail);
+    li.appendChild(label);
+    hubMedList.appendChild(li);
+  });
+}
+
+async function loadHubAppointments() {
+  if (!currentProfile) return;
+  const nowIso = new Date().toISOString();
+  const { data, error } = await supabaseClient
+    .from('appointments')
+    .select('*, doctor:profiles!appointments_doctor_id_fkey(first_name,last_name,specialty)')
+    .eq('patient_id', currentProfile.id)
+    .gte('start_time', nowIso)
+    .order('start_time', { ascending: true })
+    .limit(3);
+  if (error) {
+    return;
+  }
+  if (!hubAppointmentList || !hubAppointmentEmpty) return;
+  hubAppointmentList.innerHTML = '';
+  if (!data || data.length === 0) {
+    hubAppointmentEmpty.classList.remove('hidden');
+    return;
+  }
+  hubAppointmentEmpty.classList.add('hidden');
+  data.forEach((appt) => {
+    const li = document.createElement('li');
+    li.className = 'list-item';
+    const nameParts = [appt.doctor?.first_name, appt.doctor?.last_name].filter(Boolean);
+    const docName = nameParts.join(' ') || t('appointments.doctorFallback');
+    li.textContent = `${docName} · ${formatDateTime(appt.start_time, appt.end_time)}`;
+    hubAppointmentList.appendChild(li);
+  });
+}
+
+async function loadHubSummary() {
+  loadHubSteps();
+  if (!supabaseClient) return;
+  await Promise.all([loadHubMedications(), loadHubAppointments()]);
+}
+
 form.addEventListener('input', updateScore);
 form.addEventListener('change', updateScore);
 
@@ -2349,6 +2527,11 @@ if (signUpForm) {
     const { data, error } = await supabaseClient.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          role: signUpRole.value,
+        },
+      },
     });
     if (error) {
       setMessage(signUpMessage, error.message, true);
@@ -2510,6 +2693,7 @@ if (medForm) {
     }
     medForm.reset();
     await loadMedications();
+    await loadHubMedications();
   });
 }
 
@@ -2624,6 +2808,26 @@ if (staffForm) {
     }
     staffForm.reset();
     loadFacilityStaff();
+  });
+}
+
+if (stepsForm) {
+  stepsForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const today = stepsToday?.value ? Number.parseInt(stepsToday.value, 10) : null;
+    const goal = stepsGoal?.value ? Number.parseInt(stepsGoal.value, 10) : null;
+    const data = {
+      today: Number.isFinite(today) ? today : null,
+      goal: Number.isFinite(goal) ? goal : null,
+      updatedAt: new Date().toISOString(),
+    };
+    try {
+      localStorage.setItem(getStepsKey(), JSON.stringify(data));
+    } catch (error) {
+      // ignore storage errors
+    }
+    setMessage(stepsMessage, t('messages.saved'));
+    renderStepsSummary(data);
   });
 }
 
