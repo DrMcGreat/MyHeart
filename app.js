@@ -19,6 +19,7 @@ const appointmentsView = document.getElementById('appointmentsView');
 const topBar = document.getElementById('topBar');
 const userGreeting = document.getElementById('userGreeting');
 const userAvatar = document.getElementById('userAvatar');
+const homeBtn = document.getElementById('homeBtn');
 const signOutBtn = document.getElementById('signOutBtn');
 const backToHubBtn = document.getElementById('backToHubBtn');
 
@@ -66,6 +67,43 @@ const cvhTrend = document.getElementById('cvhTrend');
 const cvhTrendSummary = document.getElementById('cvhTrendSummary');
 const cvhTrendEmpty = document.getElementById('cvhTrendEmpty');
 const cvhRunAssessment = document.getElementById('cvhRunAssessment');
+const askForm = document.getElementById('askForm');
+const askTopic = document.getElementById('askTopic');
+const askQuestion = document.getElementById('askQuestion');
+const askMessage = document.getElementById('askMessage');
+const askResponse = document.getElementById('askResponse');
+const askResponseBody = document.getElementById('askResponseBody');
+
+const bottomNav = document.getElementById('bottomNav');
+const navButtons = document.querySelectorAll('.bottom-nav .nav-btn');
+const exploreButtons = document.querySelectorAll('[data-explore]');
+
+const sleepForm = document.getElementById('sleepForm');
+const sleepHoursInput = document.getElementById('sleepHoursInput');
+const sleepGoalInput = document.getElementById('sleepGoalInput');
+const sleepMessage = document.getElementById('sleepMessage');
+const sleepSummary = document.getElementById('sleepSummary');
+const sleepTrend = document.getElementById('sleepTrend');
+const sleepTrendSummary = document.getElementById('sleepTrendSummary');
+const sleepConnectMessage = document.getElementById('sleepConnectMessage');
+
+const moveForm = document.getElementById('moveForm');
+const moveStepsToday = document.getElementById('moveStepsToday');
+const moveStepsGoal = document.getElementById('moveStepsGoal');
+const moveMessage = document.getElementById('moveMessage');
+const moveSummary = document.getElementById('moveSummary');
+const moveTrend = document.getElementById('moveTrend');
+const moveTrendSummary = document.getElementById('moveTrendSummary');
+const moveConnectMessage = document.getElementById('moveConnectMessage');
+const moveCvhScore = document.getElementById('moveCvhScore');
+const moveCvhLabel = document.getElementById('moveCvhLabel');
+const moveStepsValue = document.getElementById('moveStepsValue');
+const moveMinutesValue = document.getElementById('moveMinutesValue');
+const moveDistanceValue = document.getElementById('moveDistanceValue');
+const movePAValue = document.getElementById('movePAValue');
+const moveBPValue = document.getElementById('moveBPValue');
+const moveRecommendationsList = document.getElementById('moveRecommendationsList');
+const moveTargetsList = document.getElementById('moveTargetsList');
 const hubMedList = document.getElementById('hubMedList');
 const hubMedEmpty = document.getElementById('hubMedEmpty');
 const hubAppointmentList = document.getElementById('hubAppointmentList');
@@ -75,6 +113,8 @@ const medForm = document.getElementById('medForm');
 const medList = document.getElementById('medList');
 const medEmpty = document.getElementById('medEmpty');
 const medMessage = document.getElementById('medMessage');
+const medSetupBtn = document.getElementById('medSetupBtn');
+const medSetupSection = document.getElementById('medSetupSection');
 const medName = document.getElementById('medName');
 const medDosage = document.getElementById('medDosage');
 const medPosology = document.getElementById('medPosology');
@@ -136,6 +176,7 @@ const staffContract = document.getElementById('staffContract');
 
 const form = document.getElementById('assessment');
 const scoreValue = document.getElementById('scoreValue');
+const scoreUnit = document.getElementById('scoreUnit');
 const scoreLabel = document.getElementById('scoreLabel');
 const scoreIndicator = document.getElementById('scoreIndicator');
 const modalIndicator = document.getElementById('modalIndicator');
@@ -191,12 +232,22 @@ let appointmentMode = 'in_person';
 let cachedFacilities = [];
 let doctorFacilityTotal = 0;
 let pendingIndividualPhotoFile = null;
+let latestCvhScore = null;
 
 const translations = {
   en: {
     title: 'B-Healthy - Check you heart health',
     language: { label: 'Language' },
-    nav: { back: 'Back to menu', signOut: 'Sign out' },
+    nav: {
+      back: 'Back to menu',
+      signOut: 'Sign out',
+      home: 'Home',
+      profile: 'Profile',
+      sleep: 'Sleep',
+      move: 'Move',
+      explore: 'Explore',
+      assess: 'Assess',
+    },
     auth: {
       title: 'Welcome to B-Healthy',
       subtitle: 'Sign in to continue or create a profile to get started.',
@@ -261,13 +312,112 @@ const translations = {
       cvhLatest: 'Latest score: {score} · {date}',
       cvhChange: 'Change since last check: {diff}',
       cvhRun: 'Run assessment',
+      askTitle: 'Asks',
+      askSub: 'Ask about CVH prevention or medications.',
+      askTopicLabel: 'Topic',
+      askTopicCvh: 'CVH prevention',
+      askTopicMeds: 'Medication guidance',
+      askQuestionLabel: 'Your question',
+      askPlaceholder: 'e.g., How can I improve my blood pressure?',
+      askSubmit: 'Get guidance',
+      askResponseTitle: 'Guidance',
+      askDisclaimer: 'This guidance is general education and not a medical diagnosis.',
+      askCvhIntro: 'Here are general CVH prevention tips:',
+      askMedsIntro: 'Here are general medication tips:',
+      askCvhDiet: 'Favor vegetables, fruits, whole grains, and limit salty or sugary foods.',
+      askCvhActivity: 'Aim for 150 minutes of moderate activity weekly, and break up long sitting time.',
+      askCvhSleep: 'Target 7–9 hours of sleep and keep a steady sleep schedule.',
+      askCvhNicotine: 'Avoid tobacco or vaping; quitting is one of the biggest heart health boosts.',
+      askCvhStress: 'Use stress reducers like walks, breathing, or short relaxation breaks.',
+      askCvhBp: 'Check blood pressure regularly and reduce sodium if it is elevated.',
+      askCvhGeneral1: 'Keep a balanced diet, move daily, and stay hydrated.',
+      askCvhGeneral2: 'Track your CVH score monthly to see progress.',
+      askMedsAdherence: 'Take medicines exactly as prescribed; do not stop without medical advice.',
+      askMedsMissed: 'If you miss a dose, follow your prescription label or pharmacist guidance.',
+      askMedsSideEffects: 'Report persistent or severe side effects to your clinician.',
+      askMedsInteractions: 'Ask a pharmacist before mixing medications, supplements, or alcohol.',
+      askMedsGeneral1: 'Use reminders and your medication tracker to stay consistent.',
+      askUrgent: 'If you have severe symptoms (chest pain, fainting, severe shortness of breath), seek urgent care.',
       remindersTitle: 'Reminders',
       medsReminder: 'Medications',
       medsEmpty: 'No medications yet.',
       appointmentsReminder: 'Upcoming appointments',
       appointmentsEmpty: 'No upcoming appointments.',
     },
+    sleep: {
+      title: 'Sleep tracking',
+      subhead: 'Log your sleep and get tips to improve rest.',
+      hours: 'Hours slept',
+      goal: 'Sleep goal (hours)',
+      save: 'Save',
+      empty: 'No sleep data yet.',
+      trendTitle: '7-day trend',
+      trendEmpty: 'No trend data yet.',
+      summaryGood: 'Great sleep! Keep your routine steady.',
+      summaryLow: 'Try aiming for 7–9 hours and a consistent bedtime.',
+      deviceTitle: 'Connect a device',
+      deviceHint: 'Link Apple Health or Google Fit (coming soon).',
+      deviceComingSoon: 'Sleep sync is coming soon.',
+    },
+    move: {
+      dashboardTitle: 'Your cardiovascular health',
+      heroTitle: 'Your cardiovascular health',
+      cvhScore: 'CVH score',
+      stepsStat: 'Steps',
+      minutesStat: 'Minutes',
+      distanceStat: 'Distance',
+      paLabel: 'PA',
+      bpLabel: 'BP',
+      cvhEmpty: 'No score yet',
+      paValue: 'PA · {minutes} min/week',
+      recommendationsTitle: 'Recommendations',
+      recommendationsSub: 'To improve',
+      targetsTitle: 'Personal targets',
+      targetsSub: 'My personal goals',
+      badgesTitle: 'Badges',
+      badgeStreak: 'Consistency',
+      badgeHeart: 'Heart care',
+      badgeSpark: 'Energy',
+      updateTitle: "Update today's activity",
+      updateSubhead: 'Track activity and keep your streak.',
+      title: 'Move tracking',
+      subhead: 'Track activity and hit your goals.',
+      stepsToday: "Today's steps",
+      stepsGoal: 'Daily goal',
+      save: 'Save',
+      empty: 'No activity data yet.',
+      trendTitle: '7-day trend',
+      trendEmpty: 'No trend data yet.',
+      summaryMet: 'Great job — goal reached!',
+      summaryKeep: 'Keep moving to reach your daily goal.',
+      whoTip: 'WHO recommends 150 minutes of moderate activity per week.',
+      deviceTitle: 'Connect a device',
+      deviceHint: 'Link Apple Health, Google Fit, or Fitbit (coming soon).',
+      deviceComingSoon: 'Activity sync is coming soon.',
+      recommendGoal: 'Add {diff} more steps to reach your daily goal.',
+      recommendGoalMet: 'Great work hitting your daily goal.',
+      recommendMove: 'Add two short walks to boost daily movement.',
+      recommendBreaks: 'Take movement breaks every hour.',
+      recommendStrength: 'Include strength training twice per week.',
+      targetSteps: '{goal} steps per day',
+      targetStepsDefault: '10,000 steps per day',
+      targetFruits: '3 servings of fruits and vegetables per day',
+      targetWater: '2 liters of water',
+      targetStrength: '12 minutes of strengthening exercises',
+    },
+    explore: {
+      title: 'Explore features',
+      subhead: 'Jump into any part of B-Healthy.',
+    },
     meds: {
+      guardianTitle: 'Treatment Guardian',
+      setupTitle: 'Set Up Medications',
+      setupTrack: 'Track all your medications in one place.',
+      setupSchedule: 'Set a schedule and get reminders.',
+      setupPrivacy: 'Your medication information is encrypted and cannot be read by anyone.',
+      setupButton: 'Set Up Medications',
+      privacyNote:
+        'Your medication information is encrypted and cannot be read by anyone, including B-Healthy.',
       title: 'Check medication',
       current: 'Current medications',
       empty: 'No medications yet.',
@@ -286,6 +436,7 @@ const translations = {
       dosesStatus: '{taken} of {total} doses taken today',
       markAll: 'Mark all taken',
       noSchedule: 'Add doses per day to enable reminders.',
+      calendarTitle: 'Daily confirmation',
     },
     appointments: {
       title: 'Book an appointment',
@@ -376,6 +527,7 @@ const translations = {
       missingPatient: 'Select a patient first.',
       slotBooked: 'Appointment booked.',
       slotTaken: 'That slot is no longer available.',
+      askEmpty: 'Please enter a question to get guidance.',
     },
     yes: 'Yes',
     no: 'No',
@@ -550,7 +702,16 @@ const translations = {
   fr: {
     title: 'B-Healthy - Vérifiez la santé de votre cœur',
     language: { label: 'Langue' },
-    nav: { back: 'Retour au menu', signOut: 'Se déconnecter' },
+    nav: {
+      back: 'Retour au menu',
+      signOut: 'Se déconnecter',
+      home: 'Accueil',
+      profile: 'Profil',
+      sleep: 'Sommeil',
+      move: 'Bouger',
+      explore: 'Explorer',
+      assess: 'Évaluer',
+    },
     auth: {
       title: 'Bienvenue sur B-Healthy',
       subtitle: 'Connectez-vous pour continuer ou créez un profil pour démarrer.',
@@ -615,13 +776,113 @@ const translations = {
       cvhLatest: 'Dernier score : {score} · {date}',
       cvhChange: 'Écart depuis le dernier contrôle : {diff}',
       cvhRun: "Lancer l'évaluation",
+      askTitle: 'Questions',
+      askSub: 'Posez des questions sur la prévention CVH ou les médicaments.',
+      askTopicLabel: 'Sujet',
+      askTopicCvh: 'Prévention CVH',
+      askTopicMeds: 'Conseils médicaments',
+      askQuestionLabel: 'Votre question',
+      askPlaceholder: 'ex. Comment améliorer ma tension artérielle ?',
+      askSubmit: 'Obtenir des conseils',
+      askResponseTitle: 'Conseils',
+      askDisclaimer: "Ces conseils sont généraux et ne remplacent pas un avis médical.",
+      askCvhIntro: 'Voici des conseils généraux de prévention CVH :',
+      askMedsIntro: 'Voici des conseils généraux sur les médicaments :',
+      askCvhDiet: 'Privilégiez légumes, fruits, céréales complètes, et limitez le sel et le sucre.',
+      askCvhActivity: 'Visez 150 minutes d’activité modérée par semaine et évitez la sédentarité.',
+      askCvhSleep: 'Visez 7–9 heures de sommeil avec une routine régulière.',
+      askCvhNicotine: 'Évitez tabac ou vape; arrêter est l’un des meilleurs leviers.',
+      askCvhStress: 'Réduisez le stress avec des pauses, respiration, ou marche.',
+      askCvhBp: 'Surveillez la tension et réduisez le sodium en cas d’élévation.',
+      askCvhGeneral1: 'Alimentation équilibrée, activité régulière et hydratation sont clés.',
+      askCvhGeneral2: 'Suivez votre score CVH chaque mois pour voir les progrès.',
+      askMedsAdherence: 'Prenez les médicaments comme prescrits; ne les arrêtez pas sans avis médical.',
+      askMedsMissed: 'Si une dose est oubliée, suivez l’étiquette ou demandez au pharmacien.',
+      askMedsSideEffects: 'Signalez les effets indésirables persistants ou sévères.',
+      askMedsInteractions: 'Vérifiez avec un pharmacien avant de mélanger médicaments, compléments ou alcool.',
+      askMedsGeneral1: 'Utilisez des rappels et le suivi pour rester régulier.',
+      askUrgent:
+        'Si vous avez des symptômes graves (douleur thoracique, malaise, essoufflement sévère), consultez en urgence.',
       remindersTitle: 'Rappels',
       medsReminder: 'Médicaments',
       medsEmpty: 'Aucun médicament pour le moment.',
       appointmentsReminder: 'Rendez-vous à venir',
       appointmentsEmpty: 'Aucun rendez-vous à venir.',
     },
+    sleep: {
+      title: 'Suivi du sommeil',
+      subhead: 'Enregistrez votre sommeil et recevez des conseils.',
+      hours: 'Heures dormies',
+      goal: 'Objectif sommeil (heures)',
+      save: 'Enregistrer',
+      empty: 'Aucune donnée de sommeil.',
+      trendTitle: 'Tendance sur 7 jours',
+      trendEmpty: 'Aucune tendance pour le moment.',
+      summaryGood: 'Bon sommeil ! Gardez votre routine.',
+      summaryLow: 'Visez 7–9 heures et un horaire régulier.',
+      deviceTitle: 'Connecter un appareil',
+      deviceHint: 'Apple Health ou Google Fit (bientôt disponibles).',
+      deviceComingSoon: 'La synchronisation sommeil arrive bientôt.',
+    },
+    move: {
+      dashboardTitle: 'Votre santé cardiovasculaire',
+      heroTitle: 'Votre santé cardiovasculaire',
+      cvhScore: 'Score CVH',
+      stepsStat: 'Pas',
+      minutesStat: 'Minutes',
+      distanceStat: 'Distance',
+      paLabel: 'AP',
+      bpLabel: 'TA',
+      cvhEmpty: 'Pas de score pour le moment',
+      paValue: 'AP · {minutes} min/sem',
+      recommendationsTitle: 'Recommandations',
+      recommendationsSub: 'À améliorer',
+      targetsTitle: 'Objectifs personnels',
+      targetsSub: 'Mes objectifs',
+      badgesTitle: 'Badges',
+      badgeStreak: 'Régularité',
+      badgeHeart: 'Coeur',
+      badgeSpark: 'Énergie',
+      updateTitle: "Mettre à jour l'activité du jour",
+      updateSubhead: 'Suivez votre activité et gardez le rythme.',
+      title: "Suivi d'activité",
+      subhead: 'Suivez votre activité et atteignez vos objectifs.',
+      stepsToday: 'Pas du jour',
+      stepsGoal: 'Objectif quotidien',
+      save: 'Enregistrer',
+      empty: "Aucune donnée d'activité.",
+      trendTitle: 'Tendance sur 7 jours',
+      trendEmpty: 'Aucune tendance pour le moment.',
+      summaryMet: 'Bravo — objectif atteint !',
+      summaryKeep: 'Continuez pour atteindre votre objectif.',
+      whoTip: 'L’OMS recommande 150 minutes d’activité modérée par semaine.',
+      deviceTitle: 'Connecter un appareil',
+      deviceHint: 'Apple Health, Google Fit ou Fitbit (bientôt disponibles).',
+      deviceComingSoon: 'La synchronisation arrive bientôt.',
+      recommendGoal: 'Ajoutez {diff} pas pour atteindre votre objectif.',
+      recommendGoalMet: 'Bravo, objectif atteint.',
+      recommendMove: 'Ajoutez deux courtes marches pour bouger plus.',
+      recommendBreaks: 'Faites une pause active chaque heure.',
+      recommendStrength: 'Incluez 2 séances de renforcement par semaine.',
+      targetSteps: '{goal} pas par jour',
+      targetStepsDefault: '10 000 pas par jour',
+      targetFruits: '3 portions de fruits et légumes par jour',
+      targetWater: "2 litres d'eau",
+      targetStrength: "12 minutes d'exercices de renforcement",
+    },
+    explore: {
+      title: 'Explorer les fonctionnalités',
+      subhead: 'Accédez rapidement aux sections de B-Healthy.',
+    },
     meds: {
+      guardianTitle: 'Gardien du traitement',
+      setupTitle: 'Configurer les médicaments',
+      setupTrack: 'Regroupez tous vos médicaments en un seul endroit.',
+      setupSchedule: 'Définissez un horaire et recevez des rappels.',
+      setupPrivacy: 'Vos informations de traitement sont chiffrées et inaccessibles.',
+      setupButton: 'Configurer les médicaments',
+      privacyNote:
+        "Vos informations de traitement sont chiffrées et ne peuvent être lues par personne, y compris B-Healthy.",
       title: 'Vérifier les médicaments',
       current: 'Médicaments en cours',
       empty: 'Aucun médicament pour le moment.',
@@ -640,6 +901,7 @@ const translations = {
       dosesStatus: '{taken} sur {total} prises effectuées aujourd’hui',
       markAll: 'Tout marquer',
       noSchedule: 'Ajoutez le nombre de prises par jour pour activer les rappels.',
+      calendarTitle: 'Confirmation quotidienne',
     },
     appointments: {
       title: 'Prendre rendez-vous',
@@ -732,6 +994,7 @@ const translations = {
       missingPatient: 'Sélectionnez d’abord un patient.',
       slotBooked: 'Rendez-vous réservé.',
       slotTaken: 'Ce créneau n’est plus disponible.',
+      askEmpty: 'Veuillez saisir une question pour recevoir des conseils.',
     },
     yes: 'Oui',
     no: 'Non',
@@ -906,7 +1169,16 @@ const translations = {
   es: {
     title: 'B-Healthy - Revisa la salud de tu corazón',
     language: { label: 'Idioma' },
-    nav: { back: 'Volver al menú', signOut: 'Cerrar sesión' },
+    nav: {
+      back: 'Volver al menú',
+      signOut: 'Cerrar sesión',
+      home: 'Inicio',
+      profile: 'Perfil',
+      sleep: 'Sueño',
+      move: 'Movimiento',
+      explore: 'Explorar',
+      assess: 'Evaluar',
+    },
     auth: {
       title: 'Bienvenido a B-Healthy',
       subtitle: 'Inicia sesión para continuar o crea un perfil para comenzar.',
@@ -971,13 +1243,113 @@ const translations = {
       cvhLatest: 'Último puntaje: {score} · {date}',
       cvhChange: 'Cambio desde el último control: {diff}',
       cvhRun: 'Iniciar evaluación',
+      askTitle: 'Consultas',
+      askSub: 'Pregunta sobre prevención CVH o medicamentos.',
+      askTopicLabel: 'Tema',
+      askTopicCvh: 'Prevención CVH',
+      askTopicMeds: 'Guía de medicamentos',
+      askQuestionLabel: 'Tu pregunta',
+      askPlaceholder: 'p. ej., ¿Cómo mejorar mi presión arterial?',
+      askSubmit: 'Obtener guía',
+      askResponseTitle: 'Guía',
+      askDisclaimer: 'Estas recomendaciones son generales y no sustituyen consejo médico.',
+      askCvhIntro: 'Aquí tienes consejos generales de prevención CVH:',
+      askMedsIntro: 'Aquí tienes consejos generales sobre medicamentos:',
+      askCvhDiet: 'Prioriza verduras, frutas, granos integrales y limita sal y azúcar.',
+      askCvhActivity: 'Busca 150 minutos semanales de actividad moderada y evita sedentarismo.',
+      askCvhSleep: 'Apunta a 7–9 horas de sueño con horario estable.',
+      askCvhNicotine: 'Evita tabaco o vapeo; dejarlo mejora mucho la salud cardíaca.',
+      askCvhStress: 'Reduce el estrés con pausas, respiración o caminatas.',
+      askCvhBp: 'Controla la presión y reduce sodio si está elevada.',
+      askCvhGeneral1: 'Dieta equilibrada, actividad diaria e hidratación ayudan.',
+      askCvhGeneral2: 'Sigue tu puntaje CVH cada mes para ver avances.',
+      askMedsAdherence: 'Toma los medicamentos como se prescriben; no los suspendas sin consejo.',
+      askMedsMissed: 'Si olvidas una dosis, sigue la etiqueta o consulta al farmacéutico.',
+      askMedsSideEffects: 'Reporta efectos adversos persistentes o graves.',
+      askMedsInteractions: 'Consulta antes de combinar medicamentos, suplementos o alcohol.',
+      askMedsGeneral1: 'Usa recordatorios y el seguimiento para mantener constancia.',
+      askUrgent:
+        'Si tienes síntomas graves (dolor en el pecho, desmayo, falta de aire intensa), busca atención urgente.',
       remindersTitle: 'Recordatorios',
       medsReminder: 'Medicaciones',
       medsEmpty: 'Aún no hay medicaciones.',
       appointmentsReminder: 'Próximas citas',
       appointmentsEmpty: 'No hay citas próximas.',
     },
+    sleep: {
+      title: 'Seguimiento del sueño',
+      subhead: 'Registra tu sueño y recibe consejos.',
+      hours: 'Horas dormidas',
+      goal: 'Meta de sueño (horas)',
+      save: 'Guardar',
+      empty: 'No hay datos de sueño.',
+      trendTitle: 'Tendencia de 7 días',
+      trendEmpty: 'Aún no hay datos de tendencia.',
+      summaryGood: '¡Buen sueño! Mantén tu rutina.',
+      summaryLow: 'Apunta a 7–9 horas y un horario constante.',
+      deviceTitle: 'Conectar un dispositivo',
+      deviceHint: 'Apple Health o Google Fit (próximamente).',
+      deviceComingSoon: 'La sincronización de sueño llegará pronto.',
+    },
+    move: {
+      dashboardTitle: 'Tu salud cardiovascular',
+      heroTitle: 'Tu salud cardiovascular',
+      cvhScore: 'Puntaje CVH',
+      stepsStat: 'Pasos',
+      minutesStat: 'Minutos',
+      distanceStat: 'Distancia',
+      paLabel: 'AF',
+      bpLabel: 'PA',
+      cvhEmpty: 'Sin puntaje por ahora',
+      paValue: 'AF · {minutes} min/sem',
+      recommendationsTitle: 'Recomendaciones',
+      recommendationsSub: 'Para mejorar',
+      targetsTitle: 'Metas personales',
+      targetsSub: 'Mis metas',
+      badgesTitle: 'Insignias',
+      badgeStreak: 'Constancia',
+      badgeHeart: 'Cuidado del corazón',
+      badgeSpark: 'Energía',
+      updateTitle: 'Actualizar actividad de hoy',
+      updateSubhead: 'Registra tu actividad y mantén la racha.',
+      title: 'Seguimiento de movimiento',
+      subhead: 'Registra tu actividad y alcanza tus metas.',
+      stepsToday: 'Pasos de hoy',
+      stepsGoal: 'Meta diaria',
+      save: 'Guardar',
+      empty: 'No hay datos de actividad.',
+      trendTitle: 'Tendencia de 7 días',
+      trendEmpty: 'Aún no hay datos de tendencia.',
+      summaryMet: '¡Bien hecho — meta alcanzada!',
+      summaryKeep: 'Sigue moviéndote para lograr tu meta.',
+      whoTip: 'La OMS recomienda 150 minutos de actividad moderada por semana.',
+      deviceTitle: 'Conectar un dispositivo',
+      deviceHint: 'Apple Health, Google Fit o Fitbit (próximamente).',
+      deviceComingSoon: 'La sincronización llegará pronto.',
+      recommendGoal: 'Agrega {diff} pasos para alcanzar tu meta diaria.',
+      recommendGoalMet: 'Excelente, meta diaria cumplida.',
+      recommendMove: 'Añade dos caminatas cortas para moverte más.',
+      recommendBreaks: 'Haz pausas activas cada hora.',
+      recommendStrength: 'Incluye fuerza dos veces por semana.',
+      targetSteps: '{goal} pasos por día',
+      targetStepsDefault: '10,000 pasos por día',
+      targetFruits: '3 porciones de frutas y verduras al día',
+      targetWater: '2 litros de agua',
+      targetStrength: '12 minutos de ejercicios de fortalecimiento',
+    },
+    explore: {
+      title: 'Explora funciones',
+      subhead: 'Salta a cualquier sección de B-Healthy.',
+    },
     meds: {
+      guardianTitle: 'Guardia del tratamiento',
+      setupTitle: 'Configurar medicamentos',
+      setupTrack: 'Registra todos tus medicamentos en un solo lugar.',
+      setupSchedule: 'Define un horario y recibe recordatorios.',
+      setupPrivacy: 'Tu información de tratamiento está cifrada y no puede ser leída.',
+      setupButton: 'Configurar medicamentos',
+      privacyNote:
+        'Tu información de tratamiento está cifrada y no puede ser leída por nadie, incluido B-Healthy.',
       title: 'Revisar medicación',
       current: 'Medicaciones actuales',
       empty: 'Aún no hay medicaciones.',
@@ -996,6 +1368,7 @@ const translations = {
       dosesStatus: '{taken} de {total} tomas realizadas hoy',
       markAll: 'Marcar todo',
       noSchedule: 'Agrega tomas por día para activar recordatorios.',
+      calendarTitle: 'Confirmación diaria',
     },
     appointments: {
       title: 'Reservar cita',
@@ -1087,6 +1460,7 @@ const translations = {
       missingPatient: 'Primero selecciona un paciente.',
       slotBooked: 'Cita reservada.',
       slotTaken: 'Ese horario ya no está disponible.',
+      askEmpty: 'Escribe una pregunta para obtener orientación.',
     },
     yes: 'Sí',
     no: 'No',
@@ -1322,6 +1696,66 @@ function getMetricAdvice() {
   };
 }
 
+function prepareRegisterView() {
+  ensureIndividualFieldsVisible();
+  if (currentProfile) {
+    populateProfileForm(currentProfile);
+  }
+}
+
+function prepareSleepView() {
+  const data = loadSleepData();
+  if (sleepHoursInput) sleepHoursInput.value = data?.hours ?? '';
+  if (sleepGoalInput) sleepGoalInput.value = data?.goal ?? '';
+  if (sleepSummary) sleepSummary.textContent = data?.hours ? '' : t('sleep.empty');
+  const history = loadSleepHistory();
+  if (sleepTrend && sleepTrendSummary) {
+    renderTrendGeneric(
+      sleepTrend,
+      sleepTrendSummary,
+      history,
+      'h',
+      '{today}h',
+      t('sleep.trendEmpty')
+    );
+  }
+}
+
+function prepareMoveView() {
+  const data = loadMoveData();
+  if (moveStepsToday) moveStepsToday.value = data?.today ?? '';
+  if (moveStepsGoal) moveStepsGoal.value = data?.goal ?? '';
+  if (moveSummary) moveSummary.textContent = data?.today ? '' : t('move.empty');
+  updateMoveDashboard(data);
+  const history = loadMoveHistory();
+  if (moveTrend && moveTrendSummary) {
+    renderTrendGeneric(
+      moveTrend,
+      moveTrendSummary,
+      history,
+      t('hub.stepsUnit'),
+      t('hub.trendNoYesterday'),
+      t('move.trendEmpty')
+    );
+  }
+}
+
+async function openMedsView() {
+  showView('meds');
+  await loadMedications();
+}
+
+async function openAppointmentsView() {
+  showView('appointments');
+  if (appointmentSearch) {
+    appointmentSearch.value = '';
+  }
+  setAppointmentMode('in_person');
+  await loadFacilities();
+  await loadDoctors();
+  await loadPatientAppointments();
+}
+
 const views = {
   auth: authView,
   register: registerView,
@@ -1329,6 +1763,9 @@ const views = {
   assessment: assessmentView,
   meds: medsView,
   appointments: appointmentsView,
+  sleep: document.getElementById('sleepView'),
+  move: document.getElementById('moveView'),
+  explore: document.getElementById('exploreView'),
 };
 
 function showView(viewKey) {
@@ -1338,12 +1775,22 @@ function showView(viewKey) {
     view.classList.remove('hidden');
   }
   updateTopBar(viewKey);
+  updateBottomNav(viewKey);
   if (viewKey === 'hub' && currentProfile?.role === 'individual') {
     loadHubSummary();
+  }
+  if (viewKey === 'register') {
+    prepareRegisterView();
   }
   if (viewKey === 'assessment') {
     applyProfileToAssessment();
     updateScore();
+  }
+  if (viewKey === 'sleep') {
+    prepareSleepView();
+  }
+  if (viewKey === 'move') {
+    prepareMoveView();
   }
 }
 
@@ -1374,9 +1821,23 @@ function updateTopBar(viewKey) {
   if (backToHubBtn) {
     backToHubBtn.classList.toggle('hidden', !showBack);
   }
+  if (homeBtn) {
+    const showHome = authed && currentProfile?.role === 'individual' && viewKey !== 'auth';
+    homeBtn.classList.toggle('hidden', !showHome);
+  }
   if (signOutBtn) {
     signOutBtn.classList.toggle('hidden', !authed);
   }
+}
+
+function updateBottomNav(viewKey) {
+  if (!bottomNav) return;
+  const authed = Boolean(currentUser);
+  bottomNav.classList.toggle('hidden', !authed || viewKey === 'auth');
+  navButtons.forEach((button) => {
+    const target = button.getAttribute('data-view');
+    button.classList.toggle('active', target === viewKey);
+  });
 }
 
 function setAuthMode(mode) {
@@ -1952,13 +2413,15 @@ function updateScoreDisplay(score) {
   if (score === null) {
     scoreValue.textContent = '--';
     scoreValue.style.color = '';
+    if (scoreUnit) scoreUnit.textContent = '';
     scoreIndicator.style.left = '0%';
     scoreIndicator.style.background = '#c7ddd5';
     return;
   }
 
   const color = interpolateColor(score);
-  scoreValue.textContent = `${score} / 100`;
+  scoreValue.textContent = `${score}`;
+  if (scoreUnit) scoreUnit.textContent = '/100';
   scoreLabel.textContent = getLabelMap().find((entry) => score >= entry.min).text;
   scoreIndicator.style.left = `${score}%`;
   scoreIndicator.style.background = color;
@@ -2248,9 +2711,17 @@ async function loadMedications() {
     setMessage(medMessage, error.message, true);
     return;
   }
-  const logsMap = await loadMedicationLogsForDate(getLocalDateKey());
-  renderMedications(data || [], logsMap);
-  updateMedicationReminder(data || [], logsMap);
+  const logsRange = await loadMedicationLogsForRange(7);
+  const todayKey = getLocalDateKey();
+  const todayMap = new Map();
+  logsRange.forEach((dateMap, medId) => {
+    const value = dateMap.get(todayKey);
+    if (value !== undefined) {
+      todayMap.set(medId, value);
+    }
+  });
+  renderMedications(data || [], todayMap, logsRange);
+  updateMedicationReminder(data || [], todayMap);
 }
 
 async function loadMedicationLogsForDate(dateKey) {
@@ -2272,12 +2743,36 @@ async function loadMedicationLogsForDate(dateKey) {
   return map;
 }
 
-async function saveMedicationLog(medicationId, dosesTaken) {
+async function loadMedicationLogsForRange(days = 7) {
+  if (!currentProfile || !supabaseClient) return new Map();
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() - (days - 1));
+  const startKey = getLocalDateKey(startDate);
+  const { data, error } = await supabaseClient
+    .from('medication_logs')
+    .select('medication_id, log_date, doses_taken')
+    .eq('patient_id', currentProfile.id)
+    .gte('log_date', startKey);
+  if (error || !data) {
+    return new Map();
+  }
+  const map = new Map();
+  data.forEach((row) => {
+    if (!row.medication_id || !row.log_date) return;
+    if (!map.has(row.medication_id)) {
+      map.set(row.medication_id, new Map());
+    }
+    map.get(row.medication_id).set(row.log_date, row.doses_taken ?? 0);
+  });
+  return map;
+}
+
+async function saveMedicationLogForDate(medicationId, dateKey, dosesTaken) {
   if (!currentProfile || !supabaseClient) return false;
   const payload = {
     medication_id: medicationId,
     patient_id: currentProfile.id,
-    log_date: getLocalDateKey(),
+    log_date: dateKey,
     doses_taken: dosesTaken,
   };
   const { error } = await supabaseClient
@@ -2320,7 +2815,7 @@ function updateMedicationReminder(items, logsMap) {
   medReminderMessage.classList.remove('success');
 }
 
-function renderMedications(items, logsMap) {
+function renderMedications(items, logsMap, logsRange) {
   if (!medList || !medEmpty) return;
   medList.innerHTML = '';
   if (!items.length) {
@@ -2383,7 +2878,7 @@ function renderMedications(items, logsMap) {
         chip.textContent = i.toString();
         chip.addEventListener('click', async () => {
           const nextTaken = i <= takenCount ? i - 1 : i;
-          const saved = await saveMedicationLog(item.id, nextTaken);
+          const saved = await saveMedicationLogForDate(item.id, getLocalDateKey(), nextTaken);
           if (saved) {
             takenCount = nextTaken;
             logsMap.set(item.id, nextTaken);
@@ -2399,7 +2894,7 @@ function renderMedications(items, logsMap) {
       markAll.className = 'ghost small';
       markAll.textContent = t('meds.markAll');
       markAll.addEventListener('click', async () => {
-        const saved = await saveMedicationLog(item.id, dosesPerDay);
+        const saved = await saveMedicationLogForDate(item.id, getLocalDateKey(), dosesPerDay);
         if (saved) {
           takenCount = dosesPerDay;
           logsMap.set(item.id, dosesPerDay);
@@ -2411,6 +2906,54 @@ function renderMedications(items, logsMap) {
       tracker.appendChild(status);
       tracker.appendChild(chips);
       tracker.appendChild(markAll);
+
+      const calendar = document.createElement('div');
+      calendar.className = 'med-calendar';
+      const calendarTitle = document.createElement('p');
+      calendarTitle.className = 'muted';
+      calendarTitle.textContent = t('meds.calendarTitle');
+      const calendarGrid = document.createElement('div');
+      calendarGrid.className = 'med-calendar-grid';
+      const calendarDates = [];
+      for (let i = 6; i >= 0; i -= 1) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const key = getLocalDateKey(date);
+        calendarDates.push({ key, label: date.toLocaleDateString(undefined, { weekday: 'short' }) });
+      }
+      const medLogMap = logsRange?.get(item.id) || new Map();
+      calendarDates.forEach((entry) => {
+        const day = document.createElement('button');
+        day.type = 'button';
+        day.className = 'med-day';
+        const taken = medLogMap.get(entry.key) ?? 0;
+        const complete = taken >= dosesPerDay;
+        if (complete) {
+          day.classList.add('complete');
+        } else if (taken > 0) {
+          day.classList.add('partial');
+        }
+        day.textContent = entry.label;
+        day.addEventListener('click', async () => {
+          const nextTaken = complete ? 0 : dosesPerDay;
+          const saved = await saveMedicationLogForDate(item.id, entry.key, nextTaken);
+          if (saved) {
+            medLogMap.set(entry.key, nextTaken);
+            if (entry.key === getLocalDateKey()) {
+              takenCount = nextTaken;
+              logsMap.set(item.id, nextTaken);
+              updateChips();
+              updateMedicationReminder(items, logsMap);
+            }
+            day.classList.toggle('complete', nextTaken >= dosesPerDay);
+            day.classList.toggle('partial', nextTaken > 0 && nextTaken < dosesPerDay);
+          }
+        });
+        calendarGrid.appendChild(day);
+      });
+      calendar.appendChild(calendarTitle);
+      calendar.appendChild(calendarGrid);
+      tracker.appendChild(calendar);
       li.appendChild(tracker);
       updateChips();
     }
@@ -3019,6 +3562,202 @@ function renderStepsTrend(history) {
   });
 }
 
+function renderTrendGeneric(container, summaryEl, history, unitLabel, summaryTemplate, emptyText) {
+  if (!container || !summaryEl) return;
+  container.innerHTML = '';
+  if (!history || history.length === 0) {
+    summaryEl.textContent = emptyText;
+    return;
+  }
+  const maxValue = Math.max(...history.map((entry) => entry.value || 0), 1);
+  history.forEach((entry) => {
+    const bar = document.createElement('div');
+    bar.className = 'trend-bar';
+    const height = Math.max(6, Math.round((entry.value / maxValue) * 100));
+    bar.style.height = `${height}%`;
+    bar.title = `${entry.date}: ${entry.value} ${unitLabel}`;
+    const label = document.createElement('span');
+    label.className = 'trend-label';
+    label.textContent = entry.date.slice(5);
+    bar.appendChild(label);
+    container.appendChild(bar);
+  });
+  const todayKey = getLocalDateKey();
+  const todayEntry = history.find((entry) => entry.date === todayKey);
+  if (!todayEntry) {
+    summaryEl.textContent = emptyText;
+    return;
+  }
+  summaryEl.textContent = formatMessage(summaryTemplate, { today: todayEntry.value });
+}
+
+function getSleepKey() {
+  if (currentUser?.id) {
+    return `bhealthy_sleep_${currentUser.id}`;
+  }
+  return 'bhealthy_sleep_guest';
+}
+
+function getSleepHistoryKey() {
+  if (currentUser?.id) {
+    return `bhealthy_sleep_history_${currentUser.id}`;
+  }
+  return 'bhealthy_sleep_history_guest';
+}
+
+function loadSleepData() {
+  try {
+    const raw = localStorage.getItem(getSleepKey());
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+function loadSleepHistory() {
+  try {
+    const raw = localStorage.getItem(getSleepHistoryKey());
+    const data = raw ? JSON.parse(raw) : [];
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveSleepHistory(history) {
+  try {
+    localStorage.setItem(getSleepHistoryKey(), JSON.stringify(history));
+  } catch (error) {
+    // ignore
+  }
+}
+
+function updateSleepHistory(hours) {
+  if (!Number.isFinite(hours)) return loadSleepHistory();
+  const todayKey = getLocalDateKey();
+  const history = loadSleepHistory().filter((entry) => entry?.date);
+  const existing = history.find((entry) => entry.date === todayKey);
+  if (existing) {
+    existing.value = hours;
+  } else {
+    history.push({ date: todayKey, value: hours });
+  }
+  history.sort((a, b) => a.date.localeCompare(b.date));
+  const trimmed = history.slice(-7);
+  saveSleepHistory(trimmed);
+  return trimmed;
+}
+
+function loadMoveData() {
+  return loadStepsData();
+}
+
+function loadMoveHistory() {
+  const history = loadStepsHistory();
+  return history.map((entry) => ({ date: entry.date, value: entry.steps || 0 }));
+}
+
+function renderListItems(listEl, items) {
+  if (!listEl) return;
+  listEl.innerHTML = '';
+  items.forEach((item) => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    listEl.appendChild(li);
+  });
+}
+
+function estimateMinutesFromSteps(steps) {
+  if (!Number.isFinite(steps) || steps <= 0) return 0;
+  return Math.max(1, Math.round(steps / 100));
+}
+
+function estimateDistanceFromSteps(steps) {
+  if (!Number.isFinite(steps) || steps <= 0) return 0;
+  return Math.round(steps * 0.0008 * 10) / 10;
+}
+
+function getWeeklyMinutesFromHistory() {
+  const history = loadMoveHistory();
+  if (!history.length) return 0;
+  const totalSteps = history.reduce((sum, entry) => sum + (entry.value || 0), 0);
+  return estimateMinutesFromSteps(totalSteps);
+}
+
+function updateMoveDashboard(data) {
+  const steps = Number(data?.today) || 0;
+  const goal = Number(data?.goal) || 0;
+  const minutes = estimateMinutesFromSteps(steps);
+  const distance = estimateDistanceFromSteps(steps);
+
+  if (moveStepsValue) {
+    moveStepsValue.textContent = steps ? steps.toLocaleString() : '--';
+  }
+  if (moveMinutesValue) {
+    moveMinutesValue.textContent = minutes ? minutes.toLocaleString() : '--';
+  }
+  if (moveDistanceValue) {
+    moveDistanceValue.textContent = distance ? `${distance}` : '--';
+  }
+
+  if (moveCvhScore) {
+    moveCvhScore.textContent = latestCvhScore !== null ? `${latestCvhScore}/100` : '--';
+  }
+  if (moveCvhLabel) {
+    if (latestCvhScore === null) {
+      moveCvhLabel.textContent = t('move.cvhEmpty');
+    } else {
+      moveCvhLabel.textContent = getLabelMap().find((entry) => latestCvhScore >= entry.min).text;
+    }
+  }
+
+  const weeklyMinutes = getWeeklyMinutesFromHistory();
+  if (movePAValue) {
+    movePAValue.textContent = formatMessage(t('move.paValue'), {
+      minutes: weeklyMinutes ? weeklyMinutes : '--',
+    });
+  }
+
+  const systolic = parseNumber(bpSystolic?.value);
+  const diastolic = parseNumber(bpDiastolic?.value);
+  if (moveBPValue) {
+    moveBPValue.textContent =
+      systolic !== null && diastolic !== null ? `${systolic}/${diastolic}` : '--/--';
+  }
+
+  const recommendations = [];
+  if (goal && steps && steps < goal) {
+    recommendations.push(
+      formatMessage(t('move.recommendGoal'), { diff: (goal - steps).toLocaleString() })
+    );
+  } else if (goal && steps >= goal) {
+    recommendations.push(t('move.recommendGoalMet'));
+  }
+  if (!steps || steps < 7000) {
+    recommendations.push(t('move.recommendMove'));
+  }
+  recommendations.push(t('move.recommendBreaks'));
+  recommendations.push(t('move.recommendStrength'));
+  renderListItems(moveRecommendationsList, recommendations);
+
+  const targets = [];
+  if (goal) {
+    targets.push(formatMessage(t('move.targetSteps'), { goal: goal.toLocaleString() }));
+  } else {
+    targets.push(t('move.targetStepsDefault'));
+  }
+  targets.push(t('move.targetFruits'));
+  targets.push(t('move.targetWater'));
+  targets.push(t('move.targetStrength'));
+  renderListItems(moveTargetsList, targets);
+}
+
+function refreshMoveDashboardIfVisible() {
+  if (views.move && !views.move.classList.contains('hidden')) {
+    updateMoveDashboard(loadMoveData());
+  }
+}
+
 function getCvhScoresKey() {
   if (currentUser?.id) {
     return `bhealthy_cvh_scores_${currentUser.id}`;
@@ -3091,8 +3830,10 @@ function renderCvhTrend(items) {
   if (!cvhTrend || !cvhTrendSummary || !cvhTrendEmpty) return;
   cvhTrend.innerHTML = '';
   if (!items || items.length === 0) {
+    latestCvhScore = null;
     cvhTrendSummary.textContent = '';
     cvhTrendEmpty.classList.remove('hidden');
+    refreshMoveDashboardIfVisible();
     return;
   }
   const ordered = [...items].sort(
@@ -3113,6 +3854,7 @@ function renderCvhTrend(items) {
     cvhTrend.appendChild(bar);
   });
   const latest = ordered[ordered.length - 1];
+  latestCvhScore = Number(latest.score);
   const previous = ordered.length > 1 ? ordered[ordered.length - 2] : null;
   cvhTrendSummary.textContent = formatMessage(t('hub.cvhLatest'), {
     score: latest.score,
@@ -3124,6 +3866,61 @@ function renderCvhTrend(items) {
     const changeLine = formatMessage(t('hub.cvhChange'), { diff: diffLabel });
     cvhTrendSummary.textContent = `${cvhTrendSummary.textContent} · ${changeLine}`;
   }
+  refreshMoveDashboardIfVisible();
+}
+
+function buildAskResponse(topic, question) {
+  const q = (question || '').toLowerCase();
+  const bullets = [];
+  const urgentKeywords = ['chest pain', 'faint', 'fainting', 'shortness of breath', 'severe'];
+  const hasUrgent = urgentKeywords.some((word) => q.includes(word));
+
+  if (topic === 'meds') {
+    bullets.push(t('hub.askMedsAdherence'));
+    if (q.includes('miss') || q.includes('forgot') || q.includes('oubli') || q.includes('olvid')) {
+      bullets.push(t('hub.askMedsMissed'));
+    }
+    if (q.includes('side effect') || q.includes('adverse') || q.includes('effet') || q.includes('efecto')) {
+      bullets.push(t('hub.askMedsSideEffects'));
+    }
+    if (q.includes('interact') || q.includes('alcohol') || q.includes('supplement') || q.includes('alcool')) {
+      bullets.push(t('hub.askMedsInteractions'));
+    }
+    if (bullets.length < 2) {
+      bullets.push(t('hub.askMedsGeneral1'));
+    }
+    if (hasUrgent) {
+      bullets.push(t('hub.askUrgent'));
+    }
+    return { intro: t('hub.askMedsIntro'), bullets };
+  }
+
+  if (q.includes('diet') || q.includes('food') || q.includes('salt') || q.includes('sugar') || q.includes('alimentation')) {
+    bullets.push(t('hub.askCvhDiet'));
+  }
+  if (q.includes('exercise') || q.includes('activity') || q.includes('walk') || q.includes('activité')) {
+    bullets.push(t('hub.askCvhActivity'));
+  }
+  if (q.includes('sleep') || q.includes('sommeil') || q.includes('sueño')) {
+    bullets.push(t('hub.askCvhSleep'));
+  }
+  if (q.includes('smoke') || q.includes('tobacco') || q.includes('nicotine') || q.includes('tabac')) {
+    bullets.push(t('hub.askCvhNicotine'));
+  }
+  if (q.includes('stress') || q.includes('anx')) {
+    bullets.push(t('hub.askCvhStress'));
+  }
+  if (q.includes('blood pressure') || q.includes('bp') || q.includes('tension')) {
+    bullets.push(t('hub.askCvhBp'));
+  }
+  if (bullets.length === 0) {
+    bullets.push(t('hub.askCvhGeneral1'));
+    bullets.push(t('hub.askCvhGeneral2'));
+  }
+  if (hasUrgent) {
+    bullets.push(t('hub.askUrgent'));
+  }
+  return { intro: t('hub.askCvhIntro'), bullets };
 }
 
 function loadStepsData() {
@@ -3228,6 +4025,18 @@ async function loadHubSummary() {
   loadHubSteps();
   if (!supabaseClient) return;
   await Promise.all([loadHubMedications(), loadHubAppointments(), loadCvhScores()]);
+}
+
+function populateProfileForm(profile) {
+  if (!profile) return;
+  if (individualFirstName) individualFirstName.value = profile.first_name || '';
+  if (individualLastName) individualLastName.value = profile.last_name || '';
+  if (individualDob) individualDob.value = profile.date_of_birth || '';
+  if (individualSex) individualSex.value = profile.sex || '';
+  if (individualPhone) individualPhone.value = profile.phone || '';
+  if (individualCity) individualCity.value = profile.city || '';
+  if (individualCountry) individualCountry.value = profile.country || '';
+  if (individualEmail) individualEmail.value = profile.email || currentUser?.email || '';
 }
 
 form.addEventListener('input', updateScore);
@@ -3374,21 +4183,48 @@ if (hubAssess) {
   hubAssess.addEventListener('click', () => showView('assessment'));
 }
 if (hubMeds) {
-  hubMeds.addEventListener('click', async () => {
-    showView('meds');
-    await loadMedications();
+  hubMeds.addEventListener('click', () => {
+    openMedsView();
   });
 }
 if (hubBook) {
-  hubBook.addEventListener('click', async () => {
-    showView('appointments');
-    if (appointmentSearch) {
-      appointmentSearch.value = '';
-    }
-    setAppointmentMode('in_person');
-    await loadFacilities();
-    await loadDoctors();
-    await loadPatientAppointments();
+  hubBook.addEventListener('click', () => {
+    openAppointmentsView();
+  });
+}
+
+if (navButtons && navButtons.length) {
+  navButtons.forEach((button) => {
+    button.addEventListener('click', (event) => {
+      const target = event.currentTarget.getAttribute('data-view');
+      if (!target) return;
+      showView(target);
+    });
+  });
+}
+
+if (exploreButtons && exploreButtons.length) {
+  exploreButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const dest = button.getAttribute('data-explore');
+      if (!dest) return;
+      if (dest === 'ask') {
+        showView('hub');
+        requestAnimationFrame(() => {
+          scrollToTarget('askForm', 'hubView');
+        });
+        return;
+      }
+      if (dest === 'meds') {
+        openMedsView();
+        return;
+      }
+      if (dest === 'appointments') {
+        openAppointmentsView();
+        return;
+      }
+      showView(dest);
+    });
   });
 }
 
@@ -3427,11 +4263,21 @@ if (appointmentSearch) {
 if (backToHubBtn) {
   backToHubBtn.addEventListener('click', () => showView('hub'));
 }
+if (homeBtn) {
+  homeBtn.addEventListener('click', () => showView('hub'));
+}
 if (backToHubFromMeds) {
   backToHubFromMeds.addEventListener('click', () => showView('hub'));
 }
 if (backToHubFromAppointments) {
   backToHubFromAppointments.addEventListener('click', () => showView('hub'));
+}
+if (medSetupBtn) {
+  medSetupBtn.addEventListener('click', () => {
+    if (medSetupSection) {
+      medSetupSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
 }
 
 if (medForm) {
@@ -3624,10 +4470,110 @@ if (stepsForm) {
   });
 }
 
-if (deviceButtons && stepsConnectMessage) {
+if (deviceButtons && deviceButtons.length) {
   deviceButtons.forEach((button) => {
     button.addEventListener('click', () => {
-      setMessage(stepsConnectMessage, t('hub.deviceComingSoon'));
+      const container = button.closest('.device-connect');
+      const messageEl = container ? container.querySelector('.form-message') : null;
+      setMessage(messageEl || stepsConnectMessage, t('hub.deviceComingSoon'));
+    });
+  });
+}
+
+if (sleepForm) {
+  sleepForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const hours = sleepHoursInput?.value ? Number.parseFloat(sleepHoursInput.value) : null;
+    const goal = sleepGoalInput?.value ? Number.parseFloat(sleepGoalInput.value) : null;
+    const payload = {
+      hours: Number.isFinite(hours) ? hours : null,
+      goal: Number.isFinite(goal) ? goal : null,
+      updatedAt: new Date().toISOString(),
+    };
+    try {
+      localStorage.setItem(getSleepKey(), JSON.stringify(payload));
+    } catch (error) {
+      // ignore
+    }
+    setMessage(sleepMessage, t('messages.saved'));
+    if (sleepSummary) {
+      if (!payload.hours) {
+        sleepSummary.textContent = t('sleep.empty');
+      } else if (payload.hours >= 7) {
+        sleepSummary.textContent = t('sleep.summaryGood');
+      } else {
+        sleepSummary.textContent = t('sleep.summaryLow');
+      }
+    }
+    const history = updateSleepHistory(payload.hours ?? null);
+    if (sleepTrend && sleepTrendSummary) {
+      renderTrendGeneric(
+        sleepTrend,
+        sleepTrendSummary,
+        history,
+        'h',
+        '{today}h',
+        t('sleep.trendEmpty')
+      );
+    }
+  });
+}
+
+if (moveForm) {
+  moveForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const today = moveStepsToday?.value ? Number.parseInt(moveStepsToday.value, 10) : null;
+    const goal = moveStepsGoal?.value ? Number.parseInt(moveStepsGoal.value, 10) : null;
+    const data = {
+      today: Number.isFinite(today) ? today : null,
+      goal: Number.isFinite(goal) ? goal : null,
+      updatedAt: new Date().toISOString(),
+    };
+    try {
+      localStorage.setItem(getStepsKey(), JSON.stringify(data));
+    } catch (error) {
+      // ignore
+    }
+    setMessage(moveMessage, t('messages.saved'));
+    if (moveSummary) {
+      if (!data.today) {
+        moveSummary.textContent = t('move.empty');
+      } else if (data.goal && data.today >= data.goal) {
+        moveSummary.textContent = t('move.summaryMet');
+      } else {
+        moveSummary.textContent = `${t('move.summaryKeep')} ${t('move.whoTip')}`;
+      }
+    }
+    updateMoveDashboard(data);
+    const history = updateStepsHistory(data.today ?? null).map((entry) => ({
+      date: entry.date,
+      value: entry.steps ?? 0,
+    }));
+    if (moveTrend && moveTrendSummary) {
+      renderTrendGeneric(
+        moveTrend,
+        moveTrendSummary,
+        history,
+        t('hub.stepsUnit'),
+        t('hub.trendNoYesterday'),
+        t('move.trendEmpty')
+      );
+    }
+  });
+}
+
+if (sleepConnectMessage) {
+  document.querySelectorAll('#sleepView [data-device]').forEach((button) => {
+    button.addEventListener('click', () => {
+      setMessage(sleepConnectMessage, t('sleep.deviceComingSoon'));
+    });
+  });
+}
+
+if (moveConnectMessage) {
+  document.querySelectorAll('#moveView [data-device]').forEach((button) => {
+    button.addEventListener('click', () => {
+      setMessage(moveConnectMessage, t('move.deviceComingSoon'));
     });
   });
 }
@@ -3638,6 +4584,25 @@ if (cvhRunAssessment) {
     requestAnimationFrame(() => {
       scrollToTarget('assessment', 'scoreValue');
     });
+  });
+}
+
+if (askForm) {
+  askForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!askQuestion || !askResponseBody || !askResponse) return;
+    const question = askQuestion.value.trim();
+    if (!question) {
+      setMessage(askMessage, t('messages.askEmpty'), true);
+      askResponse.classList.add('hidden');
+      return;
+    }
+    setMessage(askMessage, '');
+    const topic = askTopic?.value || 'cvh';
+    const { intro, bullets } = buildAskResponse(topic, question);
+    const listItems = bullets.map((item) => `<li>${item}</li>`).join('');
+    askResponseBody.innerHTML = `<p>${intro}</p><ul>${listItems}</ul>`;
+    askResponse.classList.remove('hidden');
   });
 }
 
