@@ -15,8 +15,6 @@ const hubView = document.getElementById('hubView');
 const assessmentView = document.getElementById('assessmentView');
 const medsView = document.getElementById('medsView');
 const appointmentsView = document.getElementById('appointmentsView');
-const doctorView = document.getElementById('doctorView');
-const facilityView = document.getElementById('facilityView');
 
 const topBar = document.getElementById('topBar');
 const userGreeting = document.getElementById('userGreeting');
@@ -55,8 +53,6 @@ const hubMeds = document.getElementById('hubMeds');
 const hubBook = document.getElementById('hubBook');
 const backToHubFromMeds = document.getElementById('backToHubFromMeds');
 const backToHubFromAppointments = document.getElementById('backToHubFromAppointments');
-const backToHubFromDoctor = document.getElementById('backToHubFromDoctor');
-const backToHubFromFacility = document.getElementById('backToHubFromFacility');
 const stepsForm = document.getElementById('stepsForm');
 const stepsToday = document.getElementById('stepsToday');
 const stepsGoal = document.getElementById('stepsGoal');
@@ -86,6 +82,8 @@ const patientAppointmentsEmpty = document.getElementById('patientAppointmentsEmp
 const appointmentSearch = document.getElementById('appointmentSearch');
 const modeInPerson = document.getElementById('modeInPerson');
 const modeRemote = document.getElementById('modeRemote');
+const suggestionCardio = document.getElementById('suggestionCardio');
+const suggestionLifestyle = document.getElementById('suggestionLifestyle');
 
 const availabilityForm = document.getElementById('availabilityForm');
 const availabilityStart = document.getElementById('availabilityStart');
@@ -272,7 +270,8 @@ const translations = {
       suggestions: 'Suggestions',
       suggestionCardio: 'Heart health check',
       suggestionLifestyle: 'Lifestyle coaching',
-      suggestionCta: 'Book appointment',
+      suggestionCtaAssessment: 'Start assessment',
+      suggestionCtaAdvice: 'View advice',
       bookTitle: 'Choose a doctor and time',
       doctor: 'Doctor',
       book: 'Book',
@@ -606,7 +605,8 @@ const translations = {
       suggestions: 'Suggestions',
       suggestionCardio: 'Bilan cardiaque',
       suggestionLifestyle: 'Coaching de mode de vie',
-      suggestionCta: 'Prendre rendez-vous',
+      suggestionCtaAssessment: "Démarrer l'évaluation",
+      suggestionCtaAdvice: 'Voir les conseils',
       bookTitle: 'Choisissez un médecin et un créneau',
       doctor: 'Médecin',
       book: 'Réserver',
@@ -942,7 +942,8 @@ const translations = {
       suggestions: 'Sugerencias',
       suggestionCardio: 'Chequeo cardíaco',
       suggestionLifestyle: 'Coaching de estilo de vida',
-      suggestionCta: 'Reservar cita',
+      suggestionCtaAssessment: 'Iniciar evaluación',
+      suggestionCtaAdvice: 'Ver consejos',
       bookTitle: 'Elige un médico y un horario',
       doctor: 'Médico',
       book: 'Reservar',
@@ -1252,8 +1253,6 @@ const views = {
   assessment: assessmentView,
   meds: medsView,
   appointments: appointmentsView,
-  doctor: doctorView,
-  facility: facilityView,
 };
 
 function showView(viewKey) {
@@ -1270,6 +1269,23 @@ function showView(viewKey) {
     applyProfileToAssessment();
     updateScore();
   }
+}
+
+function scrollToTarget(targetId, fallbackId) {
+  const target = document.getElementById(targetId);
+  const fallback = fallbackId ? document.getElementById(fallbackId) : null;
+  const destination =
+    target && !target.classList.contains('hidden') ? target : fallback || target;
+  if (destination) {
+    destination.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function openAssessmentFromSuggestion(targetId, fallbackId) {
+  showView('assessment');
+  requestAnimationFrame(() => {
+    scrollToTarget(targetId, fallbackId);
+  });
 }
 
 function updateTopBar(viewKey) {
@@ -2961,6 +2977,18 @@ if (hubBook) {
   });
 }
 
+if (suggestionCardio) {
+  suggestionCardio.addEventListener('click', () => {
+    openAssessmentFromSuggestion('assessment', 'scoreValue');
+  });
+}
+
+if (suggestionLifestyle) {
+  suggestionLifestyle.addEventListener('click', () => {
+    openAssessmentFromSuggestion('advicePanel', 'scoreValue');
+  });
+}
+
 if (modeInPerson) {
   modeInPerson.addEventListener('click', () => {
     setAppointmentMode('in_person');
@@ -2989,12 +3017,6 @@ if (backToHubFromMeds) {
 }
 if (backToHubFromAppointments) {
   backToHubFromAppointments.addEventListener('click', () => showView('hub'));
-}
-if (backToHubFromDoctor) {
-  backToHubFromDoctor.addEventListener('click', () => showView('doctor'));
-}
-if (backToHubFromFacility) {
-  backToHubFromFacility.addEventListener('click', () => showView('facility'));
 }
 
 if (medForm) {

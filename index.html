@@ -330,20 +330,24 @@
         <div class="panel suggestions-panel">
           <h3 data-i18n="appointments.suggestions">Suggestions</h3>
           <div class="suggestion-row">
-            <button class="suggestion-card" type="button">
+            <button id="suggestionCardio" class="suggestion-card" type="button">
               <div>
                 <p class="suggestion-title" data-i18n="appointments.suggestionCardio">
                   Heart health check
                 </p>
-                <p class="suggestion-cta" data-i18n="appointments.suggestionCta">Book appointment</p>
+                <p class="suggestion-cta" data-i18n="appointments.suggestionCtaAssessment">
+                  Start assessment
+                </p>
               </div>
             </button>
-            <button class="suggestion-card" type="button">
+            <button id="suggestionLifestyle" class="suggestion-card" type="button">
               <div>
                 <p class="suggestion-title" data-i18n="appointments.suggestionLifestyle">
                   Lifestyle coaching
                 </p>
-                <p class="suggestion-cta" data-i18n="appointments.suggestionCta">Book appointment</p>
+                <p class="suggestion-cta" data-i18n="appointments.suggestionCtaAdvice">
+                  View advice
+                </p>
               </div>
             </button>
           </div>
@@ -368,160 +372,6 @@
           <p id="patientAppointmentsEmpty" class="muted" data-i18n="appointments.none">
             No upcoming appointments.
           </p>
-        </div>
-      </section>
-
-      <section id="doctorView" class="view hidden">
-        <div class="view-header">
-          <h2 data-i18n="doctor.title">Doctor dashboard</h2>
-          <button id="backToHubFromDoctor" class="ghost" type="button" data-i18n="nav.back">
-            Back to menu
-          </button>
-        </div>
-        <div class="panel doctor-summary">
-          <h3 data-i18n="doctor.overview">Overview</h3>
-          <div class="summary-grid">
-            <div class="summary-tile">
-              <p class="summary-label" data-i18n="doctor.totalPatients">Patients followed</p>
-              <p class="summary-value" id="doctorPatientCount">0</p>
-            </div>
-            <div class="summary-tile">
-              <p class="summary-label" data-i18n="doctor.facilityCount">Facilities</p>
-              <p class="summary-value" id="doctorFacilityCount">0</p>
-            </div>
-          </div>
-        </div>
-        <div class="panel">
-          <h3 data-i18n="doctor.availability">Add availability</h3>
-          <p class="muted" data-i18n="doctor.hours">Working hours: 09:00–12:30 &amp; 13:30–17:00</p>
-          <div class="grid-form schedule-form">
-            <label class="field">
-              <span data-i18n="doctor.scheduleDate">Date</span>
-              <input id="scheduleDate" type="date" />
-            </label>
-            <label class="field">
-              <span data-i18n="doctor.slotLength">Slot length (minutes)</span>
-              <input id="scheduleDuration" type="number" min="5" step="5" value="30" />
-            </label>
-            <button id="generateScheduleBtn" class="ghost" type="button" data-i18n="doctor.generate">
-              Generate day slots
-            </button>
-            <p class="form-message" id="scheduleMessage"></p>
-          </div>
-          <form id="availabilityForm" class="grid-form">
-            <label class="field">
-              <span data-i18n="doctor.facility">Facility</span>
-              <select id="doctorFacilitySelect">
-                <option value="" data-i18n="select.placeholder">Select...</option>
-              </select>
-            </label>
-            <label class="field">
-              <span data-i18n="doctor.appointmentType">Appointment type</span>
-              <select id="availabilityType">
-                <option value="in_person" data-i18n="doctor.typeInPerson">In clinic</option>
-                <option value="remote" data-i18n="doctor.typeRemote">Remote</option>
-              </select>
-            </label>
-            <label class="field">
-              <span data-i18n="doctor.start">Start time</span>
-              <input id="availabilityStart" type="datetime-local" required />
-            </label>
-            <label class="field">
-              <span data-i18n="doctor.duration">Duration (minutes)</span>
-              <input id="availabilityDuration" type="number" min="10" step="5" value="30" required />
-            </label>
-            <button class="primary" type="submit" data-i18n="doctor.addSlot">Add slot</button>
-            <p class="form-message" id="availabilityMessage"></p>
-          </form>
-          <ul id="availabilityList" class="list"></ul>
-        </div>
-        <div class="panel">
-          <h3 data-i18n="doctor.upcoming">Upcoming appointments</h3>
-          <ul id="doctorUpcoming" class="list"></ul>
-          <p id="doctorUpcomingEmpty" class="muted" data-i18n="doctor.none">No upcoming appointments.</p>
-        </div>
-        <div class="panel">
-          <h3 data-i18n="doctor.patients">All patients</h3>
-          <label class="field">
-            <span data-i18n="doctor.selectPatient">Select a patient</span>
-            <select id="doctorPatientSelect">
-              <option value="" data-i18n="select.placeholder">Select...</option>
-            </select>
-          </label>
-          <p id="patientInfo" class="muted"></p>
-          <form id="diagnosisForm" class="grid-form">
-            <label class="field full">
-              <span data-i18n="doctor.diagnosis">Add diagnosis</span>
-              <textarea id="diagnosisText" rows="3"></textarea>
-            </label>
-            <button class="primary" type="submit" data-i18n="doctor.saveDiagnosis">Save diagnosis</button>
-            <p class="form-message" id="diagnosisMessage"></p>
-          </form>
-          <form id="prescriptionForm" class="grid-form">
-            <label class="field">
-              <span data-i18n="doctor.medication">Medication</span>
-              <input id="prescriptionName" type="text" />
-            </label>
-            <label class="field">
-              <span data-i18n="doctor.dosage">Dosage</span>
-              <input id="prescriptionDosage" type="text" />
-            </label>
-            <label class="field">
-              <span data-i18n="doctor.posology">Posology</span>
-              <input id="prescriptionPosology" type="text" />
-            </label>
-            <button class="primary" type="submit" data-i18n="doctor.prescribe">
-              Prescribe medication
-            </button>
-            <p class="form-message" id="prescriptionMessage"></p>
-          </form>
-        </div>
-        <div class="panel">
-          <h3 data-i18n="doctor.missed">Missed visits</h3>
-          <ul id="doctorMissed" class="list"></ul>
-          <p id="doctorMissedEmpty" class="muted" data-i18n="doctor.noneMissed">No missed visits.</p>
-        </div>
-        <div class="panel">
-          <h3 data-i18n="doctor.lost">Lost to follow-up</h3>
-          <ul id="doctorLost" class="list"></ul>
-          <p id="doctorLostEmpty" class="muted" data-i18n="doctor.noneLost">No patients lost to follow-up.</p>
-        </div>
-      </section>
-
-      <section id="facilityView" class="view hidden">
-        <div class="view-header">
-          <h2 data-i18n="facility.title">Facility dashboard</h2>
-          <button id="backToHubFromFacility" class="ghost" type="button" data-i18n="nav.back">
-            Back to menu
-          </button>
-        </div>
-        <div class="panel">
-          <h3 data-i18n="facility.staff">Staff list</h3>
-          <ul id="staffList" class="list"></ul>
-          <p id="staffEmpty" class="muted" data-i18n="facility.none">No staff listed yet.</p>
-        </div>
-        <div class="panel">
-          <h3 data-i18n="facility.addStaff">Add staff member</h3>
-          <form id="staffForm" class="grid-form">
-            <label class="field">
-              <span data-i18n="facility.staffName">Name</span>
-              <input id="staffName" type="text" required />
-            </label>
-            <label class="field">
-              <span data-i18n="facility.staffSpecialty">Specialty</span>
-              <input id="staffSpecialty" type="text" />
-            </label>
-            <label class="field">
-              <span data-i18n="facility.staffEmail">Email</span>
-              <input id="staffEmail" type="email" required />
-            </label>
-            <label class="field">
-              <span data-i18n="facility.staffContract">Contract status</span>
-              <input id="staffContract" type="text" />
-            </label>
-            <button class="primary" type="submit" data-i18n="facility.add">Add staff</button>
-            <p class="form-message" id="staffMessage"></p>
-          </form>
         </div>
       </section>
 
