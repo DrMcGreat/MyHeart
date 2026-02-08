@@ -172,7 +172,7 @@
         </div>
       </section>
 
-      <section id="hubView" class="view hidden">
+      <section id="hubView" class="view hub-view hidden">
         <div class="panel">
           <h2 data-i18n="hub.title">What would you like to do?</h2>
           <p class="subhead" data-i18n="hub.subtitle">Choose an option to continue.</p>
@@ -207,6 +207,39 @@
             <p class="muted" id="stepsSummary" data-i18n="hub.stepsEmpty">
               No steps logged yet.
             </p>
+            <div class="steps-trend">
+              <h4 data-i18n="hub.trendTitle">7-day trend</h4>
+              <div id="stepsTrend" class="trend-bars"></div>
+              <p id="stepsTrendSummary" class="muted" data-i18n="hub.trendEmpty">
+                No trend data yet.
+              </p>
+            </div>
+            <div class="device-connect">
+              <h4 data-i18n="hub.deviceTitle">Connect a device</h4>
+              <p class="muted" data-i18n="hub.deviceHint">
+                Link Apple Health, Google Fit, or Fitbit (coming soon).
+              </p>
+              <div class="device-buttons">
+                <button class="ghost" type="button" data-device="apple">Apple Health</button>
+                <button class="ghost" type="button" data-device="google">Google Fit</button>
+                <button class="ghost" type="button" data-device="fitbit">Fitbit</button>
+              </div>
+              <p class="form-message" id="stepsConnectMessage"></p>
+            </div>
+          </div>
+          <div class="panel summary-card">
+            <h3 data-i18n="hub.cvhTitle">CVH score trend</h3>
+            <p class="subhead" data-i18n="hub.cvhSub">
+              Track your heart health score over time.
+            </p>
+            <div id="cvhTrend" class="trend-bars score-trend"></div>
+            <p id="cvhTrendSummary" class="muted"></p>
+            <p id="cvhTrendEmpty" class="muted" data-i18n="hub.cvhEmpty">
+              No CVH scores yet. Run your first assessment.
+            </p>
+            <button id="cvhRunAssessment" class="ghost small" type="button" data-i18n="hub.cvhRun">
+              Run assessment
+            </button>
           </div>
           <div class="panel summary-card">
             <h3 data-i18n="hub.remindersTitle">Reminders</h3>
@@ -237,6 +270,7 @@
         </div>
         <div class="panel">
           <h3 data-i18n="meds.current">Current medications</h3>
+          <p id="medReminderMessage" class="reminder-banner hidden"></p>
           <ul id="medList" class="list"></ul>
           <p id="medEmpty" class="muted" data-i18n="meds.empty">No medications yet.</p>
         </div>
@@ -254,6 +288,16 @@
             <label class="field">
               <span data-i18n="meds.posology">Posology</span>
               <input id="medPosology" type="text" />
+            </label>
+            <label class="field">
+              <span data-i18n="meds.dosesPerDay">Doses per day</span>
+              <select id="medDosesPerDay">
+                <option value="" data-i18n="select.placeholder">Select...</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
             </label>
             <label class="field">
               <span data-i18n="meds.nextVisit">Next visit date (optional)</span>

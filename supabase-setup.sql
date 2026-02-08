@@ -45,10 +45,13 @@ create table if not exists medications (
   name text not null,
   dosage text,
   posology text,
+  doses_per_day int,
   notes text,
   next_visit date,
   created_at timestamptz default now()
 );
+
+alter table medications add column if not exists doses_per_day int;
 
 create table if not exists diagnoses (
   id uuid primary key default gen_random_uuid(),
@@ -84,6 +87,27 @@ create index if not exists appointments_doctor_time_idx on appointments (doctor_
 create index if not exists appointments_patient_time_idx on appointments (patient_id, start_time);
 create index if not exists availability_doctor_time_idx on availability_slots (doctor_id, start_time);
 create index if not exists medications_patient_idx on medications (patient_id, created_at);
+
+create table if not exists medication_logs (
+  id uuid primary key default gen_random_uuid(),
+  medication_id uuid references medications(id) on delete cascade,
+  patient_id uuid references profiles(id) on delete cascade,
+  log_date date not null,
+  doses_taken int not null default 0,
+  created_at timestamptz default now(),
+  unique (medication_id, patient_id, log_date)
+);
+
+create index if not exists medication_logs_patient_date_idx on medication_logs (patient_id, log_date);
+
+create table if not exists cvh_scores (
+  id uuid primary key default gen_random_uuid(),
+  patient_id uuid references profiles(id) on delete cascade,
+  score int not null,
+  created_at timestamptz default now()
+);
+
+create index if not exists cvh_scores_patient_idx on cvh_scores (patient_id, created_at);
 
 alter table profiles enable row level security;
 drop policy if exists "profiles_select_auth" on profiles;
@@ -134,6 +158,38 @@ drop policy if exists "medications_delete" on medications;
 create policy "medications_delete" on medications
   for delete to authenticated
   using (patient_id = auth.uid() or added_by = auth.uid());
+
+alter table medication_logs enable row level security;
+drop policy if exists "medication_logs_select" on medication_logs;
+create policy "medication_logs_select" on medication_logs
+  for select to authenticated
+  using (patient_id = auth.uid());
+drop policy if exists "medication_logs_insert" on medication_logs;
+create policy "medication_logs_insert" on medication_logs
+  for insert to authenticated
+  with check (patient_id = auth.uid());
+drop policy if exists "medication_logs_update" on medication_logs;
+create policy "medication_logs_update" on medication_logs
+  for update to authenticated
+  using (patient_id = auth.uid());
+drop policy if exists "medication_logs_delete" on medication_logs;
+create policy "medication_logs_delete" on medication_logs
+  for delete to authenticated
+  using (patient_id = auth.uid());
+
+alter table cvh_scores enable row level security;
+drop policy if exists "cvh_scores_select" on cvh_scores;
+create policy "cvh_scores_select" on cvh_scores
+  for select to authenticated
+  using (patient_id = auth.uid());
+drop policy if exists "cvh_scores_insert" on cvh_scores;
+create policy "cvh_scores_insert" on cvh_scores
+  for insert to authenticated
+  with check (patient_id = auth.uid());
+drop policy if exists "cvh_scores_delete" on cvh_scores;
+create policy "cvh_scores_delete" on cvh_scores
+  for delete to authenticated
+  using (patient_id = auth.uid());
 
 alter table diagnoses enable row level security;
 drop policy if exists "diagnoses_select" on diagnoses;

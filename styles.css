@@ -169,6 +169,20 @@
   gap: 16px;
 }
 
+#hubView .panel {
+  background: #f8fcfa;
+}
+
+#medsView .panel {
+  background: #fffaf3;
+  border: 1px solid #f1e4d4;
+}
+
+#appointmentsView .panel {
+  background: #f4f7ff;
+  border: 1px solid #e1e6f5;
+}
+
 .appointment-panel .subhead {
   margin-top: -6px;
 }
@@ -328,11 +342,33 @@
   gap: 16px;
 }
 
+.hub-view {
+  min-height: 100vh;
+  padding: 32px 24px 60px;
+  background: #c8102e url("main page.png") center/cover no-repeat;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+#hubView {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#hubView .panel:first-of-type {
+  order: 2;
+  margin-top: 14px;
+}
+
 .hub-summary {
+  order: 1;
+  margin-top: -10px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 16px;
 }
+
 
 .summary-card .subhead {
   margin-top: -8px;
@@ -396,6 +432,10 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: linear-gradient(120deg, #f1faf7 0%, #ffffff 100%);
+  box-shadow: var(--shadow);
 }
 
 .grid-form {
@@ -434,6 +474,130 @@
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+.med-item {
+  display: grid;
+  gap: 10px;
+}
+
+.med-item strong::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  margin-right: 8px;
+  background: linear-gradient(135deg, #ef6b5a 0%, #f1b24a 100%);
+  vertical-align: middle;
+}
+
+.reminder-banner {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #fff4e6;
+  color: #7a4b00;
+  border: 1px solid #ffd9b3;
+  font-size: 0.9rem;
+}
+
+.reminder-banner.success {
+  background: #e8f7ef;
+  color: #1f6b4e;
+  border-color: #bfe8d4;
+}
+
+.dose-tracker {
+  display: grid;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.dose-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dose-chip {
+  border: 1px solid #c9dbd3;
+  background: #ffffff;
+  color: #1f3a32;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.dose-chip.is-done {
+  background: #1f7a63;
+  color: #ffffff;
+  border-color: #1f7a63;
+}
+
+.ghost.small {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+}
+
+.steps-trend {
+  display: grid;
+  gap: 10px;
+}
+
+.trend-bars {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  align-items: end;
+  gap: 8px;
+  height: 140px;
+  padding: 8px;
+  border-radius: 16px;
+  background: #f4fbf7;
+  border: 1px solid #e0efe7;
+}
+
+.score-trend {
+  height: 120px;
+  background: #f8f4ff;
+  border-color: #e6dcf6;
+}
+
+.score-trend .trend-bar {
+  border-radius: 10px;
+}
+
+.trend-bar {
+  position: relative;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #5fbf9b 0%, #1f7a63 100%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.trend-label {
+  font-size: 0.65rem;
+  color: #ffffff;
+  padding-bottom: 6px;
+}
+
+.device-connect {
+  display: grid;
+  gap: 10px;
+}
+
+.device-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.device-buttons .ghost {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid #d9e8e1;
+  background: #ffffff;
 }
 
 .muted {

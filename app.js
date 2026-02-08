@@ -58,6 +58,14 @@ const stepsToday = document.getElementById('stepsToday');
 const stepsGoal = document.getElementById('stepsGoal');
 const stepsMessage = document.getElementById('stepsMessage');
 const stepsSummary = document.getElementById('stepsSummary');
+const stepsTrend = document.getElementById('stepsTrend');
+const stepsTrendSummary = document.getElementById('stepsTrendSummary');
+const stepsConnectMessage = document.getElementById('stepsConnectMessage');
+const deviceButtons = document.querySelectorAll('[data-device]');
+const cvhTrend = document.getElementById('cvhTrend');
+const cvhTrendSummary = document.getElementById('cvhTrendSummary');
+const cvhTrendEmpty = document.getElementById('cvhTrendEmpty');
+const cvhRunAssessment = document.getElementById('cvhRunAssessment');
 const hubMedList = document.getElementById('hubMedList');
 const hubMedEmpty = document.getElementById('hubMedEmpty');
 const hubAppointmentList = document.getElementById('hubAppointmentList');
@@ -70,8 +78,10 @@ const medMessage = document.getElementById('medMessage');
 const medName = document.getElementById('medName');
 const medDosage = document.getElementById('medDosage');
 const medPosology = document.getElementById('medPosology');
+const medDosesPerDay = document.getElementById('medDosesPerDay');
 const medNextVisit = document.getElementById('medNextVisit');
 const medNotes = document.getElementById('medNotes');
+const medReminderMessage = document.getElementById('medReminderMessage');
 
 const doctorSelect = document.getElementById('doctorSelect');
 const slotList = document.getElementById('slotList');
@@ -176,6 +186,7 @@ let currentProfile = null;
 let pendingRole = null;
 let cachedDoctors = [];
 let cachedAppointments = [];
+let cachedPatientAppointments = [];
 let appointmentMode = 'in_person';
 let cachedFacilities = [];
 let doctorFacilityTotal = 0;
@@ -237,6 +248,19 @@ const translations = {
       stepsEmpty: 'No steps logged yet.',
       stepsUnit: 'steps',
       stepsGoalLabel: 'of goal',
+      trendTitle: '7-day trend',
+      trendEmpty: 'No trend data yet.',
+      trendSummary: '{today} steps today · {diff}% vs yesterday',
+      trendNoYesterday: '{today} steps today',
+      deviceTitle: 'Connect a device',
+      deviceHint: 'Link Apple Health, Google Fit, or Fitbit (coming soon).',
+      deviceComingSoon: 'Device sync is coming soon.',
+      cvhTitle: 'CVH score trend',
+      cvhSub: 'Track your heart health score over time.',
+      cvhEmpty: 'No CVH scores yet. Run your first assessment.',
+      cvhLatest: 'Latest score: {score} · {date}',
+      cvhChange: 'Change since last check: {diff}',
+      cvhRun: 'Run assessment',
       remindersTitle: 'Reminders',
       medsReminder: 'Medications',
       medsEmpty: 'No medications yet.',
@@ -251,11 +275,17 @@ const translations = {
       name: 'Medication name',
       dosage: 'Dosage',
       posology: 'Posology',
+      dosesPerDay: 'Doses per day',
       nextVisit: 'Next visit date (optional)',
       notes: 'Notes',
       add: 'Save medication',
       addedBy: 'Added by',
       nextVisitShort: 'Next visit:',
+      reminderPending: 'Reminder: pending doses today for',
+      reminderDone: 'All scheduled doses are completed for today.',
+      dosesStatus: '{taken} of {total} doses taken today',
+      markAll: 'Mark all taken',
+      noSchedule: 'Add doses per day to enable reminders.',
     },
     appointments: {
       title: 'Book an appointment',
@@ -572,6 +602,19 @@ const translations = {
       stepsEmpty: 'Aucun pas enregistré pour l’instant.',
       stepsUnit: 'pas',
       stepsGoalLabel: 'de l’objectif',
+      trendTitle: 'Tendance sur 7 jours',
+      trendEmpty: 'Aucune tendance pour le moment.',
+      trendSummary: '{today} pas aujourd’hui · {diff}% vs hier',
+      trendNoYesterday: '{today} pas aujourd’hui',
+      deviceTitle: 'Connecter un appareil',
+      deviceHint: 'Apple Health, Google Fit ou Fitbit (bientôt disponibles).',
+      deviceComingSoon: 'La synchronisation arrive bientôt.',
+      cvhTitle: 'Tendance du score CVH',
+      cvhSub: 'Suivez votre score de santé cardiaque dans le temps.',
+      cvhEmpty: 'Aucun score CVH pour le moment. Lancez votre première évaluation.',
+      cvhLatest: 'Dernier score : {score} · {date}',
+      cvhChange: 'Écart depuis le dernier contrôle : {diff}',
+      cvhRun: "Lancer l'évaluation",
       remindersTitle: 'Rappels',
       medsReminder: 'Médicaments',
       medsEmpty: 'Aucun médicament pour le moment.',
@@ -586,11 +629,17 @@ const translations = {
       name: 'Nom du médicament',
       dosage: 'Dosage',
       posology: 'Posologie',
+      dosesPerDay: 'Prises par jour',
       nextVisit: 'Date du prochain rendez-vous (optionnel)',
       notes: 'Notes',
       add: 'Enregistrer le médicament',
       addedBy: 'Ajouté par',
       nextVisitShort: 'Prochain rendez-vous :',
+      reminderPending: 'Rappel : prises restantes aujourd’hui pour',
+      reminderDone: 'Toutes les prises prévues sont complétées pour aujourd’hui.',
+      dosesStatus: '{taken} sur {total} prises effectuées aujourd’hui',
+      markAll: 'Tout marquer',
+      noSchedule: 'Ajoutez le nombre de prises par jour pour activer les rappels.',
     },
     appointments: {
       title: 'Prendre rendez-vous',
@@ -909,6 +958,19 @@ const translations = {
       stepsEmpty: 'Aún no hay pasos registrados.',
       stepsUnit: 'pasos',
       stepsGoalLabel: 'de la meta',
+      trendTitle: 'Tendencia de 7 días',
+      trendEmpty: 'Aún no hay datos de tendencia.',
+      trendSummary: '{today} pasos hoy · {diff}% vs ayer',
+      trendNoYesterday: '{today} pasos hoy',
+      deviceTitle: 'Conectar un dispositivo',
+      deviceHint: 'Apple Health, Google Fit o Fitbit (próximamente).',
+      deviceComingSoon: 'La sincronización llegará pronto.',
+      cvhTitle: 'Tendencia de puntaje CVH',
+      cvhSub: 'Sigue tu puntaje de salud cardíaca en el tiempo.',
+      cvhEmpty: 'Aún no hay puntajes CVH. Realiza tu primera evaluación.',
+      cvhLatest: 'Último puntaje: {score} · {date}',
+      cvhChange: 'Cambio desde el último control: {diff}',
+      cvhRun: 'Iniciar evaluación',
       remindersTitle: 'Recordatorios',
       medsReminder: 'Medicaciones',
       medsEmpty: 'Aún no hay medicaciones.',
@@ -923,11 +985,17 @@ const translations = {
       name: 'Nombre del medicamento',
       dosage: 'Dosis',
       posology: 'Posología',
+      dosesPerDay: 'Tomas por día',
       nextVisit: 'Fecha de próxima visita (opcional)',
       notes: 'Notas',
       add: 'Guardar medicación',
       addedBy: 'Añadido por',
       nextVisitShort: 'Próxima visita:',
+      reminderPending: 'Recordatorio: tomas pendientes hoy para',
+      reminderDone: 'Todas las tomas programadas están completas hoy.',
+      dosesStatus: '{taken} de {total} tomas realizadas hoy',
+      markAll: 'Marcar todo',
+      noSchedule: 'Agrega tomas por día para activar recordatorios.',
     },
     appointments: {
       title: 'Reservar cita',
@@ -1206,6 +1274,14 @@ function tObj(key) {
   const value =
     getNestedValue(translations[currentLang], key) ?? getNestedValue(translations.en, key);
   return value && typeof value === 'object' ? value : {};
+}
+
+function formatMessage(template, params = {}) {
+  if (!template) return '';
+  return template.replace(/\{(\w+)\}/g, (_, key) => {
+    const value = params[key];
+    return value === undefined || value === null ? '' : String(value);
+  });
 }
 
 function applyTranslations() {
@@ -2172,10 +2248,79 @@ async function loadMedications() {
     setMessage(medMessage, error.message, true);
     return;
   }
-  renderMedications(data || []);
+  const logsMap = await loadMedicationLogsForDate(getLocalDateKey());
+  renderMedications(data || [], logsMap);
+  updateMedicationReminder(data || [], logsMap);
 }
 
-function renderMedications(items) {
+async function loadMedicationLogsForDate(dateKey) {
+  if (!currentProfile || !supabaseClient) return new Map();
+  const { data, error } = await supabaseClient
+    .from('medication_logs')
+    .select('medication_id, doses_taken')
+    .eq('patient_id', currentProfile.id)
+    .eq('log_date', dateKey);
+  if (error || !data) {
+    return new Map();
+  }
+  const map = new Map();
+  data.forEach((row) => {
+    if (row.medication_id) {
+      map.set(row.medication_id, row.doses_taken ?? 0);
+    }
+  });
+  return map;
+}
+
+async function saveMedicationLog(medicationId, dosesTaken) {
+  if (!currentProfile || !supabaseClient) return false;
+  const payload = {
+    medication_id: medicationId,
+    patient_id: currentProfile.id,
+    log_date: getLocalDateKey(),
+    doses_taken: dosesTaken,
+  };
+  const { error } = await supabaseClient
+    .from('medication_logs')
+    .upsert(payload, { onConflict: 'medication_id,patient_id,log_date' });
+  if (error) {
+    setMessage(medMessage, error.message, true);
+    return false;
+  }
+  return true;
+}
+
+function updateMedicationReminder(items, logsMap) {
+  if (!medReminderMessage) return;
+  if (!items.length) {
+    medReminderMessage.classList.add('hidden');
+    return;
+  }
+  const withSchedule = items.filter((item) => Number.isFinite(item.doses_per_day));
+  if (withSchedule.length === 0) {
+    medReminderMessage.textContent = t('meds.noSchedule');
+    medReminderMessage.classList.remove('hidden');
+    medReminderMessage.classList.remove('success');
+    return;
+  }
+  const pending = withSchedule.filter((item) => {
+    const total = item.doses_per_day ?? 0;
+    const taken = logsMap.get(item.id) ?? 0;
+    return total > 0 && taken < total;
+  });
+  if (pending.length === 0) {
+    medReminderMessage.textContent = t('meds.reminderDone');
+    medReminderMessage.classList.remove('hidden');
+    medReminderMessage.classList.add('success');
+    return;
+  }
+  const names = pending.map((item) => item.name).filter(Boolean).join(', ');
+  medReminderMessage.textContent = `${t('meds.reminderPending')} ${names}`;
+  medReminderMessage.classList.remove('hidden');
+  medReminderMessage.classList.remove('success');
+}
+
+function renderMedications(items, logsMap) {
   if (!medList || !medEmpty) return;
   medList.innerHTML = '';
   if (!items.length) {
@@ -2185,7 +2330,7 @@ function renderMedications(items) {
   medEmpty.classList.add('hidden');
   items.forEach((item) => {
     const li = document.createElement('li');
-    li.className = 'list-item';
+    li.className = 'list-item med-item';
     const title = document.createElement('div');
     const name = document.createElement('strong');
     name.textContent = item.name;
@@ -2205,6 +2350,71 @@ function renderMedications(items) {
     const role = item.added_by_role ? ` (${item.added_by_role})` : '';
     meta.textContent = addedBy ? `${t('meds.addedBy')} ${addedBy}${role}` : '';
     li.appendChild(title);
+
+    const dosesPerDay = Number.isFinite(item.doses_per_day) ? item.doses_per_day : null;
+    if (dosesPerDay && dosesPerDay > 0) {
+      const tracker = document.createElement('div');
+      tracker.className = 'dose-tracker';
+      const status = document.createElement('p');
+      status.className = 'muted';
+      let takenCount = logsMap.get(item.id) ?? 0;
+      status.textContent = formatMessage(t('meds.dosesStatus'), {
+        taken: takenCount,
+        total: dosesPerDay,
+      });
+
+      const chips = document.createElement('div');
+      chips.className = 'dose-chips';
+      const updateChips = () => {
+        chips.querySelectorAll('.dose-chip').forEach((chip, index) => {
+          const doseNumber = index + 1;
+          chip.classList.toggle('is-done', doseNumber <= takenCount);
+        });
+        status.textContent = formatMessage(t('meds.dosesStatus'), {
+          taken: takenCount,
+          total: dosesPerDay,
+        });
+      };
+
+      for (let i = 1; i <= dosesPerDay; i += 1) {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'dose-chip';
+        chip.textContent = i.toString();
+        chip.addEventListener('click', async () => {
+          const nextTaken = i <= takenCount ? i - 1 : i;
+          const saved = await saveMedicationLog(item.id, nextTaken);
+          if (saved) {
+            takenCount = nextTaken;
+            logsMap.set(item.id, nextTaken);
+            updateChips();
+            updateMedicationReminder(items, logsMap);
+          }
+        });
+        chips.appendChild(chip);
+      }
+
+      const markAll = document.createElement('button');
+      markAll.type = 'button';
+      markAll.className = 'ghost small';
+      markAll.textContent = t('meds.markAll');
+      markAll.addEventListener('click', async () => {
+        const saved = await saveMedicationLog(item.id, dosesPerDay);
+        if (saved) {
+          takenCount = dosesPerDay;
+          logsMap.set(item.id, dosesPerDay);
+          updateChips();
+          updateMedicationReminder(items, logsMap);
+        }
+      });
+
+      tracker.appendChild(status);
+      tracker.appendChild(chips);
+      tracker.appendChild(markAll);
+      li.appendChild(tracker);
+      updateChips();
+    }
+
     li.appendChild(meta);
     medList.appendChild(li);
   });
@@ -2315,23 +2525,18 @@ async function bookSlot(slot) {
   setMessage(bookingMessage, t('messages.slotBooked'));
   await loadAvailability(slot.doctor_id);
   await loadPatientAppointments();
-  await loadHubAppointments();
 }
 
 async function loadPatientAppointments() {
   if (!currentProfile) return;
-  const nowIso = new Date().toISOString();
-  const { data, error } = await supabaseClient
-    .from('appointments')
-    .select('*, doctor:profiles!appointments_doctor_id_fkey(first_name,last_name,specialty)')
-    .eq('patient_id', currentProfile.id)
-    .gte('start_time', nowIso)
-    .order('start_time', { ascending: true });
+  const { data, error } = await fetchUpcomingAppointments();
   if (error) {
     setMessage(bookingMessage, error.message, true);
     return;
   }
-  renderPatientAppointments(data || []);
+  cachedPatientAppointments = data || [];
+  renderPatientAppointments(cachedPatientAppointments);
+  renderHubAppointments(cachedPatientAppointments);
 }
 
 function renderPatientAppointments(items) {
@@ -2355,6 +2560,20 @@ function renderPatientAppointments(items) {
     li.appendChild(label);
     patientAppointments.appendChild(li);
   });
+}
+
+async function fetchUpcomingAppointments() {
+  if (!currentProfile || !supabaseClient) {
+    return { data: [], error: null };
+  }
+  const nowIso = new Date().toISOString();
+  const { data, error } = await supabaseClient
+    .from('appointments')
+    .select('*, doctor:profiles!appointments_doctor_id_fkey(first_name,last_name,specialty)')
+    .eq('patient_id', currentProfile.id)
+    .gte('start_time', nowIso)
+    .order('start_time', { ascending: true });
+  return { data: data || [], error };
 }
 
 async function refreshDoctorDashboard() {
@@ -2708,6 +2927,205 @@ function getStepsKey() {
   return 'bhealthy_steps_guest';
 }
 
+function getLocalDateKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getStepsHistoryKey() {
+  if (currentUser?.id) {
+    return `bhealthy_steps_history_${currentUser.id}`;
+  }
+  return 'bhealthy_steps_history_guest';
+}
+
+function loadStepsHistory() {
+  try {
+    const raw = localStorage.getItem(getStepsHistoryKey());
+    const data = raw ? JSON.parse(raw) : [];
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveStepsHistory(history) {
+  try {
+    localStorage.setItem(getStepsHistoryKey(), JSON.stringify(history));
+  } catch (error) {
+    // ignore storage errors
+  }
+}
+
+function updateStepsHistory(todaySteps) {
+  if (!Number.isFinite(todaySteps)) return loadStepsHistory();
+  const todayKey = getLocalDateKey();
+  const history = loadStepsHistory().filter((entry) => entry?.date);
+  const existing = history.find((entry) => entry.date === todayKey);
+  if (existing) {
+    existing.steps = todaySteps;
+  } else {
+    history.push({ date: todayKey, steps: todaySteps });
+  }
+  history.sort((a, b) => a.date.localeCompare(b.date));
+  const trimmed = history.slice(-7);
+  saveStepsHistory(trimmed);
+  return trimmed;
+}
+
+function renderStepsTrend(history) {
+  if (!stepsTrend || !stepsTrendSummary) return;
+  stepsTrend.innerHTML = '';
+  if (!history || history.length === 0) {
+    stepsTrendSummary.textContent = t('hub.trendEmpty');
+    return;
+  }
+  const maxSteps = Math.max(...history.map((entry) => entry.steps || 0), 1);
+  history.forEach((entry) => {
+    const bar = document.createElement('div');
+    bar.className = 'trend-bar';
+    const height = Math.max(6, Math.round((entry.steps / maxSteps) * 100));
+    bar.style.height = `${height}%`;
+    bar.title = `${entry.date}: ${entry.steps} ${t('hub.stepsUnit')}`;
+    const label = document.createElement('span');
+    label.className = 'trend-label';
+    label.textContent = entry.date.slice(5);
+    bar.appendChild(label);
+    stepsTrend.appendChild(bar);
+  });
+  const todayKey = getLocalDateKey();
+  const todayEntry = history.find((entry) => entry.date === todayKey);
+  const yesterdayDate = new Date();
+  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+  const yesterdayKey = getLocalDateKey(yesterdayDate);
+  const yesterdayEntry = history.find((entry) => entry.date === yesterdayKey);
+  if (!todayEntry) {
+    stepsTrendSummary.textContent = t('hub.trendEmpty');
+    return;
+  }
+  if (!yesterdayEntry || !Number.isFinite(yesterdayEntry.steps) || yesterdayEntry.steps === 0) {
+    stepsTrendSummary.textContent = formatMessage(t('hub.trendNoYesterday'), {
+      today: todayEntry.steps,
+    });
+    return;
+  }
+  const diff = Math.round(((todayEntry.steps - yesterdayEntry.steps) / yesterdayEntry.steps) * 100);
+  const diffLabel = diff > 0 ? `+${diff}` : `${diff}`;
+  stepsTrendSummary.textContent = formatMessage(t('hub.trendSummary'), {
+    today: todayEntry.steps,
+    diff: diffLabel,
+  });
+}
+
+function getCvhScoresKey() {
+  if (currentUser?.id) {
+    return `bhealthy_cvh_scores_${currentUser.id}`;
+  }
+  return 'bhealthy_cvh_scores_guest';
+}
+
+function loadLocalCvhScores() {
+  try {
+    const raw = localStorage.getItem(getCvhScoresKey());
+    const data = raw ? JSON.parse(raw) : [];
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveLocalCvhScore(score, createdAt) {
+  const history = loadLocalCvhScores();
+  history.push({ score, created_at: createdAt });
+  history.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+  const trimmed = history.slice(-10);
+  try {
+    localStorage.setItem(getCvhScoresKey(), JSON.stringify(trimmed));
+  } catch (error) {
+    // ignore storage errors
+  }
+  return trimmed;
+}
+
+async function loadCvhScores() {
+  if (!supabaseClient || !currentProfile) {
+    renderCvhTrend(loadLocalCvhScores());
+    return;
+  }
+  const { data, error } = await supabaseClient
+    .from('cvh_scores')
+    .select('score, created_at')
+    .eq('patient_id', currentProfile.id)
+    .order('created_at', { ascending: false })
+    .limit(10);
+  if (error) {
+    renderCvhTrend(loadLocalCvhScores());
+    return;
+  }
+  renderCvhTrend(data || []);
+}
+
+async function saveCvhScore(score) {
+  const createdAt = new Date().toISOString();
+  if (!supabaseClient || !currentProfile) {
+    const history = saveLocalCvhScore(score, createdAt);
+    renderCvhTrend(history);
+    return;
+  }
+  const { error } = await supabaseClient.from('cvh_scores').insert({
+    patient_id: currentProfile.id,
+    score,
+    created_at: createdAt,
+  });
+  if (error) {
+    const history = saveLocalCvhScore(score, createdAt);
+    renderCvhTrend(history);
+    return;
+  }
+  await loadCvhScores();
+}
+
+function renderCvhTrend(items) {
+  if (!cvhTrend || !cvhTrendSummary || !cvhTrendEmpty) return;
+  cvhTrend.innerHTML = '';
+  if (!items || items.length === 0) {
+    cvhTrendSummary.textContent = '';
+    cvhTrendEmpty.classList.remove('hidden');
+    return;
+  }
+  const ordered = [...items].sort(
+    (a, b) => new Date(a.created_at) - new Date(b.created_at)
+  );
+  cvhTrendEmpty.classList.add('hidden');
+  ordered.forEach((entry) => {
+    const bar = document.createElement('div');
+    bar.className = 'trend-bar';
+    const score = Number(entry.score) || 0;
+    bar.style.height = `${Math.max(8, Math.min(100, score))}%`;
+    bar.style.background = interpolateColor(score);
+    bar.title = `${score} · ${new Date(entry.created_at).toLocaleDateString()}`;
+    const label = document.createElement('span');
+    label.className = 'trend-label';
+    label.textContent = String(score);
+    bar.appendChild(label);
+    cvhTrend.appendChild(bar);
+  });
+  const latest = ordered[ordered.length - 1];
+  const previous = ordered.length > 1 ? ordered[ordered.length - 2] : null;
+  cvhTrendSummary.textContent = formatMessage(t('hub.cvhLatest'), {
+    score: latest.score,
+    date: new Date(latest.created_at).toLocaleDateString(),
+  });
+  if (previous && previous.score !== null && previous.score !== undefined) {
+    const diff = Math.round(latest.score - previous.score);
+    const diffLabel = diff > 0 ? `+${diff}` : `${diff}`;
+    const changeLine = formatMessage(t('hub.cvhChange'), { diff: diffLabel });
+    cvhTrendSummary.textContent = `${cvhTrendSummary.textContent} · ${changeLine}`;
+  }
+}
+
 function loadStepsData() {
   try {
     const raw = localStorage.getItem(getStepsKey());
@@ -2739,6 +3157,7 @@ function loadHubSteps() {
   if (stepsToday) stepsToday.value = data?.today ?? '';
   if (stepsGoal) stepsGoal.value = data?.goal ?? '';
   renderStepsSummary(data);
+  renderStepsTrend(loadStepsHistory());
 }
 
 async function loadHubMedications() {
@@ -2781,25 +3200,21 @@ async function loadHubMedications() {
 
 async function loadHubAppointments() {
   if (!currentProfile) return;
-  const nowIso = new Date().toISOString();
-  const { data, error } = await supabaseClient
-    .from('appointments')
-    .select('*, doctor:profiles!appointments_doctor_id_fkey(first_name,last_name,specialty)')
-    .eq('patient_id', currentProfile.id)
-    .gte('start_time', nowIso)
-    .order('start_time', { ascending: true })
-    .limit(3);
-  if (error) {
-    return;
-  }
+  const { data } = await fetchUpcomingAppointments();
+  cachedPatientAppointments = data || [];
+  renderHubAppointments(cachedPatientAppointments);
+}
+
+function renderHubAppointments(items) {
   if (!hubAppointmentList || !hubAppointmentEmpty) return;
+  const upcoming = items.slice(0, 3);
   hubAppointmentList.innerHTML = '';
-  if (!data || data.length === 0) {
+  if (upcoming.length === 0) {
     hubAppointmentEmpty.classList.remove('hidden');
     return;
   }
   hubAppointmentEmpty.classList.add('hidden');
-  data.forEach((appt) => {
+  upcoming.forEach((appt) => {
     const li = document.createElement('li');
     li.className = 'list-item';
     const nameParts = [appt.doctor?.first_name, appt.doctor?.last_name].filter(Boolean);
@@ -2812,7 +3227,7 @@ async function loadHubAppointments() {
 async function loadHubSummary() {
   loadHubSteps();
   if (!supabaseClient) return;
-  await Promise.all([loadHubMedications(), loadHubAppointments()]);
+  await Promise.all([loadHubMedications(), loadHubAppointments(), loadCvhScores()]);
 }
 
 form.addEventListener('input', updateScore);
@@ -3031,6 +3446,7 @@ if (medForm) {
       name: medName.value.trim(),
       dosage: medDosage.value.trim(),
       posology: medPosology.value.trim(),
+      doses_per_day: medDosesPerDay?.value ? Number.parseInt(medDosesPerDay.value, 10) : null,
       notes: medNotes.value.trim(),
       next_visit: medNextVisit.value || null,
     });
@@ -3203,10 +3619,29 @@ if (stepsForm) {
     }
     setMessage(stepsMessage, t('messages.saved'));
     renderStepsSummary(data);
+    const history = updateStepsHistory(data.today ?? null);
+    renderStepsTrend(history);
   });
 }
 
-getResultsBtn.addEventListener('click', () => {
+if (deviceButtons && stepsConnectMessage) {
+  deviceButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      setMessage(stepsConnectMessage, t('hub.deviceComingSoon'));
+    });
+  });
+}
+
+if (cvhRunAssessment) {
+  cvhRunAssessment.addEventListener('click', () => {
+    showView('assessment');
+    requestAnimationFrame(() => {
+      scrollToTarget('assessment', 'scoreValue');
+    });
+  });
+}
+
+getResultsBtn.addEventListener('click', async () => {
   const { complete, score, metrics } = calculateScore();
   const demographicsComplete = isDemographicsComplete();
   if (!complete || !demographicsComplete) {
@@ -3218,6 +3653,7 @@ getResultsBtn.addEventListener('click', () => {
   advicePanel.classList.remove('hidden');
   renderAdvice(score, metrics);
   openModal(score);
+  await saveCvhScore(score);
 });
 
 closeModal.addEventListener('click', closeResults);
