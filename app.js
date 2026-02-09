@@ -52,6 +52,8 @@ const individualPhotoPreview = document.getElementById('individualPhotoPreview')
 const hubAssess = document.getElementById('hubAssess');
 const hubMeds = document.getElementById('hubMeds');
 const hubBook = document.getElementById('hubBook');
+const hubOpenMove = document.getElementById('hubOpenMove');
+const hubOpenAssessment = document.getElementById('hubOpenAssessment');
 const backToHubFromMeds = document.getElementById('backToHubFromMeds');
 const backToHubFromAppointments = document.getElementById('backToHubFromAppointments');
 const stepsForm = document.getElementById('stepsForm');
@@ -67,6 +69,13 @@ const cvhTrend = document.getElementById('cvhTrend');
 const cvhTrendSummary = document.getElementById('cvhTrendSummary');
 const cvhTrendEmpty = document.getElementById('cvhTrendEmpty');
 const cvhRunAssessment = document.getElementById('cvhRunAssessment');
+const hubCvhScore = document.getElementById('hubCvhScore');
+const hubCvhLabel = document.getElementById('hubCvhLabel');
+const hubStepsValue = document.getElementById('hubStepsValue');
+const hubMinutesValue = document.getElementById('hubMinutesValue');
+const hubDistanceValue = document.getElementById('hubDistanceValue');
+const hubPAValue = document.getElementById('hubPAValue');
+const hubBPValue = document.getElementById('hubBPValue');
 const askForm = document.getElementById('askForm');
 const askTopic = document.getElementById('askTopic');
 const askQuestion = document.getElementById('askQuestion');
@@ -299,6 +308,7 @@ const translations = {
       stepsEmpty: 'No steps logged yet.',
       stepsUnit: 'steps',
       stepsGoalLabel: 'of goal',
+      minutesHint: '150 min/week',
       trendTitle: '7-day trend',
       trendEmpty: 'No trend data yet.',
       trendSummary: '{today} steps today · {diff}% vs yesterday',
@@ -312,6 +322,8 @@ const translations = {
       cvhLatest: 'Latest score: {score} · {date}',
       cvhChange: 'Change since last check: {diff}',
       cvhRun: 'Run assessment',
+      viewActivity: 'View activity',
+      viewCvh: 'CVH trend',
       askTitle: 'Asks',
       askSub: 'Ask about CVH prevention or medications.',
       askTopicLabel: 'Topic',
@@ -763,6 +775,7 @@ const translations = {
       stepsEmpty: 'Aucun pas enregistré pour l’instant.',
       stepsUnit: 'pas',
       stepsGoalLabel: 'de l’objectif',
+      minutesHint: '150 min/semaine',
       trendTitle: 'Tendance sur 7 jours',
       trendEmpty: 'Aucune tendance pour le moment.',
       trendSummary: '{today} pas aujourd’hui · {diff}% vs hier',
@@ -776,6 +789,8 @@ const translations = {
       cvhLatest: 'Dernier score : {score} · {date}',
       cvhChange: 'Écart depuis le dernier contrôle : {diff}',
       cvhRun: "Lancer l'évaluation",
+      viewActivity: 'Voir l’activité',
+      viewCvh: 'Tendance CVH',
       askTitle: 'Questions',
       askSub: 'Posez des questions sur la prévention CVH ou les médicaments.',
       askTopicLabel: 'Sujet',
@@ -1230,6 +1245,7 @@ const translations = {
       stepsEmpty: 'Aún no hay pasos registrados.',
       stepsUnit: 'pasos',
       stepsGoalLabel: 'de la meta',
+      minutesHint: '150 min/semana',
       trendTitle: 'Tendencia de 7 días',
       trendEmpty: 'Aún no hay datos de tendencia.',
       trendSummary: '{today} pasos hoy · {diff}% vs ayer',
@@ -1243,6 +1259,8 @@ const translations = {
       cvhLatest: 'Último puntaje: {score} · {date}',
       cvhChange: 'Cambio desde el último control: {diff}',
       cvhRun: 'Iniciar evaluación',
+      viewActivity: 'Ver actividad',
+      viewCvh: 'Tendencia CVH',
       askTitle: 'Consultas',
       askSub: 'Pregunta sobre prevención CVH o medicamentos.',
       askTopicLabel: 'Tema',
@@ -3834,6 +3852,7 @@ function renderCvhTrend(items) {
     cvhTrendSummary.textContent = '';
     cvhTrendEmpty.classList.remove('hidden');
     refreshMoveDashboardIfVisible();
+    refreshHubCvhActivityIfVisible();
     return;
   }
   const ordered = [...items].sort(
@@ -3867,6 +3886,7 @@ function renderCvhTrend(items) {
     cvhTrendSummary.textContent = `${cvhTrendSummary.textContent} · ${changeLine}`;
   }
   refreshMoveDashboardIfVisible();
+  refreshHubCvhActivityIfVisible();
 }
 
 function buildAskResponse(topic, question) {
@@ -3949,12 +3969,74 @@ function renderStepsSummary(data) {
   }
 }
 
+function updateHubCvhActivity() {
+  if (
+    !hubCvhScore &&
+    !hubStepsValue &&
+    !hubMinutesValue &&
+    !hubDistanceValue &&
+    !hubPAValue &&
+    !hubBPValue
+  ) {
+    return;
+  }
+  const data = loadStepsData();
+  const steps = Number(data?.today) || 0;
+  const minutes = estimateMinutesFromSteps(steps);
+  const distance = estimateDistanceFromSteps(steps);
+
+  if (hubStepsValue) {
+    hubStepsValue.textContent = steps ? steps.toLocaleString() : '--';
+  }
+  if (hubMinutesValue) {
+    hubMinutesValue.textContent = minutes ? minutes.toLocaleString() : '--';
+  }
+  if (hubDistanceValue) {
+    hubDistanceValue.textContent = distance ? `${distance}` : '--';
+  }
+
+  if (hubCvhScore) {
+    hubCvhScore.textContent = latestCvhScore !== null ? `${latestCvhScore}/100` : '--';
+  }
+  if (hubCvhLabel) {
+    if (latestCvhScore === null) {
+      hubCvhLabel.textContent = t('move.cvhEmpty');
+    } else {
+      hubCvhLabel.textContent = getLabelMap().find((entry) => latestCvhScore >= entry.min).text;
+    }
+  }
+
+  const weeklyMinutes = getWeeklyMinutesFromHistory();
+  if (hubPAValue) {
+    hubPAValue.textContent = formatMessage(t('move.paValue'), {
+      minutes: weeklyMinutes ? weeklyMinutes : '--',
+    });
+  }
+
+  const systolic = parseNumber(bpSystolic?.value);
+  const diastolic = parseNumber(bpDiastolic?.value);
+  if (hubBPValue) {
+    const label = t('move.bpLabel');
+    hubBPValue.textContent =
+      systolic !== null && diastolic !== null
+        ? `${label} ${systolic}/${diastolic}`
+        : `${label} --/--`;
+  }
+}
+
+function refreshHubCvhActivityIfVisible() {
+  if (hubView && !hubView.classList.contains('hidden')) {
+    updateHubCvhActivity();
+  }
+}
+
 function loadHubSteps() {
   const data = loadStepsData();
   if (stepsToday) stepsToday.value = data?.today ?? '';
   if (stepsGoal) stepsGoal.value = data?.goal ?? '';
   renderStepsSummary(data);
   renderStepsTrend(loadStepsHistory());
+  updateHubCvhActivity();
 }
 
 async function loadHubMedications() {
@@ -4023,8 +4105,13 @@ function renderHubAppointments(items) {
 
 async function loadHubSummary() {
   loadHubSteps();
-  if (!supabaseClient) return;
-  await Promise.all([loadHubMedications(), loadHubAppointments(), loadCvhScores()]);
+  if (!supabaseClient) {
+    updateHubCvhActivity();
+    return;
+  }
+  await Promise.all([loadHubMedications(), loadHubAppointments()]);
+  await loadCvhScores();
+  updateHubCvhActivity();
 }
 
 function populateProfileForm(profile) {
@@ -4190,6 +4277,17 @@ if (hubMeds) {
 if (hubBook) {
   hubBook.addEventListener('click', () => {
     openAppointmentsView();
+  });
+}
+if (hubOpenMove) {
+  hubOpenMove.addEventListener('click', () => showView('move'));
+}
+if (hubOpenAssessment) {
+  hubOpenAssessment.addEventListener('click', () => {
+    showView('assessment');
+    requestAnimationFrame(() => {
+      scrollToTarget('scoreValue', 'assessment');
+    });
   });
 }
 

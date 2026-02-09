@@ -184,29 +184,29 @@
             <h2 data-i18n="hub.title">What would you like to do?</h2>
             <p class="subhead" data-i18n="hub.subtitle">Choose an option to continue.</p>
           </div>
-          <div class="cell-content square">
-            <div class="hub-options">
-              <button id="hubAssess" class="option-card option-assess" type="button">
-                <span class="option-icon" aria-hidden="true">
+          <div class="cell-content">
+            <div class="hub-action-buttons">
+              <button id="hubAssess" class="action-btn action-assess" type="button">
+                <span class="action-icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24">
                     <path d="M3 12h4l2-4 4 8 2-4h6" />
                     <circle cx="7" cy="12" r="2" />
                   </svg>
                 </span>
-                <span class="option-text" data-i18n="hub.assess">Assess health</span>
+                <span class="action-text" data-i18n="hub.assess">Assess health</span>
               </button>
-              <button id="hubMeds" class="option-card option-meds" type="button">
-                <span class="option-icon" aria-hidden="true">
+              <button id="hubMeds" class="action-btn action-meds" type="button">
+                <span class="action-icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24">
                     <rect x="3" y="8" width="10" height="8" rx="4" />
                     <rect x="11" y="8" width="10" height="8" rx="4" />
                     <line x1="12" y1="8" x2="12" y2="16" />
                   </svg>
                 </span>
-                <span class="option-text" data-i18n="hub.meds">Check medication</span>
+                <span class="action-text" data-i18n="hub.meds">Check medication</span>
               </button>
-              <button id="hubBook" class="option-card option-book" type="button">
-                <span class="option-icon" aria-hidden="true">
+              <button id="hubBook" class="action-btn action-book" type="button">
+                <span class="action-icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24">
                     <rect x="4" y="6" width="16" height="14" rx="3" />
                     <line x1="4" y1="10" x2="20" y2="10" />
@@ -214,62 +214,86 @@
                     <circle cx="15" cy="14" r="1.5" />
                   </svg>
                 </span>
-                <span class="option-text" data-i18n="hub.book">Book an appointment</span>
+                <span class="action-text" data-i18n="hub.book">Book an appointment</span>
               </button>
             </div>
           </div>
         </div>
         <div class="hub-summary">
-          <div class="panel summary-card activity-card cell-pair">
-            <div class="cell-title">
-              <h3 data-i18n="hub.activityTitle">Daily activity</h3>
-              <p class="subhead" data-i18n="hub.activitySub">Track your daily steps.</p>
-            </div>
-            <div class="cell-content square">
-              <form id="stepsForm" class="grid-form">
-                <label class="field">
-                  <span data-i18n="hub.stepsToday">Today's steps</span>
-                  <input id="stepsToday" type="number" min="0" step="1" placeholder="e.g., 7500" />
-                </label>
-                <label class="field">
-                  <span data-i18n="hub.stepsGoal">Daily goal</span>
-                  <input id="stepsGoal" type="number" min="0" step="1" placeholder="e.g., 10000" />
-                </label>
-                <button class="primary" type="submit" data-i18n="hub.saveSteps">Save</button>
-                <p class="form-message" id="stepsMessage"></p>
-              </form>
-              <p class="muted" id="stepsSummary" data-i18n="hub.stepsEmpty">
-                No steps logged yet.
-              </p>
-              <div class="steps-trend">
-                <h4 data-i18n="hub.trendTitle">7-day trend</h4>
-                <div id="stepsTrend" class="trend-bars"></div>
-                <p id="stepsTrendSummary" class="muted" data-i18n="hub.trendEmpty">
-                  No trend data yet.
-                </p>
+          <div class="hub-cvh-activity" id="hubCvhActivity">
+            <div class="hub-cvh-header">
+              <div>
+                <p class="hub-cvh-title" data-i18n="move.dashboardTitle">Your cardiovascular health</p>
+                <p class="hub-cvh-sub" data-i18n="hub.activityTitle">Daily activity</p>
               </div>
-              <div class="device-connect">
-                <h4 data-i18n="hub.deviceTitle">Connect a device</h4>
-                <p class="muted" data-i18n="hub.deviceHint">
-                  Link Apple Health, Google Fit, or Fitbit (coming soon).
-                </p>
-                <div class="device-buttons">
-                  <button class="ghost" type="button" data-device="apple">Apple Health</button>
-                  <button class="ghost" type="button" data-device="google">Google Fit</button>
-                  <button class="ghost" type="button" data-device="fitbit">Fitbit</button>
+              <div class="hub-cvh-actions">
+                <button id="hubOpenMove" class="ghost small" type="button" data-i18n="hub.viewActivity">
+                  View activity
+                </button>
+              </div>
+            </div>
+            <div class="hub-cvh-stats">
+              <div class="hub-stat">
+                <span class="hub-stat-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M3 12h4l2-4 4 8 2-4h6" />
+                  </svg>
+                </span>
+                <div>
+                  <p class="hub-stat-label" data-i18n="move.cvhScore">CVH score</p>
+                  <p class="hub-stat-value" id="hubCvhScore">--</p>
+                  <p class="hub-stat-sub" id="hubCvhLabel" data-i18n="move.cvhEmpty">No score yet</p>
                 </div>
-                <p class="form-message" id="stepsConnectMessage"></p>
+              </div>
+              <div class="hub-stat">
+                <span class="hub-stat-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M7 20c1-5 3-8 6-10l4 6" />
+                    <circle cx="17" cy="6" r="3" />
+                  </svg>
+                </span>
+                <div>
+                  <p class="hub-stat-label" data-i18n="move.stepsStat">Steps</p>
+                  <p class="hub-stat-value" id="hubStepsValue">--</p>
+                  <p class="hub-stat-sub" data-i18n="hub.stepsToday">Today's steps</p>
+                </div>
+              </div>
+              <div class="hub-stat">
+                <span class="hub-stat-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="8" />
+                    <path d="M12 8v5l3 2" />
+                  </svg>
+                </span>
+                <div>
+                  <p class="hub-stat-label" data-i18n="move.minutesStat">Minutes</p>
+                  <p class="hub-stat-value" id="hubMinutesValue">--</p>
+                  <p class="hub-stat-sub" data-i18n="hub.minutesHint">150 min/week</p>
+                </div>
+              </div>
+              <div class="hub-stat">
+                <span class="hub-stat-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M4 17c4-7 12-7 16 0" />
+                    <path d="M12 12l2 2" />
+                  </svg>
+                </span>
+                <div>
+                  <p class="hub-stat-label" data-i18n="move.distanceStat">Distance</p>
+                  <p class="hub-stat-value" id="hubDistanceValue">--</p>
+                  <p class="hub-stat-sub">km</p>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="panel summary-card cvh-card cell-pair">
-            <div class="cell-title">
-              <h3 data-i18n="hub.cvhTitle">CVH score trend</h3>
-              <p class="subhead" data-i18n="hub.cvhSub">
-                Track your heart health score over time.
-              </p>
+            <div class="hub-cvh-meta">
+              <span class="hub-meta-pill" id="hubPAValue">PA · --</span>
+              <span class="hub-meta-pill" id="hubBPValue">BP --/--</span>
+              <button id="hubOpenAssessment" class="ghost small" type="button" data-i18n="hub.viewCvh">
+                CVH trend
+              </button>
             </div>
-            <div class="cell-content square">
+            <div class="hub-cvh-trend">
+              <h4 data-i18n="hub.cvhTitle">CVH score trend</h4>
               <div id="cvhTrend" class="trend-bars score-trend"></div>
               <p id="cvhTrendSummary" class="muted"></p>
               <p id="cvhTrendEmpty" class="muted" data-i18n="hub.cvhEmpty">
@@ -280,72 +304,58 @@
               </button>
             </div>
           </div>
-          <div class="panel summary-card reminders-card cell-pair">
-            <div class="cell-title">
+          <div class="panel reminders-panel" id="hubReminders">
+            <div class="panel-header">
               <h3 data-i18n="hub.remindersTitle">Reminders</h3>
             </div>
-            <div class="cell-content square">
-              <div class="subcell subcell-meds">
-                <div class="cell-title">
-                  <p class="reminder-label" data-i18n="hub.medsReminder">Medications</p>
-                </div>
-                <div class="cell-content square">
-                  <ul id="hubMedList" class="list"></ul>
-                  <p id="hubMedEmpty" class="muted" data-i18n="hub.medsEmpty">
-                    No medications yet.
-                  </p>
-                </div>
+            <div class="reminder-grid">
+              <div class="reminder-block">
+                <p class="reminder-label" data-i18n="hub.medsReminder">Medications</p>
+                <ul id="hubMedList" class="list"></ul>
+                <p id="hubMedEmpty" class="muted" data-i18n="hub.medsEmpty">No medications yet.</p>
               </div>
-              <div class="subcell subcell-appts">
-                <div class="cell-title">
-                  <p class="reminder-label" data-i18n="hub.appointmentsReminder">Upcoming appointments</p>
-                </div>
-                <div class="cell-content square">
-                  <ul id="hubAppointmentList" class="list"></ul>
-                  <p id="hubAppointmentEmpty" class="muted" data-i18n="hub.appointmentsEmpty">
-                    No upcoming appointments.
-                  </p>
-                </div>
+              <div class="reminder-block">
+                <p class="reminder-label" data-i18n="hub.appointmentsReminder">
+                  Upcoming appointments
+                </p>
+                <ul id="hubAppointmentList" class="list"></ul>
+                <p id="hubAppointmentEmpty" class="muted" data-i18n="hub.appointmentsEmpty">
+                  No upcoming appointments.
+                </p>
               </div>
             </div>
           </div>
-          <div class="panel summary-card ask-card cell-pair">
-            <div class="cell-title">
+          <div class="panel ask-panel" id="hubAsk">
+            <div class="panel-header">
               <h3 data-i18n="hub.askTitle">Asks</h3>
               <p class="subhead" data-i18n="hub.askSub">
                 Ask about CVH prevention or medications.
               </p>
             </div>
-            <div class="cell-content square">
-              <form id="askForm" class="grid-form">
-                <label class="field full">
-                  <span data-i18n="hub.askTopicLabel">Topic</span>
-                  <select id="askTopic">
-                    <option value="cvh" data-i18n="hub.askTopicCvh">CVH prevention</option>
-                    <option value="meds" data-i18n="hub.askTopicMeds">Medication guidance</option>
-                  </select>
-                </label>
-                <label class="field full">
-                  <span data-i18n="hub.askQuestionLabel">Your question</span>
-                  <textarea
-                    id="askQuestion"
-                    rows="3"
-                    data-i18n-placeholder="hub.askPlaceholder"
-                  ></textarea>
-                </label>
-                <button class="primary" type="submit" data-i18n="hub.askSubmit">
-                  Get guidance
-                </button>
-                <p class="form-message" id="askMessage"></p>
-              </form>
-              <div id="askResponse" class="ask-response hidden">
-                <h4 data-i18n="hub.askResponseTitle">Guidance</h4>
-                <div id="askResponseBody" class="muted"></div>
-              </div>
-              <p class="muted small" data-i18n="hub.askDisclaimer">
-                This guidance is general education and not a medical diagnosis.
-              </p>
+            <form id="askForm" class="grid-form">
+              <label class="field full">
+                <span data-i18n="hub.askTopicLabel">Topic</span>
+                <select id="askTopic">
+                  <option value="cvh" data-i18n="hub.askTopicCvh">CVH prevention</option>
+                  <option value="meds" data-i18n="hub.askTopicMeds">Medication guidance</option>
+                </select>
+              </label>
+              <label class="field full">
+                <span data-i18n="hub.askQuestionLabel">Your question</span>
+                <textarea id="askQuestion" rows="3" data-i18n-placeholder="hub.askPlaceholder"></textarea>
+              </label>
+              <button class="primary" type="submit" data-i18n="hub.askSubmit">
+                Get guidance
+              </button>
+              <p class="form-message" id="askMessage"></p>
+            </form>
+            <div id="askResponse" class="ask-response hidden">
+              <h4 data-i18n="hub.askResponseTitle">Guidance</h4>
+              <div id="askResponseBody" class="muted"></div>
             </div>
+            <p class="muted small" data-i18n="hub.askDisclaimer">
+              This guidance is general education and not a medical diagnosis.
+            </p>
           </div>
         </div>
       </section>
@@ -1411,15 +1421,6 @@
         </span>
         <span data-i18n="nav.home">Home</span>
       </button>
-      <button class="nav-btn" type="button" data-view="register">
-        <span class="nav-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <circle cx="12" cy="8" r="4" />
-            <path d="M4 20c2-4 14-4 16 0" />
-          </svg>
-        </span>
-        <span data-i18n="nav.profile">Profile</span>
-      </button>
       <button class="nav-btn" type="button" data-view="sleep">
         <span class="nav-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24">
@@ -1453,6 +1454,15 @@
           </svg>
         </span>
         <span data-i18n="nav.assess">Assess</span>
+      </button>
+      <button class="nav-btn" type="button" data-view="register">
+        <span class="nav-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 20c2-4 14-4 16 0" />
+          </svg>
+        </span>
+        <span data-i18n="nav.profile">Profile</span>
       </button>
     </nav>
 
