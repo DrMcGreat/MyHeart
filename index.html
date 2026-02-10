@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>B-Healthy - Check you heart health</title>
+    <title>B-Healthy - Check your heart health</title>
     <link rel="icon" href="icons/icon-192.png" />
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
     <link rel="manifest" href="manifest.webmanifest" />
@@ -178,6 +178,52 @@
         </div>
       </section>
 
+      <section id="feedbackView" class="view hidden">
+        <div class="view-header">
+          <h2 data-i18n="feedback.title">Feedback</h2>
+        </div>
+        <div class="panel cell-pair feedback-card">
+          <div class="cell-title">
+            <h3 data-i18n="feedback.subtitle">Help us improve</h3>
+            <p class="subhead" data-i18n="feedback.subhead">
+              Share your experience or report an issue.
+            </p>
+            <p class="muted" data-i18n="feedback.note">
+              We read every message and use it to improve B-Healthy.
+            </p>
+          </div>
+          <div class="cell-content square">
+            <form id="feedbackForm" class="feedback-form">
+              <label class="field">
+                <span data-i18n="feedback.name">Your name (optional)</span>
+                <input id="feedbackName" name="name" type="text" />
+              </label>
+              <label class="field">
+                <span data-i18n="feedback.email">Email (optional)</span>
+                <input id="feedbackEmail" name="email" type="email" />
+              </label>
+              <label class="field">
+                <span data-i18n="feedback.topic">Topic</span>
+                <select id="feedbackTopic" name="topic">
+                  <option value="" data-i18n="select.placeholder">Select...</option>
+                  <option value="experience" data-i18n="feedback.topicExperience">Experience</option>
+                  <option value="bug" data-i18n="feedback.topicBug">Bug report</option>
+                  <option value="feature" data-i18n="feedback.topicFeature">Feature request</option>
+                </select>
+              </label>
+              <label class="field">
+                <span data-i18n="feedback.message">Message</span>
+                <textarea id="feedbackMessageInput" name="message" rows="5" required></textarea>
+              </label>
+              <button id="feedbackSubmit" class="primary" type="submit" data-i18n="feedback.submit">
+                Send feedback
+              </button>
+              <p class="form-message" id="feedbackMessage"></p>
+            </form>
+          </div>
+        </div>
+      </section>
+
       <section id="hubView" class="view hub-view hidden">
         <div class="panel hub-actions cell-pair action-card">
           <div class="cell-title">
@@ -193,7 +239,7 @@
                     <circle cx="7" cy="12" r="2" />
                   </svg>
                 </span>
-                <span class="action-text" data-i18n="hub.assess">Assess health</span>
+                <span class="action-text" data-i18n="hub.assess">Assess heart health</span>
               </button>
               <button id="hubMeds" class="action-btn action-meds" type="button">
                 <span class="action-icon" aria-hidden="true">
@@ -203,7 +249,7 @@
                     <line x1="12" y1="8" x2="12" y2="16" />
                   </svg>
                 </span>
-                <span class="action-text" data-i18n="hub.meds">Check medication</span>
+                <span class="action-text" data-i18n="hub.meds">Manage medications</span>
               </button>
               <button id="hubBook" class="action-btn action-book" type="button">
                 <span class="action-icon" aria-hidden="true">
@@ -548,7 +594,7 @@
           </div>
           <div class="panel ask-panel" id="hubAsk">
             <div class="panel-header">
-              <h3 data-i18n="hub.askTitle">Asks</h3>
+              <h3 data-i18n="hub.askTitle">Ask</h3>
               <p class="subhead" data-i18n="hub.askSub">
                 Ask about CVH prevention or medications.
               </p>
@@ -558,7 +604,7 @@
                 <span data-i18n="hub.askTopicLabel">Topic</span>
                 <select id="askTopic">
                   <option value="cvh" data-i18n="hub.askTopicCvh">CVH prevention</option>
-                  <option value="meds" data-i18n="hub.askTopicMeds">Medication guidance</option>
+                  <option value="meds" data-i18n="hub.askTopicMeds">Medication advice</option>
                 </select>
               </label>
               <label class="field full">
@@ -566,7 +612,7 @@
                 <textarea id="askQuestion" rows="3" data-i18n-placeholder="hub.askPlaceholder"></textarea>
               </label>
               <button class="primary" type="submit" data-i18n="hub.askSubmit">
-                Get guidance
+                Get advice
               </button>
               <p class="form-message" id="askMessage"></p>
             </form>
@@ -575,7 +621,7 @@
               <div id="askResponseBody" class="muted"></div>
             </div>
             <p class="muted small" data-i18n="hub.askDisclaimer">
-              This guidance is general education and not a medical diagnosis.
+              This advice is educational and does not replace medical care.
             </p>
           </div>
         </div>
@@ -820,7 +866,7 @@
                     <circle cx="7" cy="12" r="2" />
                   </svg>
                 </span>
-                <span class="option-text" data-i18n="hub.assess">Assess health</span>
+                <span class="option-text" data-i18n="hub.assess">Assess heart health</span>
               </button>
               <button class="option-card option-meds" type="button" data-explore="meds">
                 <span class="option-icon" aria-hidden="true">
@@ -830,7 +876,7 @@
                     <line x1="12" y1="8" x2="12" y2="16" />
                   </svg>
                 </span>
-                <span class="option-text" data-i18n="hub.meds">Check medication</span>
+                <span class="option-text" data-i18n="hub.meds">Manage medications</span>
               </button>
               <button class="option-card option-book" type="button" data-explore="appointments">
                 <span class="option-icon" aria-hidden="true">
@@ -851,7 +897,18 @@
                     <circle cx="12" cy="17" r="1" />
                   </svg>
                 </span>
-                <span class="option-text" data-i18n="hub.askTitle">Asks</span>
+              <span class="option-text" data-i18n="hub.askTitle">Ask</span>
+              </button>
+              <button class="option-card option-feedback" type="button" data-explore="feedback">
+                <span class="option-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M4 5h16v11H7l-3 3V5z" />
+                    <circle cx="9" cy="10.5" r="1" />
+                    <circle cx="12" cy="10.5" r="1" />
+                    <circle cx="15" cy="10.5" r="1" />
+                  </svg>
+                </span>
+                <span class="option-text" data-i18n="feedback.title">Feedback</span>
               </button>
             </div>
           </div>
@@ -1082,7 +1139,7 @@
             <img class="logo" src="B-HEALTHY-LOGO-.png" alt="B-Healthy logo" />
             <p class="eyebrow">B-Healthy</p>
           </div>
-          <h1 data-i18n="hero.title">Check you heart health</h1>
+          <h1 data-i18n="hero.title">Check your heart health</h1>
         <p class="subhead" data-i18n="hero.subhead">
             A simple, private check-in on eight key cardiovascular health metrics.
         </p>

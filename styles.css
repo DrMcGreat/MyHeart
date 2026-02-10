@@ -199,6 +199,11 @@
   overflow: auto;
 }
 
+.feedback-form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
 .hub-actions .cell-content {
   width: 100%;
 }
@@ -233,6 +238,13 @@
   --cell-title-border: #ffd7bc;
   --cell-content-bg: #fffaf6;
   --cell-content-border: #ffe4cf;
+}
+
+.feedback-card {
+  --cell-title-bg: #e8f6f2;
+  --cell-title-border: #cfeae2;
+  --cell-content-bg: #f6fcfa;
+  --cell-content-border: #d7efe7;
 }
 
 .action-card {
@@ -1184,6 +1196,15 @@
 
 .option-book .option-icon {
   background: #f08c5a;
+}
+
+.option-feedback {
+  background: #eef2ff;
+  border-color: #d4dcff;
+}
+
+.option-feedback .option-icon {
+  background: #4b63d7;
 }
 
 .option-card:hover {

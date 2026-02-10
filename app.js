@@ -1,5 +1,8 @@
 const SUPABASE_URL = 'https://smaughjcwnzsnxzvzzvp.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_POhzK6LSp15-xPiag4QHgA_c6X-T4HQ';
+const FEEDBACK_FORM_ENDPOINT = '';
+const ANALYTICS_DOMAIN = '';
+const ENABLE_PLAUSIBLE_ANALYTICS = false;
 const isSupabaseConfigured =
   !SUPABASE_URL.includes('YOUR_') && !SUPABASE_ANON_KEY.includes('YOUR_');
 const supabaseClient =
@@ -15,6 +18,7 @@ const hubView = document.getElementById('hubView');
 const assessmentView = document.getElementById('assessmentView');
 const medsView = document.getElementById('medsView');
 const appointmentsView = document.getElementById('appointmentsView');
+const feedbackView = document.getElementById('feedbackView');
 
 const topBar = document.getElementById('topBar');
 const userGreeting = document.getElementById('userGreeting');
@@ -80,6 +84,10 @@ const hubBPValue = document.getElementById('hubBPValue');
 const hubActivitySteps = document.getElementById('hubActivitySteps');
 const hubActivityDistance = document.getElementById('hubActivityDistance');
 const hubActivityMinutes = document.getElementById('hubActivityMinutes');
+
+const feedbackForm = document.getElementById('feedbackForm');
+const feedbackMessage = document.getElementById('feedbackMessage');
+const feedbackSubmit = document.getElementById('feedbackSubmit');
 const hubRecommendationsList = document.getElementById('hubRecommendationsList');
 const hubTargetsList = document.getElementById('hubTargetsList');
 const askForm = document.getElementById('askForm');
@@ -252,7 +260,7 @@ let latestCvhScore = null;
 
 const translations = {
   en: {
-    title: 'B-Healthy - Check you heart health',
+    title: 'B-Healthy - Check your heart health',
     language: { label: 'Language' },
     nav: {
       back: 'Back to menu',
@@ -306,11 +314,11 @@ const translations = {
     hub: {
       title: 'What would you like to do?',
       subtitle: 'Choose an option to continue.',
-      assess: 'Assess health',
-      meds: 'Check medication',
+      assess: 'Assess heart health',
+      meds: 'Manage medications',
       book: 'Book an appointment',
       activityTitle: 'YOUR ACTIVITY',
-      activitySub: 'Track your daily steps.',
+      activitySub: 'Track your daily activity.',
       stepsToday: "Today's steps",
       stepsGoal: 'Daily goal',
       saveSteps: 'Save',
@@ -323,38 +331,38 @@ const translations = {
       trendSummary: '{today} steps today · {diff}% vs yesterday',
       trendNoYesterday: '{today} steps today',
       deviceTitle: 'Connect a device',
-      deviceHint: 'Link Apple Health, Google Fit, or Fitbit (coming soon).',
+      deviceHint: 'Sync Apple Health, Google Fit, or Fitbit (coming soon).',
       deviceComingSoon: 'Device sync is coming soon.',
       cvhTitle: 'YOUR CARDIOVASCULAR HEALTH',
       cvhSub: 'Track your heart health score over time.',
       cvhEmpty: 'No CVH scores yet. Run your first assessment.',
       cvhLatest: 'Latest score: {score} · {date}',
       cvhChange: 'Change since last check: {diff}',
-      cvhRun: 'Run assessment',
+      cvhRun: 'Start assessment',
       viewActivity: 'View activity',
-      viewCvh: 'CVH trend',
-      askTitle: 'Asks',
-      askSub: 'Ask about CVH prevention or medications.',
+      viewCvh: 'YOUR CARDIOVASCULAR HEALTH',
+      askTitle: 'Ask',
+      askSub: 'Ask about heart health prevention or medications.',
       askTopicLabel: 'Topic',
       askTopicCvh: 'CVH prevention',
-      askTopicMeds: 'Medication guidance',
+      askTopicMeds: 'Medication advice',
       askQuestionLabel: 'Your question',
       askPlaceholder: 'e.g., How can I improve my blood pressure?',
-      askSubmit: 'Get guidance',
-      askResponseTitle: 'Guidance',
-      askDisclaimer: 'This guidance is general education and not a medical diagnosis.',
-      askCvhIntro: 'Here are general CVH prevention tips:',
-      askMedsIntro: 'Here are general medication tips:',
-      askCvhDiet: 'Favor vegetables, fruits, whole grains, and limit salty or sugary foods.',
-      askCvhActivity: 'Aim for 150 minutes of moderate activity weekly, and break up long sitting time.',
-      askCvhSleep: 'Target 7–9 hours of sleep and keep a steady sleep schedule.',
+      askSubmit: 'Get advice',
+      askResponseTitle: 'Advice',
+      askDisclaimer: 'This advice is educational and does not replace medical care.',
+      askCvhIntro: 'General heart health prevention tips:',
+      askMedsIntro: 'General medication tips:',
+      askCvhDiet: 'Choose vegetables, fruits, whole grains, and limit salty or sugary foods.',
+      askCvhActivity: 'Aim for at least 150 minutes of moderate activity per week and break up long sitting.',
+      askCvhSleep: 'Aim for 7–9 hours of sleep and keep a consistent schedule.',
       askCvhNicotine: 'Avoid tobacco or vaping; quitting is one of the biggest heart health boosts.',
       askCvhStress: 'Use stress reducers like walks, breathing, or short relaxation breaks.',
-      askCvhBp: 'Check blood pressure regularly and reduce sodium if it is elevated.',
-      askCvhGeneral1: 'Keep a balanced diet, move daily, and stay hydrated.',
+      askCvhBp: 'Check blood pressure regularly and limit sodium if it is elevated.',
+      askCvhGeneral1: 'Balanced meals, daily movement, and hydration help.',
       askCvhGeneral2: 'Track your CVH score monthly to see progress.',
-      askMedsAdherence: 'Take medicines exactly as prescribed; do not stop without medical advice.',
-      askMedsMissed: 'If you miss a dose, follow your prescription label or pharmacist guidance.',
+      askMedsAdherence: 'Take medications exactly as prescribed; do not stop without medical advice.',
+      askMedsMissed: 'If you miss a dose, follow the label instructions or pharmacist advice.',
       askMedsSideEffects: 'Report persistent or severe side effects to your clinician.',
       askMedsInteractions: 'Ask a pharmacist before mixing medications, supplements, or alcohol.',
       askMedsGeneral1: 'Use reminders and your medication tracker to stay consistent.',
@@ -369,7 +377,7 @@ const translations = {
       title: 'YOUR ACTIVITY',
       view: 'View activities',
       today: 'Today',
-      synced: 'Last synced a few seconds ago',
+      synced: 'Last synced just now',
       add: '+ Add activity',
       invite: 'You have 1 challenge invite!',
       challengesTitle: 'Challenges',
@@ -396,7 +404,7 @@ const translations = {
       trendTitle: '7-day trend',
       trendEmpty: 'No trend data yet.',
       summaryGood: 'Great sleep! Keep your routine steady.',
-      summaryLow: 'Try aiming for 7–9 hours and a consistent bedtime.',
+      summaryLow: 'Aim for 7–9 hours and a consistent bedtime.',
       deviceTitle: 'Connect a device',
       deviceHint: 'Link Apple Health or Google Fit (coming soon).',
       deviceComingSoon: 'Sleep sync is coming soon.',
@@ -422,7 +430,7 @@ const translations = {
       badgeSpark: 'Energy',
       updateTitle: "Update today's activity",
       updateSubhead: 'Track activity and keep your streak.',
-      title: 'Move tracking',
+      title: 'Activity tracking',
       subhead: 'Track activity and hit your goals.',
       stepsToday: "Today's steps",
       stepsGoal: 'Daily goal',
@@ -451,19 +459,36 @@ const translations = {
       title: 'Explore features',
       subhead: 'Jump into any part of B-Healthy.',
     },
+    feedback: {
+      title: 'Feedback',
+      subtitle: 'Help us improve',
+      subhead: 'Share your experience or report an issue.',
+      note: 'We read every message and use it to improve B-Healthy.',
+      name: 'Your name (optional)',
+      email: 'Email (optional)',
+      topic: 'Topic',
+      topicExperience: 'Experience',
+      topicBug: 'Bug report',
+      topicFeature: 'Feature request',
+      message: 'Message',
+      submit: 'Send feedback',
+      success: 'Thanks for your feedback!',
+      error: 'We could not send your feedback. Please try again.',
+      missingEndpoint: 'Feedback is not enabled yet. Add your form endpoint in app.js.',
+    },
     meds: {
       guardianTitle: 'TREATMENT GUARDIAN',
-      setupTitle: 'Set Up Medications',
+      setupTitle: 'Set up medications',
       setupTrack: 'Track all your medications in one place.',
       setupSchedule: 'Set a schedule and get reminders.',
-      setupPrivacy: 'Your medication information is encrypted and cannot be read by anyone.',
-      setupButton: 'Set Up Medications',
+      setupPrivacy: 'Your medication information is encrypted and private.',
+      setupButton: 'Set up medications',
       privacyNote:
         'Your medication information is encrypted and cannot be read by anyone, including B-Healthy.',
-      title: 'Check medication',
+      title: 'Medication tracker',
       current: 'Current medications',
       empty: 'No medications yet.',
-      addTitle: 'Add medication',
+      addTitle: 'Add a medication',
       name: 'Medication name',
       dosage: 'Dosage',
       posology: 'Posology',
@@ -473,23 +498,23 @@ const translations = {
       add: 'Save medication',
       addedBy: 'Added by',
       nextVisitShort: 'Next visit:',
-      reminderPending: 'Reminder: pending doses today for',
-      reminderDone: 'All scheduled doses are completed for today.',
+      reminderPending: 'Reminder: doses pending today for',
+      reminderDone: 'All scheduled doses are complete for today.',
       dosesStatus: '{taken} of {total} doses taken today',
       markAll: 'Mark all taken',
       noSchedule: 'Add doses per day to enable reminders.',
-      calendarTitle: 'Daily confirmation',
+      calendarTitle: 'Daily confirmations',
     },
     appointments: {
       title: 'Book an appointment',
-      greeting: 'How are you feeling?',
+      greeting: 'How are you feeling today?',
       takeAppointment: 'Book an appointment',
       searchLabel: 'Search',
       searchPlaceholder: 'Search doctors, specialties, or city',
       modeInPerson: 'In clinic',
-      modeInPersonHint: 'Meet a practitioner on site',
+      modeInPersonHint: 'See a clinician in person',
       modeRemote: 'Remote',
-      modeRemoteHint: 'Video consultation from home',
+      modeRemoteHint: 'Video visit from home',
       suggestions: 'Suggestions',
       suggestionCardio: 'Heart health check',
       suggestionLifestyle: 'Lifestyle coaching',
@@ -498,9 +523,9 @@ const translations = {
       bookTitle: 'Choose a doctor and time',
       doctor: 'Doctor',
       book: 'Book',
-      noSlots: 'No open slots for this doctor yet.',
+      noSlots: 'No available slots for this doctor yet.',
       upcoming: 'Your upcoming appointments',
-      none: 'No upcoming appointments.',
+      none: 'No upcoming appointments yet.',
       doctorFallback: 'Doctor',
     },
     doctor: {
@@ -554,7 +579,7 @@ const translations = {
       add: 'Add staff',
     },
     messages: {
-      supabaseMissing: 'Supabase is not configured yet. Please add your URL and anon key in app.js.',
+      supabaseMissing: 'Supabase is not configured yet. Add your URL and anon key in app.js.',
       signUpCheckEmail: 'Check your email to confirm your account, then sign in.',
       signUpSuccess: 'Account created. Complete your profile.',
       signOut: 'Signed out.',
@@ -569,14 +594,14 @@ const translations = {
       missingPatient: 'Select a patient first.',
       slotBooked: 'Appointment booked.',
       slotTaken: 'That slot is no longer available.',
-      askEmpty: 'Please enter a question to get guidance.',
+      askEmpty: 'Please enter a question to get advice.',
     },
     yes: 'Yes',
     no: 'No',
     hero: {
-      title: 'Check you heart health',
+      title: 'Check your heart health',
       subhead:
-        'A simple, private check-in on eight key cardiovascular health metrics.',
+        'A simple, private check-in across eight key cardiovascular health metrics.',
     },
     install: {
       summary: 'Install this app (optional)',
@@ -586,7 +611,7 @@ const translations = {
       ios: 'iPhone/iPad (Safari): Share -> Add to Home Screen.',
     },
     score: {
-      heading: 'Overall Cardiovascular Health',
+      heading: 'Overall cardiovascular health',
       fillForm: 'Fill out the form, then click Get Results.',
       completeSections: 'Complete all sections to see your score.',
       high: 'High cardiovascular health',
@@ -662,16 +687,16 @@ const translations = {
     },
     select: { placeholder: 'Select...' },
     diet: {
-      help: 'Quick diet check. We translate these answers into a diet score (0–100).',
+      help: 'Quick diet check. We translate your answers into a diet score (0–100).',
       produce: { label: 'Fruits and vegetables per day', opt0: '0–1 servings', opt1: '2–3 servings', opt2: '4+ servings' },
       grains: { label: 'Whole grains per day', opt0: '0–1 servings', opt1: '2–3 servings', opt2: '4+ servings' },
       sugary: { label: 'Sugary drinks per week', opt0: '0–1 drinks', opt1: '2–6 drinks', opt2: '7+ drinks' },
       meat: { label: 'Processed or red meat per week', opt0: '0–1 servings', opt1: '2–6 servings', opt2: '7+ servings' },
       protein: { label: 'Fish or plant proteins per week', opt0: '0–1 servings', opt1: '2–3 servings', opt2: '4+ servings' },
-      footnote: 'We can refine this with a longer AHA diet screener later.',
+      footnote: 'We can refine this later with a longer AHA diet screener.',
     },
     activity: {
-      help: 'Moderate minutes + 2× vigorous minutes per week.',
+      help: 'Weekly minutes: moderate + 2× vigorous.',
       moderate: 'Moderate min/week',
       vigorous: 'Vigorous min/week',
       footnote: 'AHA scoring tops out at 150+ moderate-equivalent minutes.',
@@ -700,7 +725,7 @@ const translations = {
       weightKg: 'Weight (kg)',
       heightCm: 'Height (cm)',
       calculated: 'Calculated BMI',
-      footnote: 'BMI is one factor. Consider clinician guidance for context.',
+      footnote: 'BMI is one factor. Consider clinician advice for context.',
     },
     lipids: {
       help: 'Most labs report non-HDL cholesterol (mg/dL).',
@@ -796,11 +821,11 @@ const translations = {
     hub: {
       title: 'Que souhaitez-vous faire ?',
       subtitle: 'Choisissez une option pour continuer.',
-      assess: 'Évaluer la santé',
-      meds: 'Vérifier les médicaments',
+      assess: 'Évaluer la santé cardiaque',
+      meds: 'Gérer les médicaments',
       book: 'Prendre rendez-vous',
       activityTitle: 'YOUR ACTIVITY',
-      activitySub: 'Suivez vos pas du jour.',
+      activitySub: 'Suivez votre activité quotidienne.',
       stepsToday: 'Pas du jour',
       stepsGoal: 'Objectif quotidien',
       saveSteps: 'Enregistrer',
@@ -813,21 +838,21 @@ const translations = {
       trendSummary: '{today} pas aujourd’hui · {diff}% vs hier',
       trendNoYesterday: '{today} pas aujourd’hui',
       deviceTitle: 'Connecter un appareil',
-      deviceHint: 'Apple Health, Google Fit ou Fitbit (bientôt disponibles).',
+      deviceHint: 'Synchronisez Apple Health, Google Fit ou Fitbit (bientôt disponibles).',
       deviceComingSoon: 'La synchronisation arrive bientôt.',
       cvhTitle: 'YOUR CARDIOVASCULAR HEALTH',
       cvhSub: 'Suivez votre score de santé cardiaque dans le temps.',
       cvhEmpty: 'Aucun score CVH pour le moment. Lancez votre première évaluation.',
       cvhLatest: 'Dernier score : {score} · {date}',
       cvhChange: 'Écart depuis le dernier contrôle : {diff}',
-      cvhRun: "Lancer l'évaluation",
+      cvhRun: "Démarrer l'évaluation",
       viewActivity: 'Voir l’activité',
-      viewCvh: 'Tendance CVH',
+      viewCvh: 'VOTRE SANTÉ CARDIOVASCULAIRE',
       askTitle: 'Questions',
       askSub: 'Posez des questions sur la prévention CVH ou les médicaments.',
       askTopicLabel: 'Sujet',
       askTopicCvh: 'Prévention CVH',
-      askTopicMeds: 'Conseils médicaments',
+      askTopicMeds: 'Conseils sur les médicaments',
       askQuestionLabel: 'Votre question',
       askPlaceholder: 'ex. Comment améliorer ma tension artérielle ?',
       askSubmit: 'Obtenir des conseils',
@@ -840,7 +865,7 @@ const translations = {
       askCvhSleep: 'Visez 7–9 heures de sommeil avec une routine régulière.',
       askCvhNicotine: 'Évitez tabac ou vape; arrêter est l’un des meilleurs leviers.',
       askCvhStress: 'Réduisez le stress avec des pauses, respiration, ou marche.',
-      askCvhBp: 'Surveillez la tension et réduisez le sodium en cas d’élévation.',
+      askCvhBp: 'Surveillez la tension et réduisez le sel en cas d’élévation.',
       askCvhGeneral1: 'Alimentation équilibrée, activité régulière et hydratation sont clés.',
       askCvhGeneral2: 'Suivez votre score CVH chaque mois pour voir les progrès.',
       askMedsAdherence: 'Prenez les médicaments comme prescrits; ne les arrêtez pas sans avis médical.',
@@ -860,7 +885,7 @@ const translations = {
       title: 'YOUR ACTIVITY',
       view: 'Voir les activités',
       today: "Aujourd'hui",
-      synced: 'Dernière synchronisation il y a quelques secondes',
+      synced: 'Dernière synchronisation à l’instant',
       add: '+ Ajouter une activité',
       invite: 'Vous avez 1 invitation à un challenge !',
       challengesTitle: 'Challenges',
@@ -942,6 +967,23 @@ const translations = {
       title: 'Explorer les fonctionnalités',
       subhead: 'Accédez rapidement aux sections de B-Healthy.',
     },
+    feedback: {
+      title: 'Avis',
+      subtitle: 'Aidez-nous à améliorer',
+      subhead: 'Partagez votre expérience ou signalez un problème.',
+      note: 'Nous lisons chaque message pour améliorer B-Healthy.',
+      name: 'Votre nom (optionnel)',
+      email: 'Email (optionnel)',
+      topic: 'Sujet',
+      topicExperience: 'Expérience',
+      topicBug: 'Signaler un bug',
+      topicFeature: 'Suggestion',
+      message: 'Message',
+      submit: 'Envoyer',
+      success: 'Merci pour votre retour !',
+      error: "Nous n'avons pas pu envoyer votre message. Réessayez.",
+      missingEndpoint: "Le formulaire n'est pas encore activé. Ajoutez l'URL dans app.js.",
+    },
     meds: {
       guardianTitle: 'TREATMENT GUARDIAN',
       setupTitle: 'Configurer les médicaments',
@@ -951,7 +993,7 @@ const translations = {
       setupButton: 'Configurer les médicaments',
       privacyNote:
         "Vos informations de traitement sont chiffrées et ne peuvent être lues par personne, y compris B-Healthy.",
-      title: 'Vérifier les médicaments',
+      title: 'Gestion des médicaments',
       current: 'Médicaments en cours',
       empty: 'Aucun médicament pour le moment.',
       addTitle: 'Ajouter un médicament',
@@ -965,20 +1007,20 @@ const translations = {
       addedBy: 'Ajouté par',
       nextVisitShort: 'Prochain rendez-vous :',
       reminderPending: 'Rappel : prises restantes aujourd’hui pour',
-      reminderDone: 'Toutes les prises prévues sont complétées pour aujourd’hui.',
+      reminderDone: 'Toutes les prises prévues sont complètes aujourd’hui.',
       dosesStatus: '{taken} sur {total} prises effectuées aujourd’hui',
       markAll: 'Tout marquer',
       noSchedule: 'Ajoutez le nombre de prises par jour pour activer les rappels.',
-      calendarTitle: 'Confirmation quotidienne',
+      calendarTitle: 'Confirmations quotidiennes',
     },
     appointments: {
       title: 'Prendre rendez-vous',
-      greeting: 'Comment vous sentez-vous ?',
+      greeting: 'Comment vous sentez-vous aujourd’hui ?',
       takeAppointment: 'Prendre rendez-vous',
       searchLabel: 'Rechercher',
       searchPlaceholder: 'Rechercher un médecin, une spécialité ou une ville',
       modeInPerson: 'Au cabinet',
-      modeInPersonHint: 'Rencontre en présentiel',
+      modeInPersonHint: 'Voir un praticien en personne',
       modeRemote: 'À distance',
       modeRemoteHint: 'Consultation vidéo à domicile',
       suggestions: 'Suggestions',
@@ -991,7 +1033,7 @@ const translations = {
       book: 'Réserver',
       noSlots: 'Aucun créneau disponible pour ce médecin.',
       upcoming: 'Vos prochains rendez-vous',
-      none: 'Aucun rendez-vous à venir.',
+      none: 'Aucun rendez-vous à venir pour le moment.',
       doctorFallback: 'Médecin',
     },
     doctor: {
@@ -1235,7 +1277,7 @@ const translations = {
     },
   },
   es: {
-    title: 'B-Healthy - Revisa la salud de tu corazón',
+    title: 'B-Healthy - Revisa tu salud del corazón',
     language: { label: 'Idioma' },
     nav: {
       back: 'Volver al menú',
@@ -1289,11 +1331,11 @@ const translations = {
     hub: {
       title: '¿Qué te gustaría hacer?',
       subtitle: 'Elige una opción para continuar.',
-      assess: 'Evaluar salud',
-      meds: 'Revisar medicación',
+      assess: 'Evaluar salud cardíaca',
+      meds: 'Gestionar medicación',
       book: 'Reservar cita',
       activityTitle: 'YOUR ACTIVITY',
-      activitySub: 'Registra tus pasos diarios.',
+      activitySub: 'Registra tu actividad diaria.',
       stepsToday: 'Pasos de hoy',
       stepsGoal: 'Meta diaria',
       saveSteps: 'Guardar',
@@ -1306,7 +1348,7 @@ const translations = {
       trendSummary: '{today} pasos hoy · {diff}% vs ayer',
       trendNoYesterday: '{today} pasos hoy',
       deviceTitle: 'Conectar un dispositivo',
-      deviceHint: 'Apple Health, Google Fit o Fitbit (próximamente).',
+      deviceHint: 'Sincroniza Apple Health, Google Fit o Fitbit (próximamente).',
       deviceComingSoon: 'La sincronización llegará pronto.',
       cvhTitle: 'YOUR CARDIOVASCULAR HEALTH',
       cvhSub: 'Sigue tu puntaje de salud cardíaca en el tiempo.',
@@ -1315,25 +1357,25 @@ const translations = {
       cvhChange: 'Cambio desde el último control: {diff}',
       cvhRun: 'Iniciar evaluación',
       viewActivity: 'Ver actividad',
-      viewCvh: 'Tendencia CVH',
-      askTitle: 'Consultas',
-      askSub: 'Pregunta sobre prevención CVH o medicamentos.',
+      viewCvh: 'TU SALUD CARDIOVASCULAR',
+      askTitle: 'Preguntas',
+      askSub: 'Pregunta sobre prevención cardiovascular o medicación.',
       askTopicLabel: 'Tema',
       askTopicCvh: 'Prevención CVH',
-      askTopicMeds: 'Guía de medicamentos',
+      askTopicMeds: 'Consejos sobre medicamentos',
       askQuestionLabel: 'Tu pregunta',
       askPlaceholder: 'p. ej., ¿Cómo mejorar mi presión arterial?',
-      askSubmit: 'Obtener guía',
-      askResponseTitle: 'Guía',
-      askDisclaimer: 'Estas recomendaciones son generales y no sustituyen consejo médico.',
+      askSubmit: 'Obtener consejos',
+      askResponseTitle: 'Consejos',
+      askDisclaimer: 'Estos consejos son educativos y no sustituyen atención médica.',
       askCvhIntro: 'Aquí tienes consejos generales de prevención CVH:',
       askMedsIntro: 'Aquí tienes consejos generales sobre medicamentos:',
       askCvhDiet: 'Prioriza verduras, frutas, granos integrales y limita sal y azúcar.',
-      askCvhActivity: 'Busca 150 minutos semanales de actividad moderada y evita sedentarismo.',
+      askCvhActivity: 'Procura 150 minutos semanales de actividad moderada y evita el sedentarismo.',
       askCvhSleep: 'Apunta a 7–9 horas de sueño con horario estable.',
       askCvhNicotine: 'Evita tabaco o vapeo; dejarlo mejora mucho la salud cardíaca.',
       askCvhStress: 'Reduce el estrés con pausas, respiración o caminatas.',
-      askCvhBp: 'Controla la presión y reduce sodio si está elevada.',
+      askCvhBp: 'Controla la presión y reduce el sodio si está elevada.',
       askCvhGeneral1: 'Dieta equilibrada, actividad diaria e hidratación ayudan.',
       askCvhGeneral2: 'Sigue tu puntaje CVH cada mes para ver avances.',
       askMedsAdherence: 'Toma los medicamentos como se prescriben; no los suspendas sin consejo.',
@@ -1344,8 +1386,8 @@ const translations = {
       askUrgent:
         'Si tienes síntomas graves (dolor en el pecho, desmayo, falta de aire intensa), busca atención urgente.',
       remindersTitle: 'TREATMENT GUARDIAN',
-      medsReminder: 'Medicaciones',
-      medsEmpty: 'Aún no hay medicaciones.',
+      medsReminder: 'Medicamentos',
+      medsEmpty: 'Aún no hay medicamentos.',
       appointmentsReminder: 'Próximas citas',
       appointmentsEmpty: 'No hay citas próximas.',
     },
@@ -1353,7 +1395,7 @@ const translations = {
       title: 'YOUR ACTIVITY',
       view: 'Ver actividades',
       today: 'Hoy',
-      synced: 'Última sincronización hace unos segundos',
+      synced: 'Última sincronización ahora mismo',
       add: '+ Añadir actividad',
       invite: '¡Tienes 1 invitación a un reto!',
       challengesTitle: 'Retos',
@@ -1406,7 +1448,7 @@ const translations = {
       badgeSpark: 'Energía',
       updateTitle: 'Actualizar actividad de hoy',
       updateSubhead: 'Registra tu actividad y mantén la racha.',
-      title: 'Seguimiento de movimiento',
+      title: 'Seguimiento de actividad',
       subhead: 'Registra tu actividad y alcanza tus metas.',
       stepsToday: 'Pasos de hoy',
       stepsGoal: 'Meta diaria',
@@ -1435,6 +1477,23 @@ const translations = {
       title: 'Explora funciones',
       subhead: 'Salta a cualquier sección de B-Healthy.',
     },
+    feedback: {
+      title: 'Comentarios',
+      subtitle: 'Ayúdanos a mejorar',
+      subhead: 'Comparte tu experiencia o reporta un problema.',
+      note: 'Leemos cada mensaje para mejorar B-Healthy.',
+      name: 'Tu nombre (opcional)',
+      email: 'Correo (opcional)',
+      topic: 'Tema',
+      topicExperience: 'Experiencia',
+      topicBug: 'Reporte de error',
+      topicFeature: 'Sugerencia',
+      message: 'Mensaje',
+      submit: 'Enviar',
+      success: '¡Gracias por tus comentarios!',
+      error: 'No pudimos enviar tu mensaje. Inténtalo de nuevo.',
+      missingEndpoint: 'El formulario aún no está habilitado. Agrega la URL en app.js.',
+    },
     meds: {
       guardianTitle: 'TREATMENT GUARDIAN',
       setupTitle: 'Configurar medicamentos',
@@ -1444,10 +1503,10 @@ const translations = {
       setupButton: 'Configurar medicamentos',
       privacyNote:
         'Tu información de tratamiento está cifrada y no puede ser leída por nadie, incluido B-Healthy.',
-      title: 'Revisar medicación',
-      current: 'Medicaciones actuales',
-      empty: 'Aún no hay medicaciones.',
-      addTitle: 'Agregar medicación',
+      title: 'Gestión de medicamentos',
+      current: 'Medicamentos actuales',
+      empty: 'Aún no hay medicamentos.',
+      addTitle: 'Agregar un medicamento',
       name: 'Nombre del medicamento',
       dosage: 'Dosis',
       posology: 'Posología',
@@ -1462,11 +1521,11 @@ const translations = {
       dosesStatus: '{taken} de {total} tomas realizadas hoy',
       markAll: 'Marcar todo',
       noSchedule: 'Agrega tomas por día para activar recordatorios.',
-      calendarTitle: 'Confirmación diaria',
+      calendarTitle: 'Confirmaciones diarias',
     },
     appointments: {
       title: 'Reservar cita',
-      greeting: '¿Cómo te sientes?',
+      greeting: '¿Cómo te sientes hoy?',
       takeAppointment: 'Reservar cita',
       searchLabel: 'Buscar',
       searchPlaceholder: 'Buscar médicos, especialidades o ciudad',
@@ -1484,7 +1543,7 @@ const translations = {
       book: 'Reservar',
       noSlots: 'No hay horarios disponibles para este médico.',
       upcoming: 'Tus próximas citas',
-      none: 'No hay citas próximas.',
+      none: 'No hay citas próximas por ahora.',
       doctorFallback: 'Médico',
     },
     doctor: {
@@ -1554,14 +1613,14 @@ const translations = {
       missingPatient: 'Primero selecciona un paciente.',
       slotBooked: 'Cita reservada.',
       slotTaken: 'Ese horario ya no está disponible.',
-      askEmpty: 'Escribe una pregunta para obtener orientación.',
+      askEmpty: 'Escribe una pregunta para recibir consejos.',
     },
     yes: 'Sí',
     no: 'No',
     hero: {
-      title: 'Revisa la salud de tu corazón',
+      title: 'Revisa tu salud del corazón',
       subhead:
-        'Un chequeo privado y sencillo de ocho métricas clave de salud cardiovascular.',
+        'Un chequeo simple y privado de ocho métricas clave de salud cardiovascular.',
     },
     install: {
       summary: 'Instalar esta app (opcional)',
@@ -1860,6 +1919,7 @@ const views = {
   sleep: document.getElementById('sleepView'),
   move: document.getElementById('moveView'),
   explore: document.getElementById('exploreView'),
+  feedback: feedbackView,
 };
 
 function showView(viewKey) {
@@ -1946,6 +2006,47 @@ function setMessage(element, message, isError = false) {
   if (!element) return;
   element.textContent = message ?? '';
   element.style.color = isError ? '#b42318' : '';
+}
+
+function setupAnalytics() {
+  if (!ENABLE_PLAUSIBLE_ANALYTICS || !ANALYTICS_DOMAIN) return;
+  if (document.getElementById('plausible-script')) return;
+  const script = document.createElement('script');
+  script.id = 'plausible-script';
+  script.defer = true;
+  script.setAttribute('data-domain', ANALYTICS_DOMAIN);
+  script.src = 'https://plausible.io/js/script.js';
+  document.head.appendChild(script);
+}
+
+function setupFeedbackForm() {
+  if (!feedbackForm) return;
+  if (!FEEDBACK_FORM_ENDPOINT) {
+    if (feedbackSubmit) feedbackSubmit.disabled = true;
+    setMessage(feedbackMessage, t('feedback.missingEndpoint'), true);
+    return;
+  }
+  feedbackForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (feedbackSubmit) feedbackSubmit.disabled = true;
+    setMessage(feedbackMessage, '');
+    try {
+      const response = await fetch(FEEDBACK_FORM_ENDPOINT, {
+        method: 'POST',
+        body: new FormData(feedbackForm),
+        headers: { Accept: 'application/json' },
+      });
+      if (!response.ok) {
+        throw new Error('Feedback send failed');
+      }
+      feedbackForm.reset();
+      setMessage(feedbackMessage, t('feedback.success'));
+    } catch (error) {
+      setMessage(feedbackMessage, t('feedback.error'), true);
+    } finally {
+      if (feedbackSubmit) feedbackSubmit.disabled = false;
+    }
+  });
 }
 
 function setPendingRole(role) {
@@ -4215,11 +4316,9 @@ function renderHubAppointments(items) {
 
 async function loadHubSummary() {
   loadHubSteps();
-  if (!supabaseClient) {
-    updateHubCvhActivity();
-    return;
+  if (supabaseClient) {
+    await Promise.all([loadHubMedications(), loadHubAppointments()]);
   }
-  await Promise.all([loadHubMedications(), loadHubAppointments()]);
   await loadCvhScores();
   updateHubCvhActivity();
 }
@@ -4894,6 +4993,8 @@ if (langSelect) {
 }
 
 applyTranslations();
+setupAnalytics();
+setupFeedbackForm();
 updateBmiUnitFields();
 updateScore();
 setAuthMode('signin');
