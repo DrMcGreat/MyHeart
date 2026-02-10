@@ -263,7 +263,7 @@ const translations = {
       move: 'Move',
       explore: 'Explore',
       assess: 'Assess',
-      guardian: 'Treatment Gardian',
+      guardian: 'Treatment Guardian',
       services: 'Health Services',
     },
     auth: {
@@ -325,7 +325,7 @@ const translations = {
       deviceTitle: 'Connect a device',
       deviceHint: 'Link Apple Health, Google Fit, or Fitbit (coming soon).',
       deviceComingSoon: 'Device sync is coming soon.',
-      cvhTitle: 'YOUR CARDUOVASCULAR HEALTH',
+      cvhTitle: 'YOUR CARDIOVASCULAR HEALTH',
       cvhSub: 'Track your heart health score over time.',
       cvhEmpty: 'No CVH scores yet. Run your first assessment.',
       cvhLatest: 'Latest score: {score} · {date}',
@@ -359,7 +359,7 @@ const translations = {
       askMedsInteractions: 'Ask a pharmacist before mixing medications, supplements, or alcohol.',
       askMedsGeneral1: 'Use reminders and your medication tracker to stay consistent.',
       askUrgent: 'If you have severe symptoms (chest pain, fainting, severe shortness of breath), seek urgent care.',
-      remindersTitle: 'TREATMENT GARDIAN',
+      remindersTitle: 'TREATMENT GUARDIAN',
       medsReminder: 'Medications',
       medsEmpty: 'No medications yet.',
       appointmentsReminder: 'Upcoming appointments',
@@ -402,8 +402,8 @@ const translations = {
       deviceComingSoon: 'Sleep sync is coming soon.',
     },
     move: {
-      dashboardTitle: 'YOUR CARDUOVASCULAR HEALTH',
-      heroTitle: 'YOUR CARDUOVASCULAR HEALTH',
+      dashboardTitle: 'YOUR CARDIOVASCULAR HEALTH',
+      heroTitle: 'YOUR CARDIOVASCULAR HEALTH',
       cvhScore: 'CVH score',
       stepsStat: 'Steps',
       minutesStat: 'Minutes',
@@ -452,7 +452,7 @@ const translations = {
       subhead: 'Jump into any part of B-Healthy.',
     },
     meds: {
-      guardianTitle: 'TREATMENT GARDIAN',
+      guardianTitle: 'TREATMENT GUARDIAN',
       setupTitle: 'Set Up Medications',
       setupTrack: 'Track all your medications in one place.',
       setupSchedule: 'Set a schedule and get reminders.',
@@ -753,7 +753,7 @@ const translations = {
       move: 'Bouger',
       explore: 'Explorer',
       assess: 'Évaluer',
-      guardian: 'Treatment Gardian',
+      guardian: 'Treatment Guardian',
       services: 'Services de santé',
     },
     auth: {
@@ -815,7 +815,7 @@ const translations = {
       deviceTitle: 'Connecter un appareil',
       deviceHint: 'Apple Health, Google Fit ou Fitbit (bientôt disponibles).',
       deviceComingSoon: 'La synchronisation arrive bientôt.',
-      cvhTitle: 'YOUR CARDUOVASCULAR HEALTH',
+      cvhTitle: 'YOUR CARDIOVASCULAR HEALTH',
       cvhSub: 'Suivez votre score de santé cardiaque dans le temps.',
       cvhEmpty: 'Aucun score CVH pour le moment. Lancez votre première évaluation.',
       cvhLatest: 'Dernier score : {score} · {date}',
@@ -850,7 +850,7 @@ const translations = {
       askMedsGeneral1: 'Utilisez des rappels et le suivi pour rester régulier.',
       askUrgent:
         'Si vous avez des symptômes graves (douleur thoracique, malaise, essoufflement sévère), consultez en urgence.',
-      remindersTitle: 'TREATMENT GARDIAN',
+      remindersTitle: 'TREATMENT GUARDIAN',
       medsReminder: 'Médicaments',
       medsEmpty: 'Aucun médicament pour le moment.',
       appointmentsReminder: 'Rendez-vous à venir',
@@ -893,8 +893,8 @@ const translations = {
       deviceComingSoon: 'La synchronisation sommeil arrive bientôt.',
     },
     move: {
-      dashboardTitle: 'YOUR CARDUOVASCULAR HEALTH',
-      heroTitle: 'YOUR CARDUOVASCULAR HEALTH',
+      dashboardTitle: 'YOUR CARDIOVASCULAR HEALTH',
+      heroTitle: 'YOUR CARDIOVASCULAR HEALTH',
       cvhScore: 'Score CVH',
       stepsStat: 'Pas',
       minutesStat: 'Minutes',
@@ -943,7 +943,7 @@ const translations = {
       subhead: 'Accédez rapidement aux sections de B-Healthy.',
     },
     meds: {
-      guardianTitle: 'TREATMENT GARDIAN',
+      guardianTitle: 'TREATMENT GUARDIAN',
       setupTitle: 'Configurer les médicaments',
       setupTrack: 'Regroupez tous vos médicaments en un seul endroit.',
       setupSchedule: 'Définissez un horaire et recevez des rappels.',
@@ -1246,7 +1246,7 @@ const translations = {
       move: 'Movimiento',
       explore: 'Explorar',
       assess: 'Evaluar',
-      guardian: 'Treatment Gardian',
+      guardian: 'Treatment Guardian',
       services: 'Servicios de salud',
     },
     auth: {
@@ -1308,7 +1308,7 @@ const translations = {
       deviceTitle: 'Conectar un dispositivo',
       deviceHint: 'Apple Health, Google Fit o Fitbit (próximamente).',
       deviceComingSoon: 'La sincronización llegará pronto.',
-      cvhTitle: 'YOUR CARDUOVASCULAR HEALTH',
+      cvhTitle: 'YOUR CARDIOVASCULAR HEALTH',
       cvhSub: 'Sigue tu puntaje de salud cardíaca en el tiempo.',
       cvhEmpty: 'Aún no hay puntajes CVH. Realiza tu primera evaluación.',
       cvhLatest: 'Último puntaje: {score} · {date}',
@@ -1343,7 +1343,7 @@ const translations = {
       askMedsGeneral1: 'Usa recordatorios y el seguimiento para mantener constancia.',
       askUrgent:
         'Si tienes síntomas graves (dolor en el pecho, desmayo, falta de aire intensa), busca atención urgente.',
-      remindersTitle: 'TREATMENT GARDIAN',
+      remindersTitle: 'TREATMENT GUARDIAN',
       medsReminder: 'Medicaciones',
       medsEmpty: 'Aún no hay medicaciones.',
       appointmentsReminder: 'Próximas citas',
@@ -1386,8 +1386,8 @@ const translations = {
       deviceComingSoon: 'La sincronización de sueño llegará pronto.',
     },
     move: {
-      dashboardTitle: 'YOUR CARDUOVASCULAR HEALTH',
-      heroTitle: 'YOUR CARDUOVASCULAR HEALTH',
+      dashboardTitle: 'YOUR CARDIOVASCULAR HEALTH',
+      heroTitle: 'YOUR CARDIOVASCULAR HEALTH',
       cvhScore: 'Puntaje CVH',
       stepsStat: 'Pasos',
       minutesStat: 'Minutos',
@@ -1436,7 +1436,7 @@ const translations = {
       subhead: 'Salta a cualquier sección de B-Healthy.',
     },
     meds: {
-      guardianTitle: 'TREATMENT GARDIAN',
+      guardianTitle: 'TREATMENT GUARDIAN',
       setupTitle: 'Configurar medicamentos',
       setupTrack: 'Registra todos tus medicamentos en un solo lugar.',
       setupSchedule: 'Define un horario y recibe recordatorios.',
@@ -2879,13 +2879,24 @@ async function saveMedicationLogForDate(medicationId, dateKey, dosesTaken) {
   return true;
 }
 
+function getMedicationDoses(item) {
+  if (!item) return null;
+  if (Number.isFinite(item.doses_per_day)) {
+    return item.doses_per_day;
+  }
+  if (Number.isFinite(item.dose_per_day)) {
+    return item.dose_per_day;
+  }
+  return null;
+}
+
 function updateMedicationReminder(items, logsMap) {
   if (!medReminderMessage) return;
   if (!items.length) {
     medReminderMessage.classList.add('hidden');
     return;
   }
-  const withSchedule = items.filter((item) => Number.isFinite(item.doses_per_day));
+  const withSchedule = items.filter((item) => Number.isFinite(getMedicationDoses(item)));
   if (withSchedule.length === 0) {
     medReminderMessage.textContent = t('meds.noSchedule');
     medReminderMessage.classList.remove('hidden');
@@ -2893,7 +2904,7 @@ function updateMedicationReminder(items, logsMap) {
     return;
   }
   const pending = withSchedule.filter((item) => {
-    const total = item.doses_per_day ?? 0;
+    const total = getMedicationDoses(item) ?? 0;
     const taken = logsMap.get(item.id) ?? 0;
     return total > 0 && taken < total;
   });
@@ -2940,7 +2951,7 @@ function renderMedications(items, logsMap, logsRange) {
     meta.textContent = addedBy ? `${t('meds.addedBy')} ${addedBy}${role}` : '';
     li.appendChild(title);
 
-    const dosesPerDay = Number.isFinite(item.doses_per_day) ? item.doses_per_day : null;
+    const dosesPerDay = getMedicationDoses(item);
     if (dosesPerDay && dosesPerDay > 0) {
       const tracker = document.createElement('div');
       tracker.className = 'dose-tracker';
@@ -3923,46 +3934,54 @@ async function saveCvhScore(score) {
 }
 
 function renderCvhTrend(items) {
-  if (!cvhTrend || !cvhTrendSummary || !cvhTrendEmpty) return;
-  cvhTrend.innerHTML = '';
+  const hasTrendUi = Boolean(cvhTrend && cvhTrendSummary && cvhTrendEmpty);
   if (!items || items.length === 0) {
     latestCvhScore = null;
-    cvhTrendSummary.textContent = '';
-    cvhTrendEmpty.classList.remove('hidden');
+    if (hasTrendUi) {
+      cvhTrend.innerHTML = '';
+      cvhTrendSummary.textContent = '';
+      cvhTrendEmpty.classList.remove('hidden');
+    }
     refreshMoveDashboardIfVisible();
     refreshHubCvhActivityIfVisible();
     return;
   }
+
   const ordered = [...items].sort(
     (a, b) => new Date(a.created_at) - new Date(b.created_at)
   );
-  cvhTrendEmpty.classList.add('hidden');
-  ordered.forEach((entry) => {
-    const bar = document.createElement('div');
-    bar.className = 'trend-bar';
-    const score = Number(entry.score) || 0;
-    bar.style.height = `${Math.max(8, Math.min(100, score))}%`;
-    bar.style.background = interpolateColor(score);
-    bar.title = `${score} · ${new Date(entry.created_at).toLocaleDateString()}`;
-    const label = document.createElement('span');
-    label.className = 'trend-label';
-    label.textContent = String(score);
-    bar.appendChild(label);
-    cvhTrend.appendChild(bar);
-  });
   const latest = ordered[ordered.length - 1];
   latestCvhScore = Number(latest.score);
   const previous = ordered.length > 1 ? ordered[ordered.length - 2] : null;
-  cvhTrendSummary.textContent = formatMessage(t('hub.cvhLatest'), {
-    score: latest.score,
-    date: new Date(latest.created_at).toLocaleDateString(),
-  });
-  if (previous && previous.score !== null && previous.score !== undefined) {
-    const diff = Math.round(latest.score - previous.score);
-    const diffLabel = diff > 0 ? `+${diff}` : `${diff}`;
-    const changeLine = formatMessage(t('hub.cvhChange'), { diff: diffLabel });
-    cvhTrendSummary.textContent = `${cvhTrendSummary.textContent} · ${changeLine}`;
+
+  if (hasTrendUi) {
+    cvhTrend.innerHTML = '';
+    cvhTrendEmpty.classList.add('hidden');
+    ordered.forEach((entry) => {
+      const bar = document.createElement('div');
+      bar.className = 'trend-bar';
+      const score = Number(entry.score) || 0;
+      bar.style.height = `${Math.max(8, Math.min(100, score))}%`;
+      bar.style.background = interpolateColor(score);
+      bar.title = `${score} · ${new Date(entry.created_at).toLocaleDateString()}`;
+      const label = document.createElement('span');
+      label.className = 'trend-label';
+      label.textContent = String(score);
+      bar.appendChild(label);
+      cvhTrend.appendChild(bar);
+    });
+    cvhTrendSummary.textContent = formatMessage(t('hub.cvhLatest'), {
+      score: latest.score,
+      date: new Date(latest.created_at).toLocaleDateString(),
+    });
+    if (previous && previous.score !== null && previous.score !== undefined) {
+      const diff = Math.round(latest.score - previous.score);
+      const diffLabel = diff > 0 ? `+${diff}` : `${diff}`;
+      const changeLine = formatMessage(t('hub.cvhChange'), { diff: diffLabel });
+      cvhTrendSummary.textContent = `${cvhTrendSummary.textContent} · ${changeLine}`;
+    }
   }
+
   refreshMoveDashboardIfVisible();
   refreshHubCvhActivityIfVisible();
 }
@@ -4485,7 +4504,8 @@ if (medForm) {
   medForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!currentProfile) return;
-    const { error } = await supabaseClient.from('medications').insert({
+    const dosesValue = medDosesPerDay?.value ? Number.parseInt(medDosesPerDay.value, 10) : null;
+    const payload = {
       patient_id: currentProfile.id,
       added_by: currentProfile.id,
       added_by_name: getProfileDisplayName(currentProfile),
@@ -4493,11 +4513,23 @@ if (medForm) {
       name: medName.value.trim(),
       dosage: medDosage.value.trim(),
       posology: medPosology.value.trim(),
-      doses_per_day: medDosesPerDay?.value ? Number.parseInt(medDosesPerDay.value, 10) : null,
       notes: medNotes.value.trim(),
       next_visit: medNextVisit.value || null,
-    });
-    if (error) {
+    };
+    if (Number.isFinite(dosesValue)) {
+      payload.doses_per_day = dosesValue;
+    }
+    let { error } = await supabaseClient.from('medications').insert(payload);
+    if (error && /schema cache|column/i.test(error.message) && Number.isFinite(dosesValue)) {
+      const fallbackPayload = { ...payload };
+      delete fallbackPayload.doses_per_day;
+      fallbackPayload.dose_per_day = dosesValue;
+      const retry = await supabaseClient.from('medications').insert(fallbackPayload);
+      if (retry.error) {
+        setMessage(medMessage, retry.error.message, true);
+        return;
+      }
+    } else if (error) {
       setMessage(medMessage, error.message, true);
       return;
     }
