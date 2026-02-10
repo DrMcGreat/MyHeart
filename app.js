@@ -54,6 +54,7 @@ const hubMeds = document.getElementById('hubMeds');
 const hubBook = document.getElementById('hubBook');
 const hubOpenMove = document.getElementById('hubOpenMove');
 const hubOpenAssessment = document.getElementById('hubOpenAssessment');
+const hubMedSetupBtn = document.getElementById('hubMedSetupBtn');
 const backToHubFromMeds = document.getElementById('backToHubFromMeds');
 const backToHubFromAppointments = document.getElementById('backToHubFromAppointments');
 const stepsForm = document.getElementById('stepsForm');
@@ -76,6 +77,11 @@ const hubMinutesValue = document.getElementById('hubMinutesValue');
 const hubDistanceValue = document.getElementById('hubDistanceValue');
 const hubPAValue = document.getElementById('hubPAValue');
 const hubBPValue = document.getElementById('hubBPValue');
+const hubActivitySteps = document.getElementById('hubActivitySteps');
+const hubActivityDistance = document.getElementById('hubActivityDistance');
+const hubActivityMinutes = document.getElementById('hubActivityMinutes');
+const hubRecommendationsList = document.getElementById('hubRecommendationsList');
+const hubTargetsList = document.getElementById('hubTargetsList');
 const askForm = document.getElementById('askForm');
 const askTopic = document.getElementById('askTopic');
 const askQuestion = document.getElementById('askQuestion');
@@ -85,6 +91,7 @@ const askResponseBody = document.getElementById('askResponseBody');
 
 const bottomNav = document.getElementById('bottomNav');
 const navButtons = document.querySelectorAll('.bottom-nav .nav-btn');
+const quickOpenButtons = document.querySelectorAll('[data-open="move"]');
 const exploreButtons = document.querySelectorAll('[data-explore]');
 
 const sleepForm = document.getElementById('sleepForm');
@@ -256,6 +263,8 @@ const translations = {
       move: 'Move',
       explore: 'Explore',
       assess: 'Assess',
+      guardian: 'Treatment Gardian',
+      services: 'Health Services',
     },
     auth: {
       title: 'Welcome to B-Healthy',
@@ -300,7 +309,7 @@ const translations = {
       assess: 'Assess health',
       meds: 'Check medication',
       book: 'Book an appointment',
-      activityTitle: 'Daily activity',
+      activityTitle: 'YOUR ACTIVITY',
       activitySub: 'Track your daily steps.',
       stepsToday: "Today's steps",
       stepsGoal: 'Daily goal',
@@ -316,7 +325,7 @@ const translations = {
       deviceTitle: 'Connect a device',
       deviceHint: 'Link Apple Health, Google Fit, or Fitbit (coming soon).',
       deviceComingSoon: 'Device sync is coming soon.',
-      cvhTitle: 'CVH score trend',
+      cvhTitle: 'YOUR CARDUOVASCULAR HEALTH',
       cvhSub: 'Track your heart health score over time.',
       cvhEmpty: 'No CVH scores yet. Run your first assessment.',
       cvhLatest: 'Latest score: {score} · {date}',
@@ -350,11 +359,32 @@ const translations = {
       askMedsInteractions: 'Ask a pharmacist before mixing medications, supplements, or alcohol.',
       askMedsGeneral1: 'Use reminders and your medication tracker to stay consistent.',
       askUrgent: 'If you have severe symptoms (chest pain, fainting, severe shortness of breath), seek urgent care.',
-      remindersTitle: 'Reminders',
+      remindersTitle: 'TREATMENT GARDIAN',
       medsReminder: 'Medications',
       medsEmpty: 'No medications yet.',
       appointmentsReminder: 'Upcoming appointments',
       appointmentsEmpty: 'No upcoming appointments.',
+    },
+    activityFeed: {
+      title: 'YOUR ACTIVITY',
+      view: 'View activities',
+      today: 'Today',
+      synced: 'Last synced a few seconds ago',
+      add: '+ Add activity',
+      invite: 'You have 1 challenge invite!',
+      challengesTitle: 'Challenges',
+      join: '+ Join',
+      challengeName: 'Solemates',
+      challengeDates: 'Feb 1–Feb 28',
+      challengeParticipants: '2,776 participants',
+      teamLabel: 'Your team: General Participation',
+      friendsTitle: "Today's top friends",
+      friendsEmpty:
+        'Add friends to see user profiles, activity stats, and send direct messages.',
+      addFriends: '+ Add friends',
+      viewLeaderboard: 'View friends leaderboard',
+      badgesTitle: 'Badges',
+      viewBadges: 'View all badges',
     },
     sleep: {
       title: 'Sleep tracking',
@@ -372,8 +402,8 @@ const translations = {
       deviceComingSoon: 'Sleep sync is coming soon.',
     },
     move: {
-      dashboardTitle: 'Your cardiovascular health',
-      heroTitle: 'Your cardiovascular health',
+      dashboardTitle: 'YOUR CARDUOVASCULAR HEALTH',
+      heroTitle: 'YOUR CARDUOVASCULAR HEALTH',
       cvhScore: 'CVH score',
       stepsStat: 'Steps',
       minutesStat: 'Minutes',
@@ -422,7 +452,7 @@ const translations = {
       subhead: 'Jump into any part of B-Healthy.',
     },
     meds: {
-      guardianTitle: 'Treatment Guardian',
+      guardianTitle: 'TREATMENT GARDIAN',
       setupTitle: 'Set Up Medications',
       setupTrack: 'Track all your medications in one place.',
       setupSchedule: 'Set a schedule and get reminders.',
@@ -723,6 +753,8 @@ const translations = {
       move: 'Bouger',
       explore: 'Explorer',
       assess: 'Évaluer',
+      guardian: 'Treatment Gardian',
+      services: 'Services de santé',
     },
     auth: {
       title: 'Bienvenue sur B-Healthy',
@@ -767,7 +799,7 @@ const translations = {
       assess: 'Évaluer la santé',
       meds: 'Vérifier les médicaments',
       book: 'Prendre rendez-vous',
-      activityTitle: 'Activité quotidienne',
+      activityTitle: 'YOUR ACTIVITY',
       activitySub: 'Suivez vos pas du jour.',
       stepsToday: 'Pas du jour',
       stepsGoal: 'Objectif quotidien',
@@ -783,7 +815,7 @@ const translations = {
       deviceTitle: 'Connecter un appareil',
       deviceHint: 'Apple Health, Google Fit ou Fitbit (bientôt disponibles).',
       deviceComingSoon: 'La synchronisation arrive bientôt.',
-      cvhTitle: 'Tendance du score CVH',
+      cvhTitle: 'YOUR CARDUOVASCULAR HEALTH',
       cvhSub: 'Suivez votre score de santé cardiaque dans le temps.',
       cvhEmpty: 'Aucun score CVH pour le moment. Lancez votre première évaluation.',
       cvhLatest: 'Dernier score : {score} · {date}',
@@ -818,11 +850,32 @@ const translations = {
       askMedsGeneral1: 'Utilisez des rappels et le suivi pour rester régulier.',
       askUrgent:
         'Si vous avez des symptômes graves (douleur thoracique, malaise, essoufflement sévère), consultez en urgence.',
-      remindersTitle: 'Rappels',
+      remindersTitle: 'TREATMENT GARDIAN',
       medsReminder: 'Médicaments',
       medsEmpty: 'Aucun médicament pour le moment.',
       appointmentsReminder: 'Rendez-vous à venir',
       appointmentsEmpty: 'Aucun rendez-vous à venir.',
+    },
+    activityFeed: {
+      title: 'YOUR ACTIVITY',
+      view: 'Voir les activités',
+      today: "Aujourd'hui",
+      synced: 'Dernière synchronisation il y a quelques secondes',
+      add: '+ Ajouter une activité',
+      invite: 'Vous avez 1 invitation à un challenge !',
+      challengesTitle: 'Challenges',
+      join: '+ Rejoindre',
+      challengeName: 'Solemates',
+      challengeDates: '1 fév.–28 fév.',
+      challengeParticipants: '2 776 participants',
+      teamLabel: 'Votre équipe : Participation générale',
+      friendsTitle: 'Meilleurs amis du jour',
+      friendsEmpty:
+        'Ajoutez des amis pour voir leurs profils, statistiques et envoyer des messages.',
+      addFriends: '+ Ajouter des amis',
+      viewLeaderboard: 'Voir le classement des amis',
+      badgesTitle: 'Badges',
+      viewBadges: 'Voir tous les badges',
     },
     sleep: {
       title: 'Suivi du sommeil',
@@ -840,8 +893,8 @@ const translations = {
       deviceComingSoon: 'La synchronisation sommeil arrive bientôt.',
     },
     move: {
-      dashboardTitle: 'Votre santé cardiovasculaire',
-      heroTitle: 'Votre santé cardiovasculaire',
+      dashboardTitle: 'YOUR CARDUOVASCULAR HEALTH',
+      heroTitle: 'YOUR CARDUOVASCULAR HEALTH',
       cvhScore: 'Score CVH',
       stepsStat: 'Pas',
       minutesStat: 'Minutes',
@@ -890,7 +943,7 @@ const translations = {
       subhead: 'Accédez rapidement aux sections de B-Healthy.',
     },
     meds: {
-      guardianTitle: 'Gardien du traitement',
+      guardianTitle: 'TREATMENT GARDIAN',
       setupTitle: 'Configurer les médicaments',
       setupTrack: 'Regroupez tous vos médicaments en un seul endroit.',
       setupSchedule: 'Définissez un horaire et recevez des rappels.',
@@ -1193,6 +1246,8 @@ const translations = {
       move: 'Movimiento',
       explore: 'Explorar',
       assess: 'Evaluar',
+      guardian: 'Treatment Gardian',
+      services: 'Servicios de salud',
     },
     auth: {
       title: 'Bienvenido a B-Healthy',
@@ -1237,7 +1292,7 @@ const translations = {
       assess: 'Evaluar salud',
       meds: 'Revisar medicación',
       book: 'Reservar cita',
-      activityTitle: 'Actividad diaria',
+      activityTitle: 'YOUR ACTIVITY',
       activitySub: 'Registra tus pasos diarios.',
       stepsToday: 'Pasos de hoy',
       stepsGoal: 'Meta diaria',
@@ -1253,7 +1308,7 @@ const translations = {
       deviceTitle: 'Conectar un dispositivo',
       deviceHint: 'Apple Health, Google Fit o Fitbit (próximamente).',
       deviceComingSoon: 'La sincronización llegará pronto.',
-      cvhTitle: 'Tendencia de puntaje CVH',
+      cvhTitle: 'YOUR CARDUOVASCULAR HEALTH',
       cvhSub: 'Sigue tu puntaje de salud cardíaca en el tiempo.',
       cvhEmpty: 'Aún no hay puntajes CVH. Realiza tu primera evaluación.',
       cvhLatest: 'Último puntaje: {score} · {date}',
@@ -1288,11 +1343,32 @@ const translations = {
       askMedsGeneral1: 'Usa recordatorios y el seguimiento para mantener constancia.',
       askUrgent:
         'Si tienes síntomas graves (dolor en el pecho, desmayo, falta de aire intensa), busca atención urgente.',
-      remindersTitle: 'Recordatorios',
+      remindersTitle: 'TREATMENT GARDIAN',
       medsReminder: 'Medicaciones',
       medsEmpty: 'Aún no hay medicaciones.',
       appointmentsReminder: 'Próximas citas',
       appointmentsEmpty: 'No hay citas próximas.',
+    },
+    activityFeed: {
+      title: 'YOUR ACTIVITY',
+      view: 'Ver actividades',
+      today: 'Hoy',
+      synced: 'Última sincronización hace unos segundos',
+      add: '+ Añadir actividad',
+      invite: '¡Tienes 1 invitación a un reto!',
+      challengesTitle: 'Retos',
+      join: '+ Unirse',
+      challengeName: 'Solemates',
+      challengeDates: '1 feb.–28 feb.',
+      challengeParticipants: '2.776 participantes',
+      teamLabel: 'Tu equipo: Participación general',
+      friendsTitle: 'Mejores amigos de hoy',
+      friendsEmpty:
+        'Agrega amigos para ver perfiles, estadísticas y enviar mensajes.',
+      addFriends: '+ Añadir amigos',
+      viewLeaderboard: 'Ver clasificación de amigos',
+      badgesTitle: 'Insignias',
+      viewBadges: 'Ver todas las insignias',
     },
     sleep: {
       title: 'Seguimiento del sueño',
@@ -1310,8 +1386,8 @@ const translations = {
       deviceComingSoon: 'La sincronización de sueño llegará pronto.',
     },
     move: {
-      dashboardTitle: 'Tu salud cardiovascular',
-      heroTitle: 'Tu salud cardiovascular',
+      dashboardTitle: 'YOUR CARDUOVASCULAR HEALTH',
+      heroTitle: 'YOUR CARDUOVASCULAR HEALTH',
       cvhScore: 'Puntaje CVH',
       stepsStat: 'Pasos',
       minutesStat: 'Minutos',
@@ -1360,7 +1436,7 @@ const translations = {
       subhead: 'Salta a cualquier sección de B-Healthy.',
     },
     meds: {
-      guardianTitle: 'Guardia del tratamiento',
+      guardianTitle: 'TREATMENT GARDIAN',
       setupTitle: 'Configurar medicamentos',
       setupTrack: 'Registra todos tus medicamentos en un solo lugar.',
       setupSchedule: 'Define un horario y recibe recordatorios.',
@@ -3757,6 +3833,7 @@ function updateMoveDashboard(data) {
   recommendations.push(t('move.recommendBreaks'));
   recommendations.push(t('move.recommendStrength'));
   renderListItems(moveRecommendationsList, recommendations);
+  renderListItems(hubRecommendationsList, recommendations);
 
   const targets = [];
   if (goal) {
@@ -3768,6 +3845,7 @@ function updateMoveDashboard(data) {
   targets.push(t('move.targetWater'));
   targets.push(t('move.targetStrength'));
   renderListItems(moveTargetsList, targets);
+  renderListItems(hubTargetsList, targets);
 }
 
 function refreshMoveDashboardIfVisible() {
@@ -3988,11 +4066,20 @@ function updateHubCvhActivity() {
   if (hubStepsValue) {
     hubStepsValue.textContent = steps ? steps.toLocaleString() : '--';
   }
+  if (hubActivitySteps) {
+    hubActivitySteps.textContent = steps ? steps.toLocaleString() : '--';
+  }
   if (hubMinutesValue) {
     hubMinutesValue.textContent = minutes ? minutes.toLocaleString() : '--';
   }
+  if (hubActivityMinutes) {
+    hubActivityMinutes.textContent = minutes ? minutes.toLocaleString() : '--';
+  }
   if (hubDistanceValue) {
     hubDistanceValue.textContent = distance ? `${distance}` : '--';
+  }
+  if (hubActivityDistance) {
+    hubActivityDistance.textContent = distance ? `${distance}` : '--';
   }
 
   if (hubCvhScore) {
@@ -4021,6 +4108,10 @@ function updateHubCvhActivity() {
       systolic !== null && diastolic !== null
         ? `${label} ${systolic}/${diastolic}`
         : `${label} --/--`;
+  }
+
+  if (hubRecommendationsList || hubTargetsList) {
+    updateMoveDashboard(loadMoveData());
   }
 }
 
@@ -4288,6 +4379,18 @@ if (hubOpenAssessment) {
     requestAnimationFrame(() => {
       scrollToTarget('scoreValue', 'assessment');
     });
+  });
+}
+
+if (hubMedSetupBtn) {
+  hubMedSetupBtn.addEventListener('click', () => {
+    openMedsView();
+  });
+}
+
+if (quickOpenButtons && quickOpenButtons.length) {
+  quickOpenButtons.forEach((button) => {
+    button.addEventListener('click', () => showView('move'));
   });
 }
 

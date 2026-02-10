@@ -220,109 +220,330 @@
           </div>
         </div>
         <div class="hub-summary">
-          <div class="hub-cvh-activity" id="hubCvhActivity">
-            <div class="hub-cvh-header">
-              <div>
-                <p class="hub-cvh-title" data-i18n="move.dashboardTitle">Your cardiovascular health</p>
-                <p class="hub-cvh-sub" data-i18n="hub.activityTitle">Daily activity</p>
+          <div class="hub-health-stack" id="hubCvhActivity">
+            <p class="section-label" data-i18n="move.dashboardTitle">YOUR CARDUOVASCULAR HEALTH</p>
+            <div class="activity-hero hub-activity-hero">
+              <div class="hub-hero-top">
+                <span class="hub-hero-title" data-i18n="move.heroTitle">YOUR CARDUOVASCULAR HEALTH</span>
+                <button id="hubOpenMove" class="card-arrow" type="button" aria-label="Open activity">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M10 8l4 4-4 4" />
+                  </svg>
+                </button>
               </div>
-              <div class="hub-cvh-actions">
-                <button id="hubOpenMove" class="ghost small" type="button" data-i18n="hub.viewActivity">
-                  View activity
+              <div class="activity-stats hub-activity-stats">
+                <div class="activity-stat">
+                  <span class="stat-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M3 12h4l2-4 4 8 2-4h6" />
+                    </svg>
+                  </span>
+                  <div>
+                    <p class="stat-label" data-i18n="move.cvhScore">CVH score</p>
+                    <p class="stat-value" id="hubCvhScore">--</p>
+                    <p class="stat-sub" id="hubCvhLabel" data-i18n="move.cvhEmpty">No score yet</p>
+                  </div>
+                </div>
+                <div class="activity-stat">
+                  <span class="stat-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M7 20c1-5 3-8 6-10l4 6" />
+                      <circle cx="17" cy="6" r="3" />
+                    </svg>
+                  </span>
+                  <div>
+                    <p class="stat-label" data-i18n="move.stepsStat">Steps</p>
+                    <p class="stat-value" id="hubStepsValue">--</p>
+                    <p class="stat-sub" data-i18n="hub.stepsToday">Today's steps</p>
+                  </div>
+                </div>
+                <div class="activity-stat">
+                  <span class="stat-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="8" />
+                      <path d="M12 8v5l3 2" />
+                    </svg>
+                  </span>
+                  <div>
+                    <p class="stat-label" data-i18n="move.minutesStat">Minutes</p>
+                    <p class="stat-value" id="hubMinutesValue">--</p>
+                    <p class="stat-sub" data-i18n="hub.minutesHint">150 min/week</p>
+                  </div>
+                </div>
+                <div class="activity-stat">
+                  <span class="stat-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M4 17c4-7 12-7 16 0" />
+                      <path d="M12 12l2 2" />
+                    </svg>
+                  </span>
+                  <div>
+                    <p class="stat-label" data-i18n="move.distanceStat">Distance</p>
+                    <p class="stat-value" id="hubDistanceValue">--</p>
+                    <p class="stat-sub">km</p>
+                  </div>
+                </div>
+              </div>
+              <div class="activity-meta hub-activity-meta">
+                <div class="meta-item">
+                  <span class="meta-label" data-i18n="move.paLabel">PA</span>
+                  <span id="hubPAValue">PA · --</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label" data-i18n="move.bpLabel">BP</span>
+                  <span id="hubBPValue">--/--</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="activity-card">
+              <div class="activity-card-header hub-card-header">
+                <div>
+                  <h3 data-i18n="move.recommendationsTitle">Recommendations</h3>
+                  <p class="subhead" data-i18n="move.recommendationsSub">To improve</p>
+                </div>
+                <button class="card-arrow" type="button" aria-label="Open recommendations" data-open="move">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M10 8l4 4-4 4" />
+                  </svg>
+                </button>
+              </div>
+              <div class="activity-card-body">
+                <ul id="hubRecommendationsList" class="activity-list"></ul>
+              </div>
+            </div>
+
+            <div class="activity-card">
+              <div class="activity-card-header hub-card-header">
+                <div>
+                  <h3 data-i18n="move.targetsTitle">Personal targets</h3>
+                  <p class="subhead" data-i18n="move.targetsSub">My personal goals</p>
+                </div>
+                <button class="card-arrow" type="button" aria-label="Open targets" data-open="move">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M10 8l4 4-4 4" />
+                  </svg>
+                </button>
+              </div>
+              <div class="activity-card-body">
+                <ul id="hubTargetsList" class="activity-list"></ul>
+              </div>
+            </div>
+
+            <div class="activity-card badge-card hub-badge-card">
+              <div class="activity-card-header hub-card-header">
+                <h3 data-i18n="move.badgesTitle">Badges</h3>
+              </div>
+              <div class="activity-card-body">
+                <div class="hub-badge-strip">
+                  <button class="hub-badge-btn" type="button" aria-label="Consistency">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M5 14l3 3 6-7" />
+                    </svg>
+                  </button>
+                  <button class="hub-badge-btn" type="button" aria-label="Heart care">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 20s-7-4.5-7-9a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 4.5-7 9-7 9z" />
+                    </svg>
+                  </button>
+                  <button class="hub-badge-btn" type="button" aria-label="Energy">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M13 2L6 14h6l-1 8 7-12h-6z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel activity-feed" id="hubActivityFeed">
+            <div class="activity-feed-header">
+              <h3 data-i18n="activityFeed.title">YOUR ACTIVITY</h3>
+              <button class="link-btn" type="button" data-open="move" data-i18n="activityFeed.view">
+                View activities
+              </button>
+            </div>
+            <div class="activity-feed-card">
+              <div class="activity-feed-top">
+                <div class="activity-feed-today">
+                  <span data-i18n="activityFeed.today">Today</span>
+                </div>
+                <div class="activity-feed-stats">
+                  <div class="activity-feed-stat">
+                    <span class="stat-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M7 20c1-5 3-8 6-10l4 6" />
+                        <circle cx="17" cy="6" r="3" />
+                      </svg>
+                    </span>
+                    <strong id="hubActivitySteps">--</strong>
+                  </div>
+                  <div class="activity-feed-stat">
+                    <span class="stat-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M4 17c4-7 12-7 16 0" />
+                        <path d="M12 12l2 2" />
+                      </svg>
+                    </span>
+                    <strong id="hubActivityDistance">--</strong>
+                    <small>km</small>
+                  </div>
+                  <div class="activity-feed-stat">
+                    <span class="stat-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="8" />
+                        <path d="M12 8v5l3 2" />
+                      </svg>
+                    </span>
+                    <strong id="hubActivityMinutes">--</strong>
+                  </div>
+                </div>
+              </div>
+              <div class="activity-feed-footer">
+                <span class="activity-feed-sync" data-i18n="activityFeed.synced">
+                  Last synced a few seconds ago
+                </span>
+                <button class="link-btn" type="button" data-open="move" data-i18n="activityFeed.add">
+                  + Add activity
                 </button>
               </div>
             </div>
-            <div class="hub-cvh-stats">
-              <div class="hub-stat">
-                <span class="hub-stat-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24">
-                    <path d="M3 12h4l2-4 4 8 2-4h6" />
-                  </svg>
-                </span>
-                <div>
-                  <p class="hub-stat-label" data-i18n="move.cvhScore">CVH score</p>
-                  <p class="hub-stat-value" id="hubCvhScore">--</p>
-                  <p class="hub-stat-sub" id="hubCvhLabel" data-i18n="move.cvhEmpty">No score yet</p>
-                </div>
+
+            <div class="activity-feed-card activity-invite">
+              <div class="invite-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M7 4h10v3a5 5 0 0 1-10 0V4z" />
+                  <path d="M5 7H3a3 3 0 0 0 3 3" />
+                  <path d="M19 7h2a3 3 0 0 1-3 3" />
+                  <path d="M12 11v4" />
+                  <rect x="8" y="15" width="8" height="3" rx="1.5" />
+                </svg>
               </div>
-              <div class="hub-stat">
-                <span class="hub-stat-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24">
-                    <path d="M7 20c1-5 3-8 6-10l4 6" />
-                    <circle cx="17" cy="6" r="3" />
-                  </svg>
-                </span>
-                <div>
-                  <p class="hub-stat-label" data-i18n="move.stepsStat">Steps</p>
-                  <p class="hub-stat-value" id="hubStepsValue">--</p>
-                  <p class="hub-stat-sub" data-i18n="hub.stepsToday">Today's steps</p>
-                </div>
-              </div>
-              <div class="hub-stat">
-                <span class="hub-stat-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="8" />
-                    <path d="M12 8v5l3 2" />
-                  </svg>
-                </span>
-                <div>
-                  <p class="hub-stat-label" data-i18n="move.minutesStat">Minutes</p>
-                  <p class="hub-stat-value" id="hubMinutesValue">--</p>
-                  <p class="hub-stat-sub" data-i18n="hub.minutesHint">150 min/week</p>
-                </div>
-              </div>
-              <div class="hub-stat">
-                <span class="hub-stat-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24">
-                    <path d="M4 17c4-7 12-7 16 0" />
-                    <path d="M12 12l2 2" />
-                  </svg>
-                </span>
-                <div>
-                  <p class="hub-stat-label" data-i18n="move.distanceStat">Distance</p>
-                  <p class="hub-stat-value" id="hubDistanceValue">--</p>
-                  <p class="hub-stat-sub">km</p>
-                </div>
-              </div>
-            </div>
-            <div class="hub-cvh-meta">
-              <span class="hub-meta-pill" id="hubPAValue">PA · --</span>
-              <span class="hub-meta-pill" id="hubBPValue">BP --/--</span>
-              <button id="hubOpenAssessment" class="ghost small" type="button" data-i18n="hub.viewCvh">
-                CVH trend
+              <p data-i18n="activityFeed.invite">You have 1 challenge invite!</p>
+              <button class="card-arrow" type="button" data-open="move" aria-label="Open invite">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M10 8l4 4-4 4" />
+                </svg>
               </button>
             </div>
-            <div class="hub-cvh-trend">
-              <h4 data-i18n="hub.cvhTitle">CVH score trend</h4>
-              <div id="cvhTrend" class="trend-bars score-trend"></div>
-              <p id="cvhTrendSummary" class="muted"></p>
-              <p id="cvhTrendEmpty" class="muted" data-i18n="hub.cvhEmpty">
-                No CVH scores yet. Run your first assessment.
+
+            <div class="activity-feed-header">
+              <h4 data-i18n="activityFeed.challengesTitle">Challenges</h4>
+              <button class="pill-btn" type="button" data-open="move" data-i18n="activityFeed.join">
+                + Join
+              </button>
+            </div>
+            <div class="activity-feed-card challenge-card">
+              <div class="challenge-thumb">SOLEMATES</div>
+              <div class="challenge-body">
+                <p class="challenge-title" data-i18n="activityFeed.challengeName">Solemates</p>
+                <p class="challenge-sub" data-i18n="activityFeed.challengeDates">Feb 1–Feb 28</p>
+                <p class="challenge-meta" data-i18n="activityFeed.challengeParticipants">
+                  2,776 participants
+                </p>
+                <p class="challenge-team" data-i18n="activityFeed.teamLabel">
+                  Your team: General Participation
+                </p>
+              </div>
+              <button class="card-arrow" type="button" data-open="move" aria-label="Open challenge">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M10 8l4 4-4 4" />
+                </svg>
+              </button>
+            </div>
+
+            <div class="activity-feed-header">
+              <h4 data-i18n="activityFeed.friendsTitle">Today's top friends</h4>
+            </div>
+            <div class="activity-feed-card friends-card">
+              <p data-i18n="activityFeed.friendsEmpty">
+                Add friends to see user profiles, activity stats, and send direct messages.
               </p>
-              <button id="cvhRunAssessment" class="ghost small" type="button" data-i18n="hub.cvhRun">
-                Run assessment
+              <button class="primary small" type="button" data-i18n="activityFeed.addFriends">
+                + Add friends
               </button>
             </div>
-          </div>
-          <div class="panel reminders-panel" id="hubReminders">
-            <div class="panel-header">
-              <h3 data-i18n="hub.remindersTitle">Reminders</h3>
+            <button class="ghost wide" type="button" data-open="move" data-i18n="activityFeed.viewLeaderboard">
+              View friends leaderboard
+            </button>
+
+            <div class="activity-feed-header">
+              <h4 data-i18n="activityFeed.badgesTitle">Badges</h4>
             </div>
-            <div class="reminder-grid">
-              <div class="reminder-block">
-                <p class="reminder-label" data-i18n="hub.medsReminder">Medications</p>
-                <ul id="hubMedList" class="list"></ul>
-                <p id="hubMedEmpty" class="muted" data-i18n="hub.medsEmpty">No medications yet.</p>
+            <div class="badge-grid">
+              <div class="badge-tile">25x</div>
+              <div class="badge-tile muted"></div>
+              <div class="badge-tile muted"></div>
+            </div>
+            <button class="ghost wide" type="button" data-open="move" data-i18n="activityFeed.viewBadges">
+              View all badges
+            </button>
+          </div>
+          <div class="panel reminders-panel treatment-guardian-panel" id="hubReminders">
+            <div class="panel-header">
+              <h3 data-i18n="hub.remindersTitle">TREATMENT GARDIAN</h3>
+            </div>
+            <div class="treatment-hero hub-treatment-hero">
+              <div class="treatment-hero-top">
+                <div class="treatment-pill-icon" aria-hidden="true">
+                  <svg viewBox="0 0 64 64">
+                    <rect x="6" y="24" width="26" height="16" rx="8" fill="#7ce48f" />
+                    <rect x="32" y="24" width="26" height="16" rx="8" fill="#ffffff" />
+                    <rect x="18" y="6" width="26" height="16" rx="8" fill="#ffd6e0" />
+                    <rect x="32" y="6" width="26" height="16" rx="8" fill="#f7b233" />
+                  </svg>
+                </div>
+                <h3 data-i18n="meds.setupTitle">Set Up Medications</h3>
               </div>
-              <div class="reminder-block">
-                <p class="reminder-label" data-i18n="hub.appointmentsReminder">
-                  Upcoming appointments
-                </p>
-                <ul id="hubAppointmentList" class="list"></ul>
-                <p id="hubAppointmentEmpty" class="muted" data-i18n="hub.appointmentsEmpty">
-                  No upcoming appointments.
-                </p>
+              <div class="treatment-features">
+                <div class="treatment-feature">
+                  <span class="treatment-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                      <rect x="3" y="8" width="10" height="8" rx="4" />
+                      <rect x="11" y="8" width="10" height="8" rx="4" />
+                      <line x1="12" y1="8" x2="12" y2="16" />
+                    </svg>
+                  </span>
+                  <p data-i18n="meds.setupTrack">Track all your medications in one place.</p>
+                </div>
+                <div class="treatment-divider"></div>
+                <div class="treatment-feature">
+                  <span class="treatment-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                      <rect x="4" y="6" width="16" height="14" rx="3" />
+                      <line x1="4" y1="10" x2="20" y2="10" />
+                      <circle cx="9" cy="14" r="1.5" />
+                      <circle cx="15" cy="14" r="1.5" />
+                    </svg>
+                  </span>
+                  <p data-i18n="meds.setupSchedule">Set a schedule and get reminders.</p>
+                </div>
+                <div class="treatment-divider"></div>
+                <div class="treatment-feature">
+                  <span class="treatment-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z" />
+                      <path d="M9 12l2 2 4-4" />
+                    </svg>
+                  </span>
+                  <p data-i18n="meds.setupPrivacy">
+                    Your medication information is encrypted and cannot be read by anyone.
+                  </p>
+                </div>
               </div>
+              <button id="hubMedSetupBtn" class="primary treatment-btn hub-treatment-btn" type="button" data-i18n="meds.setupButton">
+                Set Up Medications
+              </button>
+            </div>
+            <div class="treatment-privacy-card hub-treatment-privacy">
+              <img src="B-HEALTHY-LOGO-.png" alt="B-Healthy" />
+              <p data-i18n="meds.privacyNote">
+                Your medication information is encrypted and cannot be read by anyone, including B-Healthy.
+              </p>
             </div>
           </div>
           <div class="panel ask-panel" id="hubAsk">
@@ -411,12 +632,12 @@
 
       <section id="moveView" class="view hidden">
         <div class="view-header">
-          <h2 data-i18n="move.dashboardTitle">Your cardiovascular health</h2>
+          <h2 data-i18n="move.dashboardTitle">YOUR CARDUOVASCULAR HEALTH</h2>
         </div>
 
         <div class="activity-hero">
           <div class="activity-hero-top">
-            <h3 data-i18n="move.heroTitle">Your cardiovascular health</h3>
+            <h3 data-i18n="move.heroTitle">YOUR CARDUOVASCULAR HEALTH</h3>
           </div>
           <div class="activity-stats">
             <div class="activity-stat">
@@ -639,7 +860,7 @@
 
       <section id="medsView" class="view hidden">
         <div class="view-header">
-          <h2 data-i18n="meds.guardianTitle">Treatment Guardian</h2>
+          <h2 data-i18n="meds.guardianTitle">TREATMENT GARDIAN</h2>
           <button id="backToHubFromMeds" class="ghost" type="button" data-i18n="nav.back">
             Back to menu
           </button>
@@ -1438,22 +1659,26 @@
         </span>
         <span data-i18n="nav.move">Move</span>
       </button>
-      <button class="nav-btn" type="button" data-view="explore">
+      <button class="nav-btn" type="button" data-view="meds">
         <span class="nav-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="9" />
-            <path d="M12 7v5l3 3" />
+            <rect x="3" y="8" width="10" height="8" rx="4" />
+            <rect x="11" y="8" width="10" height="8" rx="4" />
+            <line x1="12" y1="8" x2="12" y2="16" />
           </svg>
         </span>
-        <span data-i18n="nav.explore">Explore</span>
+        <span data-i18n="nav.guardian">Treatment Gardian</span>
       </button>
-      <button class="nav-btn" type="button" data-view="assessment">
+      <button class="nav-btn" type="button" data-view="appointments">
         <span class="nav-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24">
-            <path d="M3 12h4l2-4 4 8 2-4h6" />
+            <rect x="4" y="6" width="16" height="14" rx="3" />
+            <line x1="4" y1="10" x2="20" y2="10" />
+            <circle cx="9" cy="14" r="1.5" />
+            <circle cx="15" cy="14" r="1.5" />
           </svg>
         </span>
-        <span data-i18n="nav.assess">Assess</span>
+        <span data-i18n="nav.services">Health Services</span>
       </button>
       <button class="nav-btn" type="button" data-view="register">
         <span class="nav-icon" aria-hidden="true">

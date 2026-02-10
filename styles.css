@@ -531,6 +531,317 @@
   gap: 18px;
 }
 
+.hub-health-stack {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 18px;
+}
+
+.section-label {
+  margin: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8a94aa;
+}
+
+.hub-hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.hub-hero-title {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.card-arrow {
+  border: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  background: #eef2f6;
+  color: #b0002a;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-arrow svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.card-arrow:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(20, 26, 35, 0.12);
+}
+
+.hub-activity-hero .card-arrow {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.hub-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.hub-badge-strip {
+  display: flex;
+  gap: 18px;
+  padding: 16px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #b0002a 0%, #d61b4a 60%, #e6335b 100%);
+  justify-content: space-around;
+}
+
+.hub-badge-btn {
+  border: none;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+}
+
+.hub-badge-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.activity-feed {
+  grid-column: 1 / -1;
+  background: #f6f8fc;
+  border-radius: 24px;
+  padding: 20px;
+  display: grid;
+  gap: 16px;
+  box-shadow: var(--shadow);
+}
+
+.activity-feed-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.activity-feed-header h3,
+.activity-feed-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #2a395a;
+}
+
+.link-btn {
+  border: none;
+  background: none;
+  color: #1a8cc7;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pill-btn {
+  border: none;
+  background: #1a8cc7;
+  color: #ffffff;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.activity-feed-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+  box-shadow: 0 12px 24px rgba(20, 35, 60, 0.08);
+}
+
+.activity-feed-top {
+  display: grid;
+  gap: 12px;
+}
+
+.activity-feed-today {
+  font-weight: 700;
+  color: #2a395a;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.activity-feed-stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.activity-feed-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #e6465f;
+  font-weight: 700;
+}
+
+.activity-feed .stat-icon {
+  background: #f1f5fb;
+}
+
+.activity-feed .stat-icon svg {
+  stroke: currentColor;
+}
+
+.activity-feed .card-arrow {
+  color: #1a8cc7;
+}
+
+.activity-feed-stat small {
+  font-size: 0.7rem;
+  color: #8a94aa;
+}
+
+.activity-feed-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  color: #7b86a4;
+}
+
+.activity-invite {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.invite-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: #eef2f7;
+  display: grid;
+  place-items: center;
+  color: #2a395a;
+}
+
+.invite-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.challenge-card {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 14px;
+  align-items: center;
+}
+
+.challenge-thumb {
+  height: 72px;
+  border-radius: 16px;
+  background: #ffe0e6;
+  color: #d21e3b;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  font-size: 0.7rem;
+  text-align: center;
+  padding: 6px;
+}
+
+.challenge-body {
+  display: grid;
+  gap: 4px;
+}
+
+.challenge-title {
+  margin: 0;
+  font-weight: 700;
+  color: #2a395a;
+}
+
+.challenge-sub,
+.challenge-meta,
+.challenge-team {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #7b86a4;
+}
+
+.friends-card {
+  text-align: center;
+  gap: 12px;
+}
+
+.friends-card .primary.small {
+  align-self: center;
+  padding: 10px 18px;
+  font-size: 0.9rem;
+}
+
+.ghost.wide {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.badge-tile {
+  height: 70px;
+  border-radius: 18px;
+  background: #eef2f7;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #6f7aa6;
+}
+
+.badge-tile.muted {
+  background: #f3f5f8;
+}
+
 .hub-cvh-activity {
   grid-column: 1 / -1;
   background: linear-gradient(135deg, #b0002a 0%, #d61b4a 60%, #e6335b 100%);
@@ -719,6 +1030,37 @@
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.2);
   color: #ffffff;
+}
+
+#hubView .treatment-guardian-panel {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  color: var(--ink);
+}
+
+#hubView .treatment-guardian-panel .panel-header h3 {
+  color: #8a94aa;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.hub-treatment-hero {
+  background: linear-gradient(135deg, #0b56a8 0%, #1aa6b7 60%, #2bc7b6 100%);
+}
+
+.hub-treatment-hero .treatment-btn {
+  color: #0b56a8;
+}
+
+.hub-treatment-hero .treatment-pill-icon {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.hub-treatment-privacy {
+  margin-top: 12px;
+  border: 1px solid #e6eef6;
 }
 
 .ask-panel .field span {
